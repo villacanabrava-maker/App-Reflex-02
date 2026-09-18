@@ -1,0 +1,238 @@
+# Estado Canônico do Projeto — App Reflex 02
+
+**Atualizado em:** 18 de setembro de 2026  
+**Produto:** App Reflex 02 — Memória Reflexiva / Cérebro Autoral  
+**Fonte operacional:** `main` + Supabase canônico (`xenapowdtfhdwcfthfrn`).
+
+## 1. Infraestrutura canônica
+
+- GitHub: `villacanabrava-maker/App-Reflex-02`
+- Branch canônica: `main`
+- Supabase: `App Reflex 02`
+- Supabase project ref: `xenapowdtfhdwcfthfrn`
+- Supabase URL: `https://xenapowdtfhdwcfthfrn.supabase.co`
+- Hospedagem / Vercel: **ADIADO — NÃO CONFIGURAR NEM PUBLICAR** nesta etapa por decisão do usuário.
+- Domínio de produção: AINDA NÃO DEFINIDO.
+- Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
+- Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
+
+*Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
+
+## 2. Arquitetura conceitual
+
+A cadeia canônica é:
+
+**Biblioteca → Processamento → Taxonomia → Cérebro Autoral → Reflexões → Auditoria**
+
+Princípios:
+
+1. Conteúdo, Método e Expressão são planos distintos.
+2. Cérebro Ativo = Núcleo Autoral + Influências Externas Deliberadas.
+3. Conteúdo externo não entra automaticamente no Núcleo Autoral.
+4. IA interpreta/redige; PostgreSQL governa identidade, integridade, RLS e proveniência.
+5. Métricas, custos, etapas e conteúdos simulados não podem ser apresentados como reais.
+6. Material incorporado preserva origem e evidência.
+7. Uploads grandes usam browser → Supabase Storage, não body da Vercel.
+8. Sugestões de IA que alterem Taxonomia ou aprendizado autoral exigem decisão humana quando o domínio assim exige.
+
+## 3. Estado funcional consolidado
+
+### Biblioteca
+
+Concluído:
+- cadastro e visualização de obras;
+- upload TUS direto para bucket privado;
+- suporte documental/textual e gravação de áudio;
+- transcrição revisável;
+- áudio original preservado com hash, MIME, tamanho e proveniência;
+- classificação autoral/externa e participação no Cérebro;
+- cards navegáveis; a superfície do card usa navegação nativa e ações internas independentes;
+- download com nome da obra/arquivo;
+- “Refletir com esta obra” integrado às Reflexões;
+- tags livres opcionais;
+- conceitos **confirmados** da Taxonomia oferecidos como tags inteligentes;
+- IDs/códigos taxonômicos preservados em metadados;
+- busca e exibição compacta de tags.
+
+### Processamento
+
+Concluído:
+- extração de texto;
+- estrutura/seções;
+- chunking semântico;
+- unidades de conhecimento;
+- embeddings 1536d;
+- busca híbrida FTS + vetorial;
+- retries/compensações principais;
+- persistência endurecida contra publicação parcial;
+- sínteses cognitivas hierárquicas por seção e documento;
+- tese central apenas quando sustentada;
+- proveniência física das sínteses;
+- isolamento das sínteses pelo documento correto;
+- telemetria simulada removida;
+- “Data de entrada na Biblioteca” usa a data real da obra.
+
+### Taxonomia
+
+Concluído:
+- ownership por usuário;
+- RLS nas tabelas fundacionais;
+- conceitos, termos e relações isolados por usuário;
+- motor automático integrado a documentos e Reflexões;
+- conceitos propostos com evidência verificável;
+- relações automáticas em estado de revisão;
+- decisão humana antes de promoção ao mapa canônico;
+- vínculo conceito ↔ fragmento e conceito ↔ Reflexão;
+- análises idempotentes/auditáveis;
+- integração com tags da Biblioteca.
+
+Migrations aplicadas:
+- `0025_taxonomia_isolamento_rls`;
+- `0026_motor_taxonomia_automatica`;
+- `0027_grants_propostas_atualizacao` (corrige permissão backend da fila de aprendizado autoral);
+- `0028_dimensoes_canonicas_readonly` (protege o catálogo das 18 dimensões como leitura autenticada e escrita administrativa).
+- `0029_limite_upload_biblioteca_50mb` (alinha o bucket `originais-biblioteca` ao limite de 50 MB desta fase).
+
+### Cérebro Autoral
+
+Concluído:
+- 18 dimensões canônicas e três Planos;
+- características e regras derivadas de evidências reais;
+- resumo com métricas do banco;
+- versionamento;
+- propostas de aprendizado derivadas de edição autoral;
+- diff IA × autor;
+- evidências “antes/depois”;
+- confirmação/rejeição humana;
+- somente aprendizados confirmados entram em dossiês futuros.
+
+### Reflexões
+
+Concluído:
+- Wizard metodológico;
+- fontes por texto, documento, link, Biblioteca e áudio;
+- SSRF protection para links;
+- buckets privados para fontes;
+- comentário autoral por áudio;
+- tema central derivado internamente;
+- curadoria individual e “Incluir todas” para memórias;
+- curadoria de conflitos sem apagar histórico;
+- ausência de conflito sem conteúdo inventado;
+- plano usa somente conflitos considerados;
+- Auditoria antes da edição final;
+- versionamento separado IA/autor;
+- diff estruturado;
+- aprovação soberana;
+- redirecionamento pós-aprovação;
+- cards integralmente navegáveis;
+- Reflexões aprovadas podem alimentar a Taxonomia com revisão humana.
+
+### Auditoria
+
+Concluído:
+- papel lógico independente da redação;
+- dossiê de integridade;
+- citações/evidências preservadas;
+- origem das fontes verificável.
+
+### Qualidade, acessibilidade e autenticação
+
+Concluído:
+- cadastro validado também no servidor, com e-mail válido, nome obrigatório e senha mínima de 8 caracteres;
+- login de usuários existentes preservado;
+- middleware usa lista explícita de rotas públicas e protege inclusive caminhos contendo ponto;
+- testes automatizados cobrem sessão/não sessão e redirecionamentos do middleware;
+- diálogos principais usam semântica ARIA, foco inicial, contenção de Tab/Shift+Tab, Escape quando permitido e retorno de foco;
+- navegação anuncia página atual e menu de usuário anuncia estado aberto/fechado;
+- formulários principais receberam associação programática entre rótulos e campos;
+- modais principais possuem reflow/scroll próprio em telas pequenas;
+- foco por teclado ficou visível nos controles revisados.
+
+## 4. Estado do banco em 18/09/2026
+
+Dados reais observados:
+- 2 documentos processados;
+- 12 seções;
+- 38 fragmentos;
+- 38 vetores;
+- 87 evidências de dimensão;
+- 3 execuções de processamento;
+- 2 entradas de Reflexão;
+- 2 versões de Reflexão;
+- 65 características do Cérebro;
+- 116 regras;
+- Taxonomia automática disponível, porém ainda sem conceitos persistidos no corpus atual no momento da checagem;
+- sínteses disponíveis no pipeline, porém a tabela ainda estava sem linhas no corpus já processado no momento da checagem — documentos antigos precisam ser reprocessados para materializar a nova etapa.
+
+## 5. Segurança: estado reconciliado
+
+### Resolvido
+
+- middleware de autenticação: rotas públicas explícitas; removido bypass genérico por pathname contendo ponto ou prefixo amplo `/auth`;
+- cadastro: validação compartilhada cliente/servidor e mínimo de 8 caracteres para novas contas;
+- configuração Supabase no runtime: sem URL/chave real materializada no middleware; guardrails de CI impedem regressão;
+- `cerebro_autoral.dimensoes`: migration `0028_dimensoes_canonicas_readonly` aplicada; RLS ativo, leitura permitida a `authenticated`, escrita revogada de clientes e preservada para `service_role`.
+- `cerebro_autoral.propostas_atualizacao`: migration `0027_grants_propostas_atualizacao` aplicada; `service_role` recuperou SELECT/INSERT/UPDATE/DELETE e `authenticated` permanece sem acesso direto.
+- Taxonomia deixou de ter RLS desabilitado.
+- Ownership e políticas foram aplicados antes da automação.
+- Views taxonômicas usam `security_invoker`.
+- Escrita de análises taxonômicas permanece backend-only.
+
+### Pendente e deliberado
+
+1. **Schema `sistema` com seis tabelas sem RLS**
+   - `modelos_ia`, `prompts`, `versoes_prompts`, `versoes_pipeline`, `configuracoes_usuario`, `perfis_embedding`;
+   - `anon` não possui privilégios diretos, mas `authenticated` ainda possui escrita;
+   - não habilitar RLS automaticamente sem políticas específicas;
+   - política proposta: catálogos globais read-only para `authenticated` e escrita apenas administrativa; `configuracoes_usuario` isolada por `auth.uid()`.
+
+2. **Tabelas internas de Processamento com RLS ligado e sem policies diretas**
+   - `processamento.elementos`;
+   - `processamento.etapas_execucao`;
+   - `processamento.evidencias`;
+   - `processamento.sinteses`.
+   - o modelo atual usa backend/service role para essas operações; sem policy, acesso direto do cliente autenticado é bloqueado.
+   - não criar policies amplas apenas para eliminar o lint.
+
+3. **Supabase Auth**
+   - o advisor continua sinalizando Leaked Password Protection desabilitado;
+   - a documentação atual do Supabase informa que esse recurso exige plano Pro ou superior;
+   - mantendo a decisão do projeto de usar Supabase Free, o alerta é uma limitação conhecida e não um gate executável;
+   - o aplicativo compensa parcialmente com validação de cadastro no servidor e mínimo canônico de 8 caracteres.
+
+4. **Performance**
+   - advisor ainda aponta FKs sem índice e índices ainda não utilizados;
+   - não remover/adicionar índices cegamente: priorizar queries reais e `EXPLAIN`/telemetria.
+
+## 6. Frente atual: qualidade transversal
+
+Já fechados nesta fase:
+- RLS/read-only das dimensões canônicas;
+- grants da fila de aprendizado autoral;
+- guardrails contra segredos/configuração real no código;
+- endurecimento do cadastro;
+- proteção de rotas do middleware;
+- primeira passada de acessibilidade, teclado e reflow dos modais principais;
+- semântica e responsividade do card da Biblioteca: superfície inteira clicável com link HTML nativo, ações internas independentes e alvos/reflow revisados.
+
+Encerramento desta etapa documentado em `docs/RELATORIO_ENCERRAMENTO_ETAPA_2026-09-18.md`.
+
+Próxima sequência:
+1. iniciar a nova etapa a partir do relatório de encerramento;
+2. tratar RLS do schema `sistema` com políticas explícitas;
+3. preparar E2E autenticado com credencial/sessão de teste apropriada;
+4. medir performance com carga real antes de novas migrations de índice;
+5. habilitar proteção formal da `main` quando houver ação administrativa disponível.
+
+## 7. Regras de execução
+
+- uma frente por vez;
+- branches curtas;
+- nenhuma migration aplicada sem entender ownership, políticas e impacto;
+- todo PR precisa passar TypeScript, lint, testes e build;
+- Preview Vercel deve estar READY;
+- produção só é concluída com SHA reconciliado entre GitHub e Vercel;
+- migrations aplicadas devem aparecer no histórico oficial do Supabase;
+- não duplicar serviços já existentes;
+- não transformar lints informativos em migrations automáticas sem entender o modelo de acesso;
+- documentação precisa acompanhar o estado real da produção.

@@ -1,0 +1,52 @@
+{
+  "name": "app-reflex-02",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App Reflex 02 — plataforma pessoal de inteligência autoral e memória reflexiva.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:all": "tsc --noEmit && vitest run"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "0.1.80",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.49.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
+    "lucide-react": "^0.475.0",
+    "next": "15.5.25",
+    "openai": "^4.85.4",
+    "pdf-parse": "^2.4.5",
+    "postgres": "^3.4.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss-animate": "^1.0.7",
+    "tus-js-client": "^4.3.1",
+    "zod": "^3.24.2",
+    "@mozilla/readability": "0.6.0",
+    "jsdom": "30.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.20.1",
+    "eslint-config-next": "15.5.25",
+    "postcss": "8.5.28",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "vitest": "4.1.11",
+    "@types/jsdom": "30.0.0"
+  },
+  "overrides": {
+    "postcss": "$postcss"
+  }
+}
