@@ -1,64 +1,68 @@
-# Índice da Documentação — Rflex01
+# Índice da Documentação — App Reflex 02
 
-**Objetivo:** permitir que uma pessoa abra o repositório e saiba rapidamente qual documento consultar, sem confundir estado atual, histórico e instruções auxiliares.
+**Objetivo:** permitir que qualquer desenvolvedor ou agente abra o repositório e saiba rapidamente qual documento consultar, sem confundir estado atual, histórico e instruções auxiliares.
 
-## Ordem de confiança
+---
 
-Quando houver divergência, use esta ordem:
+## Ordem de Confiança (Precedência da Fonte da Verdade)
 
-1. estado real de `main` no GitHub;
-2. projeto Supabase canônico `reflex-01`;
-3. projeto Vercel canônico `rflex01`;
-4. `docs/STATUS_PROJETO.md`;
-5. documentação histórica e planos anteriores.
+Quando houver divergência, adote estritamente esta ordem:
 
-Documentação nunca substitui a verificação das integrações reais.
+1. Estado real de `main` no repositório GitHub (`villacanabrava-maker/App-Reflex-02`);
+2. Projeto Supabase canônico (`xenapowdtfhdwcfthfrn`);
+3. `docs/STATUS_PROJETO.md` e `docs/coordenacao/ESTADO_COMPARTILHADO.md`;
+4. Laudo de auditoria `docs/coordenacao/AUDITORIA_DOCUMENTAL_APP01_APP02.md`;
+5. Documentação histórica e relatórios de etapas anteriores.
 
-## Documentos operacionais atuais
+*Nota de Escopo*: Hospedagem Vercel permanece **estritamente adiada** e fora do escopo desta etapa.
 
-| Documento | Papel |
+---
+
+## Documentos Operacionais Vigentes (Canônicos)
+
+| Documento | Papel Canônico |
 |---|---|
-| `docs/STATUS_PROJETO.md` | Estado canônico resumido do produto e das integrações. |
-| `docs/MAPA_REPOSITORIO.md` | Mapa técnico: onde ficam páginas, back-end, domínios, IA, Supabase, testes e configurações. |
-| `docs/RELATORIO_ETAPA_2_ORGANIZACAO.md` | Relatório da organização conservadora da Etapa 2, após concluída. |
-| `README.md` | Documentação mestre técnica e operacional do aplicativo, reconstruída e revalidada na Etapa 3. |
-| `ESCOPO_DO_APLICATIVO.md` | Apresentação funcional e profissional do produto para públicos técnicos e não técnicos. |
-| `GEMINI.md` | Diretrizes auxiliares para agentes/ferramentas de desenvolvimento; não é documentação de produto. |
+| `docs/STATUS_PROJETO.md` | Estado canônico consolidado do produto, banco de dados, stack e integrações. |
+| `docs/coordenacao/README.md` | Protocolo da governança triangular (Usuário ↔ ChatGPT ↔ Antigravity). |
+| `docs/coordenacao/ESTADO_COMPARTILHADO.md` | Quadro vivo e auditado de infraestrutura, agentes e bloqueios. |
+| `docs/coordenacao/INDICE_MISSOES.md` | Rastreabilidade de missões executadas, ativas e planejadas. |
+| `docs/coordenacao/AUDITORIA_DOCUMENTAL_APP01_APP02.md` | Classificação formal do acervo herdado do App 01. |
+| `AGENTS.md` | Constituição Operacional Multiagente (Regras de Ouro dos 9 Agentes). |
+| `README.md` | Documentação técnica mestre do repositório (arquitetura, testes, instalação). |
+| `ESCOPO_DO_APLICATIVO.md` | Tese funcional de produto, Memória Reflexiva e Cérebro Autoral. |
+| `docs/MAPA_REPOSITORIO.md` | Cartografia detalhada de arquivos, componentes, libs e migrations. |
+| `docs/adr/0001-fundacao-arquitetural.md` | Decisões arquiteturais fundamentais de fundação. |
+| `docs/pesquisa-evolucao/README.md` | Diretório de relatórios técnicos e propostas do Agente 08. |
+| `GEMINI.md` | Diretrizes auxiliares para agentes de IA no ambiente Antigravity. |
 
-## Registros de arquitetura
+---
 
-| Documento | Papel |
-|---|---|
-| `docs/adr/0001-fundacao-arquitetural.md` | Decisões arquiteturais fundamentais e seus motivos. |
-
-## Documentos de transição e histórico recente
+## Documentos Históricos de Fases Anteriores
 
 | Documento | Classificação | Observação |
 |---|---|---|
-| `docs/PLANO_ACAO_RELATO_NAVEGACAO.md` | Histórico de execução | Checklist derivado do relato de navegação. As frentes registradas ali foram encerradas para aquela fase. |
-| `docs/RELATORIO_ENCERRAMENTO_ETAPA_2026-09-18.md` | Baseline histórica recente | Registra o fechamento da fase anterior e os riscos conhecidos naquele momento. |
+| `docs/RELATORIO_ETAPA_2_ORGANIZACAO.md` | Histórico | Relatório de organização de diretórios da baseline da etapa 2. |
+| `docs/RELATORIO_ENCERRAMENTO_ETAPA_2026-09-18.md` | Histórico | Fechamento da fase pré-migração do App 01. |
+| `docs/PLANO_ACAO_RELATO_NAVEGACAO.md` | Histórico | Checklist de ações de telas já absorvidas ou encerradas. |
 
-Esses arquivos são preservados porque ajudam a explicar decisões e evolução. Eles não devem ser lidos como lista automática de tarefas atuais.
+Esses arquivos são preservados para fins de auditoria e proveniência; não representam demandas em aberto.
 
-## Relatório esperado da Etapa 1
+---
 
-O Prompt da Etapa 2 cita `RELATORIO_ETAPA_1_ESTADO_ATUAL.md` como ponto de partida. Na baseline `01089c517df589dad8f71b93686fd7c033346ed9`, esse arquivo **não estava versionado**.
+## Diretórios Operacionais Auxiliares
 
-Por isso, a Etapa 2 foi revalidada diretamente contra GitHub, Supabase, Vercel e código, usando `STATUS_PROJETO.md` e `RELATORIO_ENCERRAMENTO_ETAPA_2026-09-18.md` apenas como fontes auxiliares.
+- `.agents/`: Especificações dos 9 agentes (`agents/`), skills modulares (`skills/`) e hooks de segurança (`hooks.json`).
+- `docs/coordenacao/chatgpt-para-antigravity/`: Prompts mestres gerados pelo ChatGPT (`GPT-XXXX.md`).
+- `docs/coordenacao/antigravity-para-chatgpt/`: Relatórios formais de handoff do Antigravity (`AG-XXXX.md`).
+- `supabase/migrations/`: Migrations SQL idempotentes aplicadas no Supabase canônico.
+- `tests/`: Suítes automatizadas de testes (domínio, segurança, guardrails).
+- `.github/workflows/ci.yml`: Pipeline de integração contínua (CI gate sem deploy).
 
-## Diretórios que também contêm instruções
+---
 
-- `.agents/skills/`: instruções para subagentes de revisão, QA, design e ideação. Não fazem parte do runtime do aplicativo.
-- `supabase/migrations/`: histórico executável do schema e da segurança do banco. Não mover ou reordenar migrations aplicadas.
-- `tests/`: testes automatizados por domínio.
-- `.github/workflows/ci.yml`: pipeline de validação do GitHub Actions.
+## Diretrizes para Novos Documentos
 
-## Regra para documentos futuros
-
-Antes de criar um novo documento:
-
-1. verifique se o assunto já está coberto por um documento atual;
-2. prefira atualizar a fonte existente quando o propósito for o mesmo;
-3. use relatório datado para registrar fechamento de etapa;
-4. marque claramente quando um documento é histórico;
-5. nunca registre segredos, tokens, senhas ou valores de chaves.
+1. Consulte se o tópico já está coberto por um documento canônico ativo.
+2. Prefira enriquecer documentos vivos existentes a proliferar arquivos duplicados.
+3. Todo relatório de conclusão de missão deve ser emitido pelo A9 em `docs/coordenacao/antigravity-para-chatgpt/AG-XXXX.md`.
+4. Jamais exponha dados sensíveis, tokens de autenticação ou credenciais privadas.

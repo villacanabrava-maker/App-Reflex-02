@@ -33,9 +33,10 @@ Bem-vindo ao ecossistema oficial do **App Reflex 02**. Todos os agentes autônom
    - **A6 (Plataforma & SRE):** Gerencia CI, PRs e observabilidade.
    - **A7 (Auditoria & AppSec):** Conduz auditoria independente zero-trust e testes E2E.
    - **A8 (Pesquisa & Evolução):** Conduz pesquisa técnica com evidências, diagnóstico de causas-raiz, prospecção de melhorias e acompanhamento de resultados.
+   - **A9 (Continuidade, Evidência & Comunicação):** Reconcilia solicitação ↔ plano ↔ diff real ↔ documentação, administra o livro-razão de evidências e produz os relatórios de intercâmbio com o ChatGPT.
 
-6. **Handoff Estruturado Obrigatório:**
-   Nenhum agente encerra uma tarefa apenas com 'concluído'. É obrigatório fornecer o relatório estruturado de handoff contendo escopo realizado, arquivos modificados, testes rodados com stdout, evidências e riscos.
+6. **Handoff Estruturado e Reconciliação Obrigatória (Regra A9):**
+   Nenhum agente encerra uma tarefa apenas com 'concluído'. Nenhuma missão é declarada concluída documentalmente sem o atestado de reconciliação emitido por A9 em docs/coordenacao/antigravity-para-chatgpt/AG-XXXX.md, contendo a classificação rigorosa de evidências ([CONFIRMADO-CODIGO], [CONFIRMADO-TESTE], [CONFIRMADO-CI]) e stdout de validação.
 
 7. **Auditoria Independente Obrigatória (Zero-Trust):**
    O agente que implementa o código não pode ser o único a atestar seu funcionamento. O Agente de Qualidade e Segurança (A7) deve auditar de forma independente antes do merge na main.

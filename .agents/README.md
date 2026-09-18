@@ -1,10 +1,10 @@
 # App Reflex 02 — Sistema Multiagente de Engenharia & Governança (Antigravity 2.0)
 
-Este repositório está configurado com a infraestrutura de **7 Agentes Especialistas**, **Skills Modulares**, **Políticas de Menor Privilégio** e **Hooks de Segurança Determinísticos** para o **Google Antigravity 2.0**.
+Este repositório está configurado com a infraestrutura de **9 Agentes Especialistas**, **Skills Modulares**, **Políticas de Menor Privilégio** e **Hooks de Segurança Determinísticos** para o **Google Antigravity 2.0**.
 
 ---
 
-## 👥 A Equipe dos 7 Agentes
+## 👥 A Equipe dos 9 Agentes
 
 | Agente | Arquivo | Responsabilidade Principal |
 | :--- | :--- | :--- |
@@ -16,6 +16,7 @@ Este repositório está configurado com a infraestrutura de **7 Agentes Especial
 | **A6: rflex-platform** | `.agents/agents/rflex-platform/agent.md` | CI/CD, GitHub Actions, Ambiente Git & SRE |
 | **A7: rflex-qa-security** | `.agents/agents/rflex-qa-security/agent.md` | Auditoria Independente, AppSec & Testes de Regressão |
 | **A8: rflex-research-evolution** | `.agents/agents/rflex-research-evolution/agent.md` | Pesquisa Aplicada, Inovação & Evolução Contínua |
+| **A9: rflex-continuity-evidence** | `.agents/agents/rflex-continuity-evidence/agent.md` | Continuidade, Evidência & Intercâmbio ChatGPT ↔ Antigravity |
 
 ---
 
@@ -34,6 +35,9 @@ Este repositório está configurado com a infraestrutura de **7 Agentes Especial
 - `independent-qa-security`: Testes adversários e emissão de laudo de auditoria.
 - `evidence-based-research`: Investigação técnica ancorada em fatos, fontes oficiais e hipóteses refutáveis.
 - `project-state-research`: Mapeamento de cobertura, identificação de gaps e preservação de boas soluções.
+- `project-state-reconciliation`: Reconciliação entre intenção humana, planos, diffs reais e commits.
+- `evidence-ledger`: Livro-razão e taxonomia canônica de evidências técnicas.
+- `external-review-bridge`: Protocolo de handoff assíncrono entre ChatGPT e Antigravity.
 - `code-reviewer`, `design-master`, `idea-generator`, `qa-tester`: Skills analíticas complementares de revisão.
 
 ---

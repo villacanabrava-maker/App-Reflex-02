@@ -15,7 +15,8 @@
 - Domínio de produção: AINDA NÃO DEFINIDO.
 - Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
-- Governança Multiagente: Equipe consolidada com 8 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução).
+- Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
+- Protocolo de Coordenação e Continuidade: Operação triangular Usuário ↔ ChatGPT ↔ Antigravity centralizada em `docs/coordenacao/` com relatórios em `antigravity-para-chatgpt/AG-XXXX.md`.
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 
