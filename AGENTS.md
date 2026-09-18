@@ -32,6 +32,7 @@ Bem-vindo ao ecossistema oficial do **App Reflex 02**. Todos os agentes autônom
    - **A5 (IA & Conhecimento):** Governa structured outputs, hybrid search e RAG autoral.
    - **A6 (Plataforma & SRE):** Gerencia CI, PRs e observabilidade.
    - **A7 (Auditoria & AppSec):** Conduz auditoria independente zero-trust e testes E2E.
+   - **A8 (Pesquisa & Evolução):** Conduz pesquisa técnica com evidências, diagnóstico de causas-raiz, prospecção de melhorias e acompanhamento de resultados.
 
 6. **Handoff Estruturado Obrigatório:**
    Nenhum agente encerra uma tarefa apenas com 'concluído'. É obrigatório fornecer o relatório estruturado de handoff contendo escopo realizado, arquivos modificados, testes rodados com stdout, evidências e riscos.

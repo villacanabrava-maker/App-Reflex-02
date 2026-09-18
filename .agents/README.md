@@ -15,6 +15,7 @@ Este repositório está configurado com a infraestrutura de **7 Agentes Especial
 | **A5: rflex-ai-knowledge** | `.agents/agents/rflex-ai-knowledge/agent.md` | Structured Outputs (Zod), Hybrid Search & RAG Autoral |
 | **A6: rflex-platform** | `.agents/agents/rflex-platform/agent.md` | CI/CD, GitHub Actions, Ambiente Git & SRE |
 | **A7: rflex-qa-security** | `.agents/agents/rflex-qa-security/agent.md` | Auditoria Independente, AppSec & Testes de Regressão |
+| **A8: rflex-research-evolution** | `.agents/agents/rflex-research-evolution/agent.md` | Pesquisa Aplicada, Inovação & Evolução Contínua |
 
 ---
 
@@ -31,6 +32,8 @@ Este repositório está configurado com a infraestrutura de **7 Agentes Especial
 - `authorial-ai-retrieval`: Zod schemas, busca híbrida e proveniência.
 - `vercel-preview-observability`: *[Adiado/Não aplicável nesta etapa]* Metodologia futura de preview.
 - `independent-qa-security`: Testes adversários e emissão de laudo de auditoria.
+- `evidence-based-research`: Investigação técnica ancorada em fatos, fontes oficiais e hipóteses refutáveis.
+- `project-state-research`: Mapeamento de cobertura, identificação de gaps e preservação de boas soluções.
 - `code-reviewer`, `design-master`, `idea-generator`, `qa-tester`: Skills analíticas complementares de revisão.
 
 ---
