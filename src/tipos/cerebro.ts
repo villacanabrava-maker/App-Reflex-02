@@ -132,6 +132,35 @@ export interface ObraCorpusCerebro {
   total_palavras: number;
 }
 
+export interface FragmentoEscopoCerebro {
+  id: string;
+  ordem: number;
+  conteudo_preview: string;
+  total_palavras: number;
+}
+
+export interface SecaoEscopoCerebro {
+  id: string;
+  titulo: string;
+  ordem: number;
+  fragmentos: FragmentoEscopoCerebro[];
+}
+
+export interface EstruturaObraCerebro {
+  obra_id: string;
+  obra_titulo: string;
+  secoes: SecaoEscopoCerebro[];
+}
+
+export type ItemEscopoAnaliseCerebro =
+  | { tipo: "obra"; id: string }
+  | { tipo: "secao"; id: string }
+  | { tipo: "fragmento"; id: string };
+
+export interface EscopoAnaliseCerebro {
+  itens: ItemEscopoAnaliseCerebro[];
+}
+
 export interface ResumoCerebro {
   usuario_id: string;
   total_caracteristicas: number;
