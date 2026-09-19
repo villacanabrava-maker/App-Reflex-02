@@ -49,13 +49,14 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     }
   });
 
-  it("as migrations 0026 a 0030 existem no repositório e cobrem RLS, isolamento e storage", () => {
+  it("as migrations 0026 a 0031 existem no repositório e cobrem RLS, isolamento e storage", () => {
     const migrationsDir = path.join(process.cwd(), "supabase", "migrations");
     const m26 = fs.readFileSync(path.join(migrationsDir, "0026_motor_taxonomia_automatica.sql"), "utf-8");
     const m27 = fs.readFileSync(path.join(migrationsDir, "0027_grants_propostas_atualizacao.sql"), "utf-8");
     const m28 = fs.readFileSync(path.join(migrationsDir, "0028_dimensoes_canonicas_readonly.sql"), "utf-8");
     const m29 = fs.readFileSync(path.join(migrationsDir, "0029_limite_upload_biblioteca_50mb.sql"), "utf-8");
     const m30 = fs.readFileSync(path.join(migrationsDir, "0030_sistema_rls_hardening.sql"), "utf-8");
+    const m31 = fs.readFileSync(path.join(migrationsDir, "0031_claims_ledger.sql"), "utf-8");
 
     // 0026
     expect(m26).toContain("taxonomia.analises");
@@ -76,6 +77,13 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     expect(m30).toContain("sistema.configuracoes_usuario ENABLE ROW LEVEL SECURITY");
     expect(m30).toContain("sistema.modelos_ia ENABLE ROW LEVEL SECURITY");
     expect(m30).toContain("sistema.perfis_embedding ENABLE ROW LEVEL SECURITY");
+
+    // 0031 (Wave 1 - Claims Ledger & Provenance)
+    expect(m31).toContain("cerebro_autoral.claims ENABLE ROW LEVEL SECURITY");
+    expect(m31).toContain("cerebro_autoral.claim_provenance ENABLE ROW LEVEL SECURITY");
+    expect(m31).toContain("fk_claim_provenance_ownership");
+    expect(m31).toContain("uq_claims_id_usuario");
+    expect(m31).not.toContain("is_authorial BOOLEAN NOT NULL DEFAULT true"); // Invariant: PROIBIDO default true de autoria
   });
 
   it("todas as tabelas do schema sistema possuem RLS habilitado no banco ativo", { timeout: 15000 }, async () => {
