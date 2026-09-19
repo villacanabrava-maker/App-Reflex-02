@@ -10,6 +10,7 @@ export interface CognitiveFeatureFlags {
   FEATURE_COGNITIVE_V31_DOSSIER: FeatureFlagState;
   FEATURE_COGNITIVE_V31_AUDITOR: FeatureFlagState;
   FEATURE_COGNITIVE_V31_ABSTENTION: FeatureFlagState;
+  FEATURE_LEGACY_BRAIN_ANALYZER: FeatureFlagState;
 }
 
 export const COGNITIVE_FEATURE_FLAGS: CognitiveFeatureFlags = {
@@ -22,6 +23,10 @@ export const COGNITIVE_FEATURE_FLAGS: CognitiveFeatureFlags = {
     (process.env.FEATURE_COGNITIVE_V31_AUDITOR as FeatureFlagState) || "off",
   FEATURE_COGNITIVE_V31_ABSTENTION:
     (process.env.FEATURE_COGNITIVE_V31_ABSTENTION as FeatureFlagState) || "off",
+  // Caminho legado que promove inferências diretamente ao Cérebro.
+  // Mantido apenas para compatibilidade e desligado por padrão.
+  FEATURE_LEGACY_BRAIN_ANALYZER:
+    (process.env.FEATURE_LEGACY_BRAIN_ANALYZER as FeatureFlagState) || "off",
 };
 
 export function obterFeatureFlag(

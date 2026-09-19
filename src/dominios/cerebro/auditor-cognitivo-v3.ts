@@ -364,7 +364,9 @@ export class AuditorCognitivoV31 {
     if (input.versaoReflexaoId && input.usuarioId) {
       try {
         const admin = criarClienteAdmin();
-        await admin.rpc("registrar_relatorio_auditoria_v3_1", {
+        const { error: erroPersistencia } = await admin
+          .schema("auditoria")
+          .rpc("registrar_relatorio_auditoria_v3_1", {
           p_id: relatorio.id,
           p_usuario_id: input.usuarioId,
           p_versao_reflexao_id: input.versaoReflexaoId,
@@ -381,9 +383,21 @@ export class AuditorCognitivoV31 {
           p_citation_precision: relatorio.citation_precision,
           p_intervencoes: relatorio.intervencoes,
         });
+
+        if (erroPersistencia) {
+          throw new Error(`Falha ao persistir relatório cognitivo V3.1: ${erroPersistencia.message}`);
+        }
       } catch (err) {
-        // Em testes puramente sintéticos, não aborta se o banco não estiver mockado
-        console.warn("Aviso: persistência live do relatório omitida ou em sandbox:", (err as Error).message);
+        // Objetos em memória são permitidos exclusivamente em testes/avaliações sintéticas.
+        // No runtime normal, em que o snapshot é carregado pelo ID persistido, falhar
+        // ao gravar o laudo precisa bloquear o fluxo (fail closed).
+        if (!input.dossieObjeto) {
+          throw err;
+        }
+        console.warn(
+          "Aviso: persistência do relatório omitida em avaliação sintética:",
+          (err as Error).message
+        );
       }
     }
 
