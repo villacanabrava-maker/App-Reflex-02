@@ -192,7 +192,7 @@ Gere o texto completo em Markdown e indique os vínculos de proveniência corres
     for (const c of redacao.citacoes_identificadas) {
       const fragRef = fragmentos[c.fragmento_index - 1];
       const tipoFonteReal =
-        fragRef?.obra_natureza === "externa" ? "fonte_externa" : "nucleo_autoral";
+        fragRef?.obra_natureza === "externa" ? "influencia_externa" : "nucleo_autoral";
 
       await admin.schema("reflexoes").from("citacoes_evidencias").insert({
         versao_reflexao_id: versaoSalva.id,
