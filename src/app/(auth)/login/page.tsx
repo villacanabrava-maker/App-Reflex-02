@@ -157,7 +157,7 @@ export default function PaginaLogin() {
               Acesse o Reflex 02
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Entre com sua conta ou crie uma nova conta com e-mail e senha.
+              Entre com sua conta ou, se este for o primeiro acesso, crie a conta inicial do autor.
             </p>
           </div>
 
@@ -318,7 +318,7 @@ export default function PaginaLogin() {
           </form>
 
           <div className="p-3 bg-slate-100/80 rounded-xl text-[11px] text-slate-500 leading-relaxed border border-slate-200/60">
-            Sua sessão é mantida de forma segura pelo sistema de autenticação do Reflex 02.
+            O primeiro cadastro cria a conta principal do autor. Depois disso, novos cadastros ficam bloqueados e o acesso é feito por login.
           </div>
         </div>
       </section>
