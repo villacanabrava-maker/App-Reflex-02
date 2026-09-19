@@ -3,14 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { criarClienteAdmin } from "@/infraestrutura/supabase/cliente-admin";
 import { obterUsuarioAtualId } from "@/infraestrutura/auth/usuario-atual";
-import { analisarDimensaoComIA } from "@/dominios/cerebro/analisador-dimensoes";
-import { isFlagAtiva } from "@/config/feature-flags";
+import { proporAnaliseDimensaoComIA } from "@/dominios/cerebro/analisador-dimensoes";
 import type {
   DimensaoCerebro,
   CaracteristicaCerebro,
   RegraCerebro,
   ResumoCerebro,
   PropostaAtualizacaoCerebro,
+  ObraCorpusCerebro,
 } from "@/tipos/cerebro";
 
 /**
