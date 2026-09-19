@@ -1,4 +1,5 @@
 import zlib from "zlib";
+import pdfParse from "pdf-parse";
 
 export interface ResultadoExtracaoTexto {
   textoCompleto: string;
@@ -129,13 +130,6 @@ export async function extrairTextoDeBuffer(
     // backend usamos a API estável 1.x, que roda no mesmo processo e não depende
     // de structuredClone/transferList.
     try {
-      const pdfParse = require("pdf-parse") as (data: Buffer) => Promise<{
-        text: string;
-        numpages?: number;
-        info?: Record<string, unknown>;
-        metadata?: unknown;
-      }>;
-
       const resultadoPdf = await pdfParse(buffer);
 
       textoBruto = resultadoPdf.text || "";
