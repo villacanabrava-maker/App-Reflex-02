@@ -15,7 +15,7 @@
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
 - Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
 - Protocolo de Coordenação e Continuidade: Operação triangular Usuário ↔ ChatGPT ↔ Antigravity centralizada em `docs/coordenacao/` com relatórios em `antigravity-para-chatgpt/AG-XXXX.md`.
-- Último Marco Concluído: MIS-0004 — Pesquisa Cognitiva Profunda, Arquitetura de Memória e Sistema de Inteligência Autoral V3 (PostgreSQL Cognitivo nativo, SKOS, busca híbrida multi-sinal, abstenção honesta, aprendizado por edição e mitigação de segurança P0).
+- Último Marco Concluído: MIS-0005 — Fusão Epistemológica, Memória Tipada, Claims e Especificação Executável do Cérebro Reflex V3.1 (Claims, 10 estados epistêmicos, Memory-Inference Firewall com métrica MILR, Vetor de Confiança de 10 dimensões, Abstenção em 7 categorias, Golden Dataset de 12 famílias CBR, Roadmap V3.1 em 10 fases e ADR 0003).
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 

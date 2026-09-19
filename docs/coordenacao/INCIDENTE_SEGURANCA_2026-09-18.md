@@ -3,7 +3,7 @@
 **Identificador do Incidente:** INC-SEC-20260918-01  
 **Severidade:** P0 (Credencial exposta em repositório público)  
 **Equipe de Resposta:** A7 (rflex-qa-security), A4 (rflex-backend-supabase), A6 (rflex-platform), A9 (rflex-continuity-evidence)  
-**Status:** `MITIGADO NO REPOSITÓRIO / AGUARDANDO ROTAÇÃO PELO USUÁRIO NO DASHBOARD SUPABASE`  
+**Status:** `P0 ABERTO — CREDENCIAL REVOGAÇÃO PENDENTE` (Saneado no código / Aguardando rotação humana no console Supabase)  
 
 ---
 
