@@ -206,6 +206,14 @@ export function AcordeaoDimensoes({
               {/* Conteúdo Expandido da Dimensão */}
               {estaAberta && (
                 <div className="p-5 border-t border-slate-100 bg-slate-50/60 space-y-5">
+                                    <SeletorEscopoAnalise
+                    obras={corpusAutoral}
+                    valor={escopos[dimensao.id] || { itens: [] }}
+                    onChange={(escopo) =>
+                      setEscopos((atual) => ({ ...atual, [dimensao.id]: escopo }))
+                    }
+                  />
+
                   {/* Faixa de Descrição & Ação do Motor IA */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-white border border-slate-200">
                     <div>
@@ -219,7 +227,9 @@ export function AcordeaoDimensoes({
 
                     <button
                       type="button"
-                      disabled={estaAnalisando}
+                      disabled={
+                        estaAnalisando || (escopos[dimensao.id]?.itens.length || 0) === 0
+                      }
                       onClick={() => handleMapearIA(dimensao.id)}
                       className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 disabled:opacity-50 text-white font-medium rounded-xl text-xs shadow-md transition-all whitespace-nowrap shrink-0"
                     >
@@ -231,19 +241,15 @@ export function AcordeaoDimensoes({
                       ) : (
                         <>
                           <Sparkles className="w-3.5 h-3.5" />
-                          <span>Analisar conteúdo selecionado</span>
+                          <span>
+                            {(escopos[dimensao.id]?.itens.length || 0) === 0
+                              ? "Selecione o conteúdo acima"
+                              : "Analisar conteúdo selecionado"}
+                          </span>
                         </>
                       )}
                     </button>
                   </div>
-
-                  <SeletorEscopoAnalise
-                    obras={corpusAutoral}
-                    valor={escopos[dimensao.id] || { itens: [] }}
-                    onChange={(escopo) =>
-                      setEscopos((atual) => ({ ...atual, [dimensao.id]: escopo }))
-                    }
-                  />
 
                   {/* Mensagem de Feedback da IA */}
                   {mensagemStatus &&
