@@ -8,6 +8,7 @@ import {
   type SecaoParaSintese,
 } from "./gerador-sinteses";
 import { taxonomizarDocumentoProcessado } from "@/dominios/taxonomia/aplicador-taxonomia";
+import { registrarFonteProcessadaNoCerebro } from "@/dominios/cerebro/registrar-fonte-autoral";
 
 export interface OpcoesPipeline {
   versaoObraId: string;
@@ -23,6 +24,7 @@ export interface ResultadoPipeline {
   totalSinteses: number;
   totalConceitosTaxonomia?: number;
   avisoTaxonomia?: string | null;
+  avisoCerebro?: string | null;
   totalTokens: number;
   custoEstimadoUsd: number;
 }
@@ -727,6 +729,35 @@ export async function executarPipelineProcessamento({
       console.error("Taxonomia automática não destrutiva falhou:", erroTaxonomia);
     }
 
+    // ------------------------------------------------------------------------
+    // ETAPA 8: INGESTÃO DA FONTE AUTORAL NO CÉREBRO (V3.1)
+    // ------------------------------------------------------------------------
+    // A classificação "autoral" significa que esta fonte pertence ao corpus
+    // primário do usuário. Registrar a fonte no ledger episódico NÃO transforma
+    // automaticamente inferências em crenças/características confirmadas.
+    let avisoCerebro: string | null = null;
+    try {
+      await registrarFonteProcessadaNoCerebro({
+        usuarioId,
+        obraId: versao.obra_id,
+        versaoObraId,
+        documentoProcessadoId: docProc.id,
+        titulo: versao.obra.titulo,
+        natureza: versao.obra.natureza,
+        hashSha256: versao.hash_sha256,
+        totalFragmentos: totalFragmentosCriados,
+        totalSecoes: totalSecoesCriadas,
+      });
+    } catch (erroCerebro: unknown) {
+      const mensagem =
+        erroCerebro instanceof Error
+          ? erroCerebro.message
+          : "Falha desconhecida ao integrar fonte autoral ao Cérebro.";
+      avisoCerebro =
+        "O documento foi processado, mas a sincronização com o Cérebro precisa ser refeita.";
+      console.error("Integração não destrutiva com o Cérebro falhou:", mensagem);
+    }
+
     // Conclui execução do pipeline principal.
     await admin
       .schema("processamento")
@@ -748,6 +779,7 @@ export async function executarPipelineProcessamento({
       totalSinteses: totalSintesesCriadas,
       totalConceitosTaxonomia,
       avisoTaxonomia,
+      avisoCerebro,
       totalTokens: totalTokensGlobal,
       custoEstimadoUsd,
     };
