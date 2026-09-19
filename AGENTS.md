@@ -67,3 +67,30 @@ Para detalhes operacionais, consulte a documentação dedicada em `docs/agentes/
 - [AGENT_EVALS.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/AGENT_EVALS.md) — Suíte de testes individuais, cross-agent e adversários.
 - [AGENT_OBSERVABILITY.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/AGENT_OBSERVABILITY.md) — As 12 métricas de desempenho e telemetria.
 - [CHANGELOG_AGENTES.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/CHANGELOG_AGENTES.md) — Histórico de versões e critérios de promoção do harness.
+
+
+---
+
+## 5. Camada de Continuidade OpenAI / Codex
+
+Agentes OpenAI (ChatGPT, Codex e derivados) devem usar a pasta `OpenAI ChatGPT/` como camada de bootstrap e continuidade do projeto.
+
+### Read-first OpenAI
+1. `OpenAI ChatGPT/BOOTSTRAP.md`
+2. `OpenAI ChatGPT/CURRENT_STATE.md`
+3. `OpenAI ChatGPT/METHODOLOGY.md`
+4. workflow específico em `OpenAI ChatGPT/workflows/`
+
+### Skills OpenAI
+As Skills auto-descobertas do projeto usam prefixo `openai-reflex-` em `.agents/skills/` e apontam para os playbooks canônicos de `OpenAI ChatGPT/skills/`.
+
+### Precedência
+Quando documentação histórica divergir do runtime atual, agentes OpenAI devem reconciliar GitHub, Supabase e Vercel live antes de agir. Restrições de fases anteriores não devem ser aplicadas cegamente depois de uma decisão humana posterior comprovada.
+
+### Continuidade
+Ao final de uma sessão que altere o estado real do projeto, atualizar apenas fatos verificados em:
+- `OpenAI ChatGPT/CURRENT_STATE.md`
+- `OpenAI ChatGPT/CONTINUITY_LEDGER.md`
+- `OpenAI ChatGPT/DECISIONS.md` quando houver nova decisão humana
+
+Nunca persistir segredos, tokens, senhas, cookies ou chain-of-thought.
