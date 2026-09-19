@@ -28,6 +28,10 @@ describe("MIS-0012 - eventos de aprendizado autoral", () => {
       },
     });
 
+    if (resultado.event_type !== "LEARNING_PROPOSAL_CONFIRMED_BY_AUTHOR") {
+      throw new Error("Evento confirmado não foi preservado pelo discriminador.");
+    }
+
     expect(resultado.data.decisao).toBe("confirmada");
   });
 
@@ -43,6 +47,10 @@ describe("MIS-0012 - eventos de aprendizado autoral", () => {
         notas_autor_presentes: false,
       },
     });
+
+    if (resultado.event_type !== "LEARNING_PROPOSAL_REJECTED_BY_AUTHOR") {
+      throw new Error("Evento rejeitado não foi preservado pelo discriminador.");
+    }
 
     expect(resultado.data.entidade_id).toBeNull();
   });
