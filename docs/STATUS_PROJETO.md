@@ -8,15 +8,15 @@
 
 - GitHub: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, **37 migrations aplicadas live**, registradas em `public._migrations`, RLS ativo em todos os schemas e buckets privados em 50MB.
+- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — reconciliado no snapshot de 19/09/2026, com **38 migrations registradas em `public._migrations`**, projeto `ACTIVE_HEALTHY` e buckets privados relevantes limitados a 50 MB.
 - Decisão de Segurança: `SECURITY-EXCEPTION-DEV-001` (RISK ACCEPTED BY USER — DEVELOPMENT/TEST ONLY). A rotação da credencial foi adiada compulsoriamente para o **Production Security Gate** antes de qualquer publicação/produção.
-- Hospedagem / Vercel: **ADIADO — NÃO CONFIGURAR NEM PUBLICAR** nesta etapa por decisão do usuário.
-- Domínio de produção: AINDA NÃO DEFINIDO.
-- Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
+- Hospedagem / Vercel: **PRODUÇÃO ATIVA E RECONCILIADA** em `app-reflex-02.vercel.app`; deployment canônico `READY` no mesmo SHA do HEAD reconciliado (`0c7f14c41be816ca023d8347984665db60fbc265`).
+- Alias canônico de produção: `app-reflex-02.vercel.app`.
+- Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI, GitHub Actions e Vercel com deploy de produção ligado ao repositório.
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
 - Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
 - Último Marco Concluído: **MIS-0011 — Wave 5: Auditor Cognitivo Pós-Geração, Motor de Abstenção Honesta e Integração End-to-End do Dossiê V3.1** (Resolução das 12 pendências da Wave 4; RPC `buscar_multi_sinal_v3_1` sem sinais simulados e com suporte real a contraevidências; migration `0037_auditor_cognitivo_v3_1.sql` aplicada live no Supabase DEV/TEST; imutabilidade e persistência de snapshots e relatórios; hash SHA-256 canônico profundo; proteção de budget estrito em abstenção; eliminação de presunção de autoria em propostas; Auditor Cognitivo V3.1 em 3 camadas com MILR=0% e AMR=0%; Motor de Abstenção Honesta em 7 categorias; UI badge `BadgeAuditoriaV3`; suíte adversarial Red-Team aprovada em 10 vetores; 143 testes passando 100% verde em 27 arquivos; relatórios WAVE_5_AUDITOR_ABSTENTION_RESULT.md e AG-0011.md).
-- Próxima Missão Planejada: **MIS-0012 — Wave 6: Consolidação Epistêmica e Aprendizado Ativo**.
+- Missão atual: **MIS-0012 — Wave 6: Consolidação Autoral Noturna, Replay Incremental e Aprendizado por Edição**. A especificação normativa foi iniciada em branch curta; nenhuma migration, cron ou mudança de produção da Wave 6 foi aplicada.
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 
@@ -157,9 +157,12 @@ Concluído:
 - modais principais possuem reflow/scroll próprio em telas pequenas;
 - foco por teclado ficou visível nos controles revisados.
 
-## 4. Estado do banco em 18/09/2026
+## 4. Estado do banco
 
-Dados reais observados:
+### Snapshot histórico de 18/09/2026
+
+Os números abaixo são preservados como histórico e **não representam o snapshot live atual**:
+
 - 2 documentos processados;
 - 12 seções;
 - 38 fragmentos;
@@ -213,7 +216,21 @@ Dados reais observados:
    - advisor ainda aponta FKs sem índice e índices ainda não utilizados;
    - não remover/adicionar índices cegamente: priorizar queries reais e `EXPLAIN`/telemetria.
 
-## 6. Frente atual: qualidade transversal
+## 6. Frente atual: MIS-0012 / Wave 6
+
+A frente corrente é a especificação e implementação progressiva de consolidação autoral, replay incremental e aprendizado por edição. O plano executável está em `docs/coordenacao/missoes/MIS-0012/TASK_PACKETS.md`.
+
+Baseline reconciliado em 19/09/2026:
+- `main`: `0c7f14c41be816ca023d8347984665db60fbc265`;
+- Vercel produção: `READY`, mesmo SHA, alias canônico respondendo HTTP 200;
+- Supabase: `ACTIVE_HEALTHY`, 38 migrations no ledger;
+- 1 usuário, 1 obra, 20 seções, 47 fragmentos, 47 vetores, 22 sínteses e 13 propostas de atualização no snapshot consultado;
+- os 13 registros de `cerebro_autoral.propostas_atualizacao` estavam pendentes e ligados a análises explícitas do corpus; não havia proposta live derivada de edição de reflexão no momento da checagem;
+- não há scheduler/replay noturno ativo no baseline.
+
+Gap prioritário confirmado: propostas derivadas de edição usam `dados_propostos.aprendizado`, enquanto a materialização atual de `decidirPropostaAtualizacaoCerebro` só incorpora automaticamente a forma `dados_propostos.caracteristica`; portanto, uma confirmação de aprendizado por edição pode encerrar a proposta sem materializar a regra/metodologia correspondente.
+
+### Frente anterior: qualidade transversal
 
 Já fechados nesta fase:
 - RLS/read-only das dimensões canônicas;
@@ -226,12 +243,13 @@ Já fechados nesta fase:
 
 Encerramento desta etapa documentado em `docs/RELATORIO_ENCERRAMENTO_ETAPA_2026-09-18.md`.
 
-Próxima sequência:
-1. iniciar a nova etapa a partir do relatório de encerramento;
-2. tratar RLS do schema `sistema` com políticas explícitas;
-3. preparar E2E autenticado com credencial/sessão de teste apropriada;
-4. medir performance com carga real antes de novas migrations de índice;
-5. habilitar proteção formal da `main` quando houver ação administrativa disponível.
+Sequência histórica da etapa anterior (preservada para contexto; não é mais a fila ativa):
+1. tratar RLS do schema `sistema` com políticas explícitas;
+2. preparar E2E autenticado com credencial/sessão de teste apropriada;
+3. medir performance com carga real antes de novas migrations de índice;
+4. habilitar proteção formal da `main` quando houver ação administrativa disponível.
+
+A fila ativa agora é a MIS-0012 conforme os Task Packets da Wave 6.
 
 ## 7. Regras de execução
 
