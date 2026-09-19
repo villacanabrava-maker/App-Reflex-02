@@ -273,6 +273,8 @@ export const EventTypeEnum = z.enum([
   "SOURCE_INGESTED",
   "SOURCE_REPROCESSED",
   "LEGACY_STATE_IMPORTED",
+  "LEARNING_PROPOSAL_CONFIRMED_BY_AUTHOR",
+  "LEARNING_PROPOSAL_REJECTED_BY_AUTHOR",
 ]);
 export type EventType = z.infer<typeof EventTypeEnum>;
 
@@ -396,6 +398,24 @@ export const LegacyStateImportedPayloadSchema = z.object({
   metadata_snapshot: z.record(z.string(), z.unknown()).default({}),
 }).strict();
 
+const LearningProposalPayloadBaseSchema = z.object({
+  proposta_id: z.string().uuid(),
+  tipo_proposta: z.string().min(1),
+  entidade_tipo: z.enum(["caracteristica", "regra", "metodologia", "nenhuma"]),
+  entidade_id: z.string().uuid().nullable(),
+  notas_autor_presentes: z.boolean(),
+});
+
+export const LearningProposalConfirmedPayloadSchema =
+  LearningProposalPayloadBaseSchema.extend({
+    decisao: z.literal("confirmada"),
+  }).strict();
+
+export const LearningProposalRejectedPayloadSchema =
+  LearningProposalPayloadBaseSchema.extend({
+    decisao: z.literal("rejeitada"),
+  }).strict();
+
 export const MemoryEventPayloadUnion = z.discriminatedUnion("event_type", [
   z.object({ event_type: z.literal("CLAIM_CREATED"), data: ClaimCreatedPayloadSchema }),
   z.object({ event_type: z.literal("CLAIM_VALIDATED"), data: ClaimValidatedPayloadSchema }),
@@ -408,13 +428,21 @@ export const MemoryEventPayloadUnion = z.discriminatedUnion("event_type", [
   z.object({ event_type: z.literal("SOURCE_INGESTED"), data: SourceIngestedPayloadSchema }),
   z.object({ event_type: z.literal("SOURCE_REPROCESSED"), data: SourceReprocessedPayloadSchema }),
   z.object({ event_type: z.literal("LEGACY_STATE_IMPORTED"), data: LegacyStateImportedPayloadSchema }),
+  z.object({
+    event_type: z.literal("LEARNING_PROPOSAL_CONFIRMED_BY_AUTHOR"),
+    data: LearningProposalConfirmedPayloadSchema,
+  }),
+  z.object({
+    event_type: z.literal("LEARNING_PROPOSAL_REJECTED_BY_AUTHOR"),
+    data: LearningProposalRejectedPayloadSchema,
+  }),
 ]);
 
 export interface MemoryEvent {
   id: string;
   usuario_id: string;
   event_type: EventType;
-  aggregate_type: "claim" | "source" | "reflection";
+  aggregate_type: "claim" | "source" | "reflection" | "learning_proposal";
   aggregate_id: string;
   actor_type: ActorType;
   actor_id: string | null;
