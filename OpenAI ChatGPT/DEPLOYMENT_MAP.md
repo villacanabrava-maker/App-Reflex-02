@@ -7,9 +7,11 @@
 - URL: `https://app-reflex-02.vercel.app`
 
 No snapshot desta pasta:
-- production deployment: `dpl_HuW7bHM6vAYJuyeJV3gDZrW9J9mq`
-- SHA: `d15fdf410e5c0c879196e66e3efba1f5541f7349`
+- release OpenAI/Codex v2 verificada em produção: `dpl_FAGKTxzRLcwv5E62oLyWfCjniyVX`
+- SHA dessa release: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`
 - state: `READY`
+- aliases confirmados: `app-reflex-02.vercel.app`, `app-reflex-02-naninne.vercel.app`, `app-reflex-02-git-main-naninne.vercel.app`
+- sempre consultar o deployment live mais recente; este bloco registra uma release verificada, não congela o HEAD futuro.
 
 ## Regra de diagnóstico
 

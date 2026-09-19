@@ -50,3 +50,10 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - adicionados 9 papéis nativos em .codex/agents, espelhando O1–O9 com menor privilégio;
 - adicionadas Skills de entrega de feature, pesquisa baseada em evidência e verificação de release;
 - continuidade continua proibindo segredos, transcrições integrais e chain-of-thought.
+
+
+### Evidência de fechamento
+- PR #12 mesclado no `main`;
+- release commit: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`;
+- CI run `35454339376`: success;
+- Vercel production deployment `dpl_FAGKTxzRLcwv5E62oLyWfCjniyVX`: READY e associado ao mesmo SHA.
