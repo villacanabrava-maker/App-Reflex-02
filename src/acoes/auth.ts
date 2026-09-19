@@ -91,6 +91,27 @@ export async function cadastrarConta(dados: {
     const admin = criarClienteAdmin();
     const supabase = await criarClienteServidor();
 
+    // App pessoal: o cadastro público serve apenas para bootstrap da primeira conta.
+    // Depois que existir um usuário no Supabase Auth, novas contas ficam bloqueadas
+    // e o acesso passa a ser exclusivamente por login.
+    const { data: usuariosExistentes, error: erroListagemUsuarios } =
+      await admin.auth.admin.listUsers({ page: 1, perPage: 1 });
+
+    if (erroListagemUsuarios) {
+      console.error("Erro ao verificar bootstrap de cadastro:", erroListagemUsuarios);
+      return {
+        sucesso: false,
+        erro: "Não foi possível validar a disponibilidade do cadastro. Tente novamente.",
+      };
+    }
+
+    if (usuariosExistentes.users.length > 0) {
+      return {
+        sucesso: false,
+        erro: "O cadastro inicial já foi concluído. Use a opção Entrar com a conta existente.",
+      };
+    }
+
     const {
       email: emailLimpo,
       nome: nomeLimpo,
