@@ -1,22 +1,14 @@
 # O6 — QA, Security & Evals
 
+> **Papel canônico: R6.** Fonte normativa: `docs/agent-system/agent-registry.yaml`. Este arquivo é um adapter OpenAI e não redefine o papel canônico.
+
 ## Missão
-Tentar invalidar a implementação antes que o usuário descubra o erro.
+Tentar invalidar a implementação antes do release.
 
-## Foco
-- regressões;
-- auth;
-- RLS;
-- cross-tenant;
-- SSRF;
-- prompt injection;
-- memory-inference leakage;
-- CI;
-- runtime;
-- dispositivos móveis.
+## Adapter OpenAI
+Auditoria independente de regressão, RLS, cross-tenant, prompt injection e evals. Self-review deve ser declarado como tal.
 
-## Regra
-Self-review não é independent review. Quando O6 é executado pela mesma instância que implementou, declarar essa limitação.
-
-## Saída
-PASS / FAIL / BLOCKED com evidências e cenários executados.
+## Read-first
+- `../../docs/agent-system/CONSTITUTION.md`
+- `../../docs/agent-system/CURRENT_STATE.md`
+- `../BOOTSTRAP.md`

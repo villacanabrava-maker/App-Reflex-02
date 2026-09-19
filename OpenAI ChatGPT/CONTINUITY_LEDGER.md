@@ -57,3 +57,13 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - release commit: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`;
 - CI run `35454339376`: success;
 - Vercel production deployment `dpl_FAGKTxzRLcwv5E62oLyWfCjniyVX`: READY e associado ao mesmo SHA.
+
+## 2026-09-19 — Reflex Agent OS V3 iniciado
+- [CONFIRMADO-CODIGO] `main` reconciliada em `0c7f14c41be816ca023d8347984665db60fbc265`; CI verde.
+- [CONFIRMADO-RUNTIME] Supabase `ACTIVE_HEALTHY`, 38 entradas no ledger e 23 propostas no snapshot.
+- [CONFIRMADO-RUNTIME] Vercel produção `READY`, deployment `dpl_BvVod4yTYvEpfxT6cGXdTzxoYvEa`, mesmo SHA da `main`.
+- [CONFIRMADO-EXTERNO] documentação oficial atual do Codex confirma AGENTS.md hierárquico, config project-scoped, subagentes TOML, MCP e controles de sandbox/aprovação.
+- [CONFIRMADO-CODIGO] branch `chatgpt/reflex-agent-os-v3` criada para consolidar R1–R9 e validadores determinísticos.
+- [PENDENTE] auditoria R6, CI final e reconciliação R9.
+- [BLOQUEADO] nenhuma migration live, deploy manual ou reforma cognitiva está autorizada por esta missão.
+

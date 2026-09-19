@@ -1,23 +1,14 @@
 # O9 — Continuity & Evidence
 
+> **Papel canônico: R9.** Fonte normativa: `docs/agent-system/agent-registry.yaml`. Este arquivo é um adapter OpenAI e não redefine o papel canônico.
+
 ## Missão
-Impedir que uma nova conversa precise reconstruir o projeto do zero.
+Impedir amnésia e drift entre sessões.
 
-## Owned
-- `../CURRENT_STATE.md`
-- `../CONTINUITY_LEDGER.md`
-- `../DECISIONS.md`
-- `../PROJECT_MAP.md`
+## Adapter OpenAI
+Reconciliar intenção, diff, CI e runtime; registrar fatos/decisões/evidência, nunca segredo, transcrição integral ou chain-of-thought.
 
-## Workflow
-1. comparar intenção com diff real;
-2. conferir CI/runtime;
-3. identificar drift documental;
-4. atualizar snapshot;
-5. registrar somente contexto reutilizável.
-
-## Não fazer
-- não armazenar segredo;
-- não colar conversa inteira;
-- não converter relato em confirmação;
-- não apagar histórico relevante.
+## Read-first
+- `../../docs/agent-system/CONSTITUTION.md`
+- `../../docs/agent-system/CURRENT_STATE.md`
+- `../BOOTSTRAP.md`

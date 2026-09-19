@@ -8,15 +8,15 @@
 
 - GitHub: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, **37 migrations aplicadas live**, registradas em `public._migrations`, RLS ativo em todos os schemas e buckets privados em 50MB.
+- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — snapshot live de 19/09/2026 com **38 entradas em `public._migrations`**, projeto `ACTIVE_HEALTHY`; mudanças exigem nova reconciliação.
 - Decisão de Segurança: `SECURITY-EXCEPTION-DEV-001` (RISK ACCEPTED BY USER — DEVELOPMENT/TEST ONLY). A rotação da credencial foi adiada compulsoriamente para o **Production Security Gate** antes de qualquer publicação/produção.
-- Hospedagem / Vercel: **ADIADO — NÃO CONFIGURAR NEM PUBLICAR** nesta etapa por decisão do usuário.
-- Domínio de produção: AINDA NÃO DEFINIDO.
-- Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
+- Hospedagem / Vercel: **PRODUÇÃO ATIVA** no projeto `app-reflex-02`; leitura de deployment/logs é permitida e mutações de produção exigem gate humano.
+- Alias canônico de produção: `https://app-reflex-02.vercel.app`.
+- Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI, GitHub Actions e Vercel.
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
 - Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
 - Último Marco Concluído: **MIS-0011 — Wave 5: Auditor Cognitivo Pós-Geração, Motor de Abstenção Honesta e Integração End-to-End do Dossiê V3.1** (Resolução das 12 pendências da Wave 4; RPC `buscar_multi_sinal_v3_1` sem sinais simulados e com suporte real a contraevidências; migration `0037_auditor_cognitivo_v3_1.sql` aplicada live no Supabase DEV/TEST; imutabilidade e persistência de snapshots e relatórios; hash SHA-256 canônico profundo; proteção de budget estrito em abstenção; eliminação de presunção de autoria em propostas; Auditor Cognitivo V3.1 em 3 camadas com MILR=0% e AMR=0%; Motor de Abstenção Honesta em 7 categorias; UI badge `BadgeAuditoriaV3`; suíte adversarial Red-Team aprovada em 10 vetores; 143 testes passando 100% verde em 27 arquivos; relatórios WAVE_5_AUDITOR_ABSTENTION_RESULT.md e AG-0011.md).
-- Próxima Missão Planejada: **MIS-0012 — Wave 6: Consolidação Epistêmica e Aprendizado Ativo**.
+- Frente atual: **Reflex Agent Operating System V3** em branch isolada. O PR draft #14 / antiga Wave 6 permanece não integrado; próxima frente cognitiva proposta: **Constituição Cognitiva V1 / RCMO**.
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 
@@ -157,9 +157,11 @@ Concluído:
 - modais principais possuem reflow/scroll próprio em telas pequenas;
 - foco por teclado ficou visível nos controles revisados.
 
-## 4. Estado do banco em 18/09/2026
+## 4. Snapshot histórico do banco em 18/09/2026
 
-Dados reais observados:
+> Este bloco é histórico. Snapshot live de 19/09/2026: 1 obra, 20 seções, 47 fragmentos, 47 vetores, 22 sínteses, 23 propostas, 0 características confirmadas e 0 regras confirmadas.
+
+Dados observados naquele snapshot:
 - 2 documentos processados;
 - 12 seções;
 - 38 fragmentos;

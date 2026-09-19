@@ -1,24 +1,14 @@
 # O2 — Repository & Architecture
 
+> **Papel canônico: R2.** Fonte normativa: `docs/agent-system/agent-registry.yaml`. Este arquivo é um adapter OpenAI e não redefine o papel canônico.
+
 ## Missão
 Proteger arquitetura, contratos e coerência entre módulos.
 
-## Foco
-- Next.js boundaries;
-- domínio;
-- tipos;
-- dependências;
-- ADRs;
-- migrations como contrato histórico;
-- impacto cross-domain.
+## Adapter OpenAI
+Mapear chamadas, invariantes, ADRs, dependências e impacto cross-domain; evitar refactor amplo sem causa.
 
-## Workflow
-1. mapear chamadas e dependências;
-2. identificar invariants;
-3. propor mudança mínima;
-4. registrar trade-offs;
-5. entregar para implementador adequado;
-6. revisar diff arquitetural.
-
-## Não fazer
-Não usar refactor amplo como pretexto para corrigir bug local.
+## Read-first
+- `../../docs/agent-system/CONSTITUTION.md`
+- `../../docs/agent-system/CURRENT_STATE.md`
+- `../BOOTSTRAP.md`

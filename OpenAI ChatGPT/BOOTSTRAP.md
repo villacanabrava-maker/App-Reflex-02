@@ -2,6 +2,10 @@
 
 Use este procedimento sempre que uma nova conversa do ChatGPT/Codex assumir trabalho no App Reflex 02.
 
+## 0. Carregar a Constituição compartilhada
+
+Leia `docs/agent-system/CONSTITUTION.md`, `docs/agent-system/SOURCE_OF_TRUTH.md` e `docs/agent-system/agent-registry.yaml`. OpenAI/Codex é um adapter, não uma arquitetura independente.
+
 ## 1. Confirmar identidade do projeto
 
 - Repositório canônico: `villacanabrava-maker/App-Reflex-02`
@@ -72,7 +76,7 @@ Não afirmar acesso a uma ferramenta sem verificar sua disponibilidade.
 
 ## 6. Escolher papel
 
-Use `ORCHESTRATION.md` para escolher O1–O9.
+Use o registry e os modos canônicos em `docs/agent-system/`; `ORCHESTRATION.md` contém somente notas do adapter OpenAI.
 
 Se subagentes reais não estiverem disponíveis, uma única instância deve **simular os papéis sequencialmente**, mantendo separação entre:
 - planejamento;

@@ -1,48 +1,32 @@
-# App Reflex 02 — Sistema Multiagente de Engenharia & Governança (Antigravity 2.0)
+# Antigravity Adapter — Reflex Agent Operating System V3
 
-Este repositório está configurado com a infraestrutura de **9 Agentes Especialistas**, **Skills Modulares**, **Políticas de Menor Privilégio** e **Hooks de Segurança Determinísticos** para o **Google Antigravity 2.0**.
+A pasta `.agents/` é o adapter Antigravity do sistema operacional multiagente compartilhado.
 
----
+- Constituição: `docs/agent-system/CONSTITUTION.md`
+- Registry: `docs/agent-system/agent-registry.yaml`
+- Permissões: `docs/agent-system/permissions.yaml`
+- Skills: `docs/agent-system/skill-registry.yaml`
 
-## 👥 A Equipe dos 9 Agentes
+## Mapeamento
 
-| Agente | Arquivo | Responsabilidade Principal |
-| :--- | :--- | :--- |
-| **A1: rflex-architect** | `.agents/agents/rflex-architect/agent.md` | Arquitetura de Software, Domínio & Coordenação |
-| **A2: rflex-product-design** | `.agents/agents/rflex-product-design/agent.md` | Design System, Usabilidade & Acessibilidade WCAG 2.2 AA |
-| **A3: rflex-frontend** | `.agents/agents/rflex-frontend/agent.md` | Next.js 15, React 19, Tailwind CSS & Performance UI |
-| **A4: rflex-backend-supabase** | `.agents/agents/rflex-backend-supabase/agent.md` | PostgreSQL, RLS, Storage TUS, RPCs & Safe Migrations |
-| **A5: rflex-ai-knowledge** | `.agents/agents/rflex-ai-knowledge/agent.md` | Structured Outputs (Zod), Hybrid Search & RAG Autoral |
-| **A6: rflex-platform** | `.agents/agents/rflex-platform/agent.md` | CI/CD, GitHub Actions, Ambiente Git & SRE |
-| **A7: rflex-qa-security** | `.agents/agents/rflex-qa-security/agent.md` | Auditoria Independente, AppSec & Testes de Regressão |
-| **A8: rflex-research-evolution** | `.agents/agents/rflex-research-evolution/agent.md` | Pesquisa Aplicada, Inovação & Evolução Contínua |
-| **A9: rflex-continuity-evidence** | `.agents/agents/rflex-continuity-evidence/agent.md` | Continuidade, Evidência & Intercâmbio ChatGPT ↔ Antigravity |
+| Antigravity | Papel canônico |
+|---|---|
+| A1 rflex-architect | R1 + R2 |
+| A2 rflex-product-design | R4 design |
+| A3 rflex-frontend | R4 implementation |
+| A4 rflex-backend-supabase | R3 |
+| A5 rflex-ai-knowledge | R5 |
+| A6 rflex-platform | R7 |
+| A7 rflex-qa-security | R6 |
+| A8 rflex-research-evolution | R8 |
+| A9 rflex-continuity-evidence | R9 |
 
----
+Os `agent.md`, Skills, Rules e Hooks continuam nativos do Antigravity, mas não redefinem papéis canônicos.
 
-## 🧠 Biblioteca de Skills (.agents/skills/)
+## Vercel
 
-- `rflex-source-of-truth`: Governança e consulta obrigatória a `docs/STATUS_PROJETO.md`.
-- `rflex-handoff-contract`: SOP estruturado para passagem de tarefas entre especialistas.
-- `rflex-definition-of-done`: Checklist inegociável de critérios de aceite (DoD).
-- `rflex-git-workflow`: Fluxo de branches curtas e convenções de commit.
-- `architecture-audit`: Análise de impacto e documentação de ADRs.
-- `design-system-rflex`: Tokens, anatomia de componentes e WCAG 2.2 AA.
-- `next15-react19-engineering`: Server/Client Components e tipagem estrita.
-- `supabase-safe-migrations`: Migrations idempotentes, RLS e índices.
-- `authorial-ai-retrieval`: Zod schemas, busca híbrida e proveniência.
-- `vercel-preview-observability`: *[Adiado/Não aplicável nesta etapa]* Metodologia futura de preview.
-- `independent-qa-security`: Testes adversários e emissão de laudo de auditoria.
-- `evidence-based-research`: Investigação técnica ancorada em fatos, fontes oficiais e hipóteses refutáveis.
-- `project-state-research`: Mapeamento de cobertura, identificação de gaps e preservação de boas soluções.
-- `project-state-reconciliation`: Reconciliação entre intenção humana, planos, diffs reais e commits.
-- `evidence-ledger`: Livro-razão e taxonomia canônica de evidências técnicas.
-- `external-review-bridge`: Protocolo de handoff assíncrono entre ChatGPT e Antigravity.
-- `code-reviewer`, `design-master`, `idea-generator`, `qa-tester`: Skills analíticas complementares de revisão.
+Vercel está ativa. Observação de deployment, SHA e logs pertence a R7/A6. Mutações de produção permanecem sob gate humano.
 
----
+## Validação
 
-## 🛡️ Segurança & Hooks (.agents/hooks.json)
-
-- **PreToolUse:** Impede comandos destrutivos de sistema e banco, force push e chamadas não autorizadas de Vercel.
-- **Stop:** Garante validação estruturada de critérios de aceitação e integridade antes do encerramento da sessão.
+`npm run agents:validate` detecta drift entre registry, Skills e adapters.

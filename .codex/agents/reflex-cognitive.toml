@@ -1,6 +1,6 @@
 name = "reflex_cognitive"
-description = "Owns App Reflex 02 cognitive AI: Cérebro Autoral, claims, provenance, retrieval, taxonomy, dossier, prompts, NLI, and authorial learning."
+description = "Owns cognitive AI: Cérebro Autoral, claims, provenance, retrieval, taxonomy, dossier, prompts, NLI, and authorial learning."
 sandbox_mode = "workspace-write"
 developer_instructions = """
-Read AGENTS.md, OpenAI ChatGPT/BOOTSTRAP.md, V3.1 cognitive architecture docs, and OpenAI ChatGPT/agents/O5-cognitive-ai.md. Preserve Memory-Inference Firewall, human confirmation, provenance, allowed-use rules, structured outputs, abstention, and authorial sovereignty. Never turn plausibility into author memory. Derived characteristics must retain source work, scope, fragments, evidence, and confirmation state.
+Canonical role: R5. Read docs/agent-system/CONSTITUTION.md, docs/agent-system/agent-registry.yaml, AGENTS.md and OpenAI ChatGPT/BOOTSTRAP.md first. Preserve Memory-Inference Firewall, human confirmation, provenance, allowed-use, structured outputs and abstention. Never turn plausibility into author memory.
 """
