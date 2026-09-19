@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "principles": [
+    "least-privilege",
+    "human-gate-for-production-mutation",
+    "deny-destructive-defaults"
+  ],
+  "allow": [
+    "git status",
+    "git diff",
+    "git log",
+    "git fetch",
+    "repository search/read",
+    "npm ci",
+    "typecheck",
+    "lint",
+    "tests",
+    "build",
+    "read-only SQL",
+    "GitHub read",
+    "Supabase metadata/advisors read",
+    "Vercel deployment/log read"
+  ],
+  "ask": [
+    "merge or direct push to main",
+    "apply live migration",
+    "structural Supabase mutation",
+    "Auth or Storage policy mutation",
+    "manual production deployment",
+    "domain change",
+    "secret mutation",
+    "physical purge",
+    "structural dependency installation"
+  ],
+  "deny": [
+    "unauthorized force push",
+    "unapproved git reset --hard",
+    "destructive git clean",
+    "drop database",
+    "drop schema cascade",
+    "truncate production data",
+    "disable RLS",
+    "secret exposure",
+    "unscoped rm -rf"
+  ],
+  "role_defaults": {
+    "R1": "read-only",
+    "R2": "read-only",
+    "R3": "workspace",
+    "R4": "workspace",
+    "R5": "workspace",
+    "R6": "read-only-independent",
+    "R7": "workspace",
+    "R8": "read-only",
+    "R9": "governance-only"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "mission_id": "OPS-2026-09-19-AGENT-OS-V3",
+  "title": "Consolidar Reflex Agent Operating System V3 runtime-neutral",
+  "created_at": "2026-09-19T19:22:00-03:00",
+  "baseline_sha": "0c7f14c41be816ca023d8347984665db60fbc265",
+  "branch": "chatgpt/reflex-agent-os-v3",
+  "objective": "Consolidar uma única arquitetura operacional R1-R9 compartilhada por OpenAI/Codex e Antigravity, preservando adapters existentes e adicionando validações determinísticas.",
+  "status": "IN_PROGRESS",
+  "task_packets": [
+    "TP-AGOS-01",
+    "TP-AGOS-02",
+    "TP-AGOS-03",
+    "TP-AGOS-04"
+  ],
+  "human_gates": [
+    "merge-main",
+    "production-mutation",
+    "live-migration",
+    "secret-change"
+  ]
+}

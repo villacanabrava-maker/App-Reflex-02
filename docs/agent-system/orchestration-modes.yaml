@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "rules": [
+    "R1 chooses the smallest useful role set",
+    "parallelize read/research before parallelizing writes",
+    "parallel writes require non-overlapping ownership and isolated branches/worktrees",
+    "R6 independent review is required for product/security/runtime-critical changes"
+  ],
+  "modes": [
+    {
+      "id": "SOLO",
+      "use_when": "small local low-risk change",
+      "roles": [
+        "R1 or one owner"
+      ]
+    },
+    {
+      "id": "SPECIALIST",
+      "use_when": "single-domain change",
+      "roles": [
+        "R1",
+        "owner"
+      ]
+    },
+    {
+      "id": "SEQUENTIAL",
+      "use_when": "cross-domain dependency chain",
+      "roles": [
+        "R1",
+        "owners in dependency order",
+        "R6",
+        "R9"
+      ]
+    },
+    {
+      "id": "PARALLEL_RESEARCH",
+      "use_when": "independent hypotheses or source research",
+      "roles": [
+        "R8",
+        "domain readers"
+      ],
+      "write_policy": "read-only"
+    },
+    {
+      "id": "RED_TEAM",
+      "use_when": "implementation ready for adversarial review",
+      "roles": [
+        "R6"
+      ],
+      "independence_required": true
+    },
+    {
+      "id": "INCIDENT",
+      "use_when": "runtime failure or ambiguous production state",
+      "roles": [
+        "R1",
+        "R7",
+        "domain owner",
+        "R6 when stabilized",
+        "R9"
+      ]
+    }
+  ]
+}
