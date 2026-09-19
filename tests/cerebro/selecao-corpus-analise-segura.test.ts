@@ -28,12 +28,24 @@ describe("Cérebro - seleção de corpus e análise segura", () => {
     expect(source).toContain("Requer confirmação humana");
   });
 
-  it("materializa característica somente após confirmação humana", () => {
-    const source = readFileSync(join(process.cwd(), "src/acoes/cerebro.ts"), "utf8");
-    expect(source).toContain('if (decisao === "confirmada"');
-    expect(source).toContain('estado_revisao: "confirmada"');
-    expect(source).toContain('confirmacao_humana: true');
-    expect(source).toContain("proposta_id: propostaId");
+  it("materializa aprendizado somente após decisão humana transacional", () => {
+    const action = readFileSync(join(process.cwd(), "src/acoes/cerebro.ts"), "utf8");
+    const migration = readFileSync(
+      join(process.cwd(), "supabase/migrations/0039_consolidacao_autoral_wave6.sql"),
+      "utf8"
+    );
+
+    expect(action).toContain('.rpc("decidir_proposta_atualizacao_atomica"');
+    expect(action).toContain("p_usuario_id: usuarioId");
+    expect(action).toContain("p_proposta_id: propostaId");
+    expect(action).toContain("p_decisao: decisao");
+
+    expect(migration).toContain("FOR UPDATE");
+    expect(migration).toContain("IF p_decisao = 'rejeitada' THEN");
+    expect(migration).toContain("'confirmacao_humana', true");
+    expect(migration).toContain("estado_revisao");
+    expect(migration).toContain("'confirmada'");
+    expect(migration).toContain("proposta_id");
   });
 
   it("exibe livros autorais selecionáveis na interface do Cérebro", () => {
