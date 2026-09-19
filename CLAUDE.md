@@ -113,7 +113,38 @@ RLS: `anon` sem privilégios diretos; `authenticated` restrito a `auth.uid() = u
 - Próximos passos documentados em `docs/STATUS_PROJETO.md` §6: tratar RLS do schema `sistema` com políticas explícitas; preparar E2E autenticado; medir performance real antes de novos índices; habilitar proteção formal de `main` quando houver acesso administrativo.
 - Lacunas de produto conhecidas (de `ESCOPO_DO_APLICATIVO.md`): parsing de EPUB/`.doc` incompleto; RPC de Reflexão→Biblioteca incompatível; embeddings caem para um vetor hash determinístico quando a OpenAI está indisponível; scripts fantasmas `db:migrate`/`db:test` no `package.json` que não existem de fato.
 
-## 8. Regras práticas para qualquer sessão neste repo
+## 8. Subagentes nativos do Claude Code (`.claude/agents/`)
+
+Os 9 agentes descritos na seção 4 (`.agents/agents/*/agent.md`) foram escritos para outra
+ferramenta agêntica (Antigravity) e **não são carregados automaticamente pelo Claude Code**.
+Para permitir uso real desse harness dentro desta ferramenta, foram criados espelhos fiéis em
+`.claude/agents/rflex-*.md` — formato nativo que o Claude Code reconhece via sua ferramenta
+Agent (`subagent_type: rflex-architect`, `rflex-frontend`, etc.).
+
+Cada espelho preserva identidade, missão, escopo de arquivos, workflow, contrato de saída e
+proibições absolutas do original, e instrui o subagente a ler o `agent.md` original e as
+`SKILL.md` relevantes via `Read` no início da tarefa (já que skills de projeto também não são
+carregadas automaticamente). Uma diferença real e mecânica em relação ao original: o
+`rflex-qa-security` (auditor, equivalente a A7) **não recebe as ferramentas Edit/Write** —
+portanto é fisicamente incapaz de corrigir o código que audita, reforçando de verdade o
+princípio "SELF_REVIEW ≠ INDEPENDENT_REVIEW".
+
+**Como orquestrar:** a sessão principal do Claude Code assume o papel de A1 (dispatcher) e
+invoca os demais subagentes em sequência definida pelo fluxo da seção 4 — ex.:
+`rflex-backend-supabase` → `rflex-qa-security` → `rflex-continuity-evidence` — aguardando o
+resultado de cada um antes de decidir o próximo passo, ou disparando em paralelo os que não
+têm dependência entre si (ex.: `rflex-product-design` e `rflex-research-evolution`
+simultaneamente). Essa orquestração é feita pela sessão principal a cada chamada — não existe
+agendador automático de DAG; a ordem cronológica é garantida por quem dispara cada subagente
+esperar o anterior terminar antes de prosseguir.
+
+**Limite importante:** os subagentes rodam dentro da mesma sessão/modelo do Claude Code, não
+como processos isolados. O isolamento real está no que cada frontmatter `tools:` permite (ex.:
+A7 sem Edit/Write), não em sandboxing de processo. Para bloqueio automático de comandos
+perigosos (equivalente a `.agents/scripts/pre-tool-guard.js`) também no nível do Claude Code,
+seria necessário configurar hooks próprios em `.claude/settings.json` — ainda não feito.
+
+## 9. Regras práticas para qualquer sessão neste repo
 
 1. Antes de qualquer mudança, ler `docs/STATUS_PROJETO.md` — ele é a fonte de verdade, não a memória desta sessão.
 2. Nunca: force-push, `git push origin main` direto, desabilitar RLS, editar migrations já aplicadas, expor `service_role`/chaves OpenAI no client, rodar comandos Vercel, ou tratar inferência de IA como memória confirmada.
