@@ -77,7 +77,7 @@ export async function registrarFonteProcessadaNoCerebro({
           papel_no_cerebro: "corpus_autoral_processado",
         },
       },
-      schema_version: 1,
+      payload_schema_version: 1,
     })
     .select("id")
     .single();
