@@ -8,6 +8,8 @@ export type FeatureFlagState = "off" | "shadow" | "on";
 export interface CognitiveFeatureFlags {
   FEATURE_COGNITIVE_V31_RETRIEVAL: FeatureFlagState;
   FEATURE_COGNITIVE_V31_DOSSIER: FeatureFlagState;
+  FEATURE_COGNITIVE_V31_AUDITOR: FeatureFlagState;
+  FEATURE_COGNITIVE_V31_ABSTENTION: FeatureFlagState;
 }
 
 export const COGNITIVE_FEATURE_FLAGS: CognitiveFeatureFlags = {
@@ -16,6 +18,10 @@ export const COGNITIVE_FEATURE_FLAGS: CognitiveFeatureFlags = {
     (process.env.FEATURE_COGNITIVE_V31_RETRIEVAL as FeatureFlagState) || "off",
   FEATURE_COGNITIVE_V31_DOSSIER:
     (process.env.FEATURE_COGNITIVE_V31_DOSSIER as FeatureFlagState) || "off",
+  FEATURE_COGNITIVE_V31_AUDITOR:
+    (process.env.FEATURE_COGNITIVE_V31_AUDITOR as FeatureFlagState) || "off",
+  FEATURE_COGNITIVE_V31_ABSTENTION:
+    (process.env.FEATURE_COGNITIVE_V31_ABSTENTION as FeatureFlagState) || "off",
 };
 
 export function obterFeatureFlag(

@@ -6,6 +6,7 @@
 import { QueryIntentRouter } from "./intent-router";
 import { MotorTaxonomicoSKOS } from "../taxonomia/motor-skos";
 import { QueryIntent, EpistemicStatus } from "@/tipos/cognitivo-v3";
+import { RETRIEVAL_CONFIG_V1 } from "@/config/retrieval-config";
 
 export interface ItemRecuperado {
   id: string;
@@ -41,10 +42,12 @@ export interface RetrievalResultV31 {
   abstained: boolean;
   abstention_reason?: "INSUFFICIENT_EVIDENCE" | "ZERO_RESULTS" | "UNRESOLVED_CONTRADICTION";
   embedding_mode: "REAL_EMBEDDING" | "STRUCTURAL_TEST_ONLY";
+  route_candidate_status: "SELECTED_CANDIDATE_FROM_SYNTHETIC_BENCHMARK" | "PROVEN_LIVE_WINNER";
   telemetry: {
     total_candidates: number;
     latency_ms: number;
     rrf_k: number;
+    config_version: string;
   };
 }
 
@@ -91,8 +94,8 @@ export class MotorRetrievalV31 {
     const intentResult = QueryIntentRouter.classificar(query);
     const rota = config.route || (intentResult.suggested_routes[0] as any) || "Route D";
     const limite = config.limit || 10;
-    const rrfK = config.rrf_k || 60;
-    const thresholdAbstencao = config.threshold_abstencao !== undefined ? config.threshold_abstencao : 0.012;
+    const rrfK = config.rrf_k || RETRIEVAL_CONFIG_V1.rrf_k;
+    const thresholdAbstencao = config.threshold_abstencao !== undefined ? config.threshold_abstencao : RETRIEVAL_CONFIG_V1.abstention_threshold;
 
     const queryTokens = query
       .toLowerCase()
@@ -283,10 +286,12 @@ export class MotorRetrievalV31 {
       abstained,
       abstention_reason: abstained ? "INSUFFICIENT_EVIDENCE" : undefined,
       embedding_mode: "STRUCTURAL_TEST_ONLY",
+      route_candidate_status: "SELECTED_CANDIDATE_FROM_SYNTHETIC_BENCHMARK",
       telemetry: {
         total_candidates: corpus.length,
         latency_ms: Date.now() - inicio,
         rrf_k: rrfK,
+        config_version: RETRIEVAL_CONFIG_V1.versao_config,
       },
     };
   }

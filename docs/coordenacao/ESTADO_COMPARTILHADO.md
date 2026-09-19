@@ -4,9 +4,9 @@
 **Responsável pela Reconciliação:** A9 (rflex-continuity-evidence) em conjunto com A1 (rflex-architect) e A7 (rflex-qa-security)  
 **Branch Canônica:** `main`  
 **Repositório Remoto:** `https://github.com/villacanabrava-maker/App-Reflex-02.git`  
-**Status do Pipeline:** Verde (127 testes em 25 arquivos e build passando 100%)  
-**Última Missão Concluída:** MIS-0010 — Wave 4: Retrieval Híbrido Multi-Sinal, Working Memory e Dossiê Contextual Epistêmico V3.1  
-**Próxima Missão:** MIS-0011 — Wave 5: Auditor Cognitivo Pós-Geração e Abstenção Honesta  
+**Status do Pipeline:** Verde (143 testes em 27 arquivos e build passando 100%)  
+**Última Missão Concluída:** MIS-0011 — Wave 5: Auditor Cognitivo Pós-Geração, Motor de Abstenção Honesta e Integração End-to-End do Dossiê V3.1  
+**Próxima Missão Planejada:** MIS-0012 — Wave 6: Consolidação Epistêmica e Aprendizado Ativo  
 
 ---
 
@@ -15,13 +15,13 @@
 | Componente | Estado Operacional | Classificação de Evidência | Detalhes & Configurações |
 | :--- | :--- | :--- | :--- |
 | **Repositório Git** | `ATIVO / CANÔNICO` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-CI]` | Sincronizado no GitHub (`villacanabrava-maker/App-Reflex-02`). |
-| **Arquitetura Cognitiva** | `WAVE 4 HOMOLOGADA / V3.1` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-DOCUMENTO]` | Gate 0 concluído (mutação direta revogada para taxonomia, RPCs de curadoria humana via `auth.uid()`, `search_key` vs `identity_key`, remoção do default 0.85); Query Intent Router com 9 classes cognitivas; Motor de Retrieval V3.1 com 5 rotas comparativas (A, B0, B1, C, D) e abstenção honesta; Montador de Dossiê Contextual com sanitização anti-prompt-injection, 9 compartimentos e snapshot SHA-256; Eliminação de hidden retrieval no Redator e Planejador; Relatório `WAVE_4_RETRIEVAL_WORKING_MEMORY_RESULT.md`. |
+| **Arquitetura Cognitiva** | `WAVE 5 HOMOLOGADA / V3.1` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-DOCUMENTO]` | Pipeline de Auditoria Cognitivo V3.1 em 3 camadas (Tier 1 Allowed Use / Tier 2 Semântica / Tier 3 Incerteza); Motor de Abstenção Honesta em 7 categorias; Imutabilidade de relatórios de auditoria e dossiês via trigger PostgreSQL; Zero sinais simulados na busca multi-sinal; Hash SHA-256 canônico profundo; Badge epistêmico na UI; Relatório `WAVE_5_AUDITOR_ABSTENTION_RESULT.md`. |
 | **Equipe Multiagente** | `HARNESS V2 OPERACIONAL` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes operando no modo `MULTI-DOMAIN SEQUENTIAL` via Task Packets tipados. |
-| **Supabase** | `36 MIGRATIONS / LIVE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. **36 migrations aplicadas live** no banco DEV/TEST e registradas em `public._migrations`. RLS, imutabilidade, state machine e RPCs de busca e curadoria validadas. |
+| **Supabase** | `37 MIGRATIONS / LIVE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. **37 migrations aplicadas live** no banco DEV/TEST e registradas em `public._migrations`. Migration 0037 executada com sucesso. RLS, triggers e RPCs validadas. |
 | **Segurança & AppSec** | `SECURITY-EXCEPTION-DEV-001` | `[DECLARADO-USUARIO]` / `[CONFIRMADO-CODIGO]` | Decisão humana formalizada: `RISK ACCEPTED BY USER — DEVELOPMENT/TEST ONLY`. Credencial de teste mantida ativa; rotação postergada compulsoriamente para o `PRODUCTION SECURITY GATE`. Proibido `supabase db push --linked`. |
 | **Hospedagem / Vercel** | `ADIADO / FORA DE ESCOPO` | `[CONFIRMADO-CODIGO]` | Nenhum deploy, CLI ou webhook Vercel ativo. Proibido por regra de governança. |
-| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 25 arquivos de testes Vitest (127 testes) cobrindo segurança, isolamento RLS, guardrails, golden dataset, integridade episódica, ontologia SKOS, benchmark multi-sinal e Zero-Trust de Dossiê Contextual. |
-| **Build de Produção** | `CONCLUÍDO COM SUCESSO` | `[CONFIRMADO-TESTE]` | Next.js 15 compilando estaticamente e rotas dinâmicas validadas (10.4s). |
+| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 27 arquivos de testes Vitest (143 testes) cobrindo segurança, isolamento RLS, guardrails, golden dataset, integridade episódica, ontologia SKOS, benchmark multi-sinal, Zero-Trust de Dossiê Contextual e Red-Team adversarial do Auditor Cognitivo. |
+| **Build de Produção** | `CONCLUÍDO COM SUCESSO` | `[CONFIRMADO-TESTE]` | Next.js 15 compilando estaticamente e rotas dinâmicas validadas sem erros. |
 
 ---
 

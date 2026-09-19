@@ -151,11 +151,18 @@ Para garantir integridade, cada Wave é concebida como uma missão autônoma (`M
 ---
 
 ## 10. Wave 5: Auditor Cognitivo Pós-Geração & Abstenção Honesta (MIS-0011)
-- **Objetivo:** Implementar o motor de 7 modalidades de abstenção honesta e o auditor cognitivo assíncrono pós-geração.
+- **Status:** **CONCLUÍDO** (Laudos PASS de todos os 4 Gates, migration 0037, 143 testes verdes)
+- **Objetivo:** Implementar o motor de 7 modalidades de abstenção honesta, o auditor cognitivo pós-geração em 3 camadas e fechar as 12 lacunas de integração da Wave 4.
 - **Entregas Técnicas:**
-  - Classificador de suficiência de evidências antes da geração de reflexões;
-  - Módulo `src/dominios/cerebro/auditor-cognitivo.ts` com validação de aderência ao Dossiê;
-  - Medição contínua de MILR e AMR em tempo de execução com alertas visuais na interface.
+  - Resolução integral das 12 pendências da Wave 4 (fim de sinais simulados, suporte a contraevidência, ponderação taxonômica proporcional, hiperparâmetros versionados `BASELINE_UNCALIBRATED_V1`);
+  - Migration Supabase `0037_auditor_cognitivo_v3_1.sql` com tabela imutável `auditoria.relatorios_auditoria_v3_1`, RPCs transacionais e trigger anti-mutação;
+  - Aplicação live da Migration 0037 no Supabase DEV/TEST (37 migrations live);
+  - Montador de Dossiê com hash SHA-256 canônico profundo determinístico e proteção de token budget em abstenção;
+  - Eliminação de presunção de autoria em regras e conceitos propostos (`CANNOT_SUPPORT_AUTHORIAL_CLAIM`);
+  - Módulo `src/dominios/cerebro/auditor-cognitivo-v3.ts` com interface `ISupportVerifier`, medição de MILR e AMR (0.0%), e ações PASS, HEDGE, REWRITE e BLOCK;
+  - Módulo `src/dominios/cerebro/motor-abstencao.ts` cobrindo as 7 categorias canônicas;
+  - Componente UI de badge de integridade (`BadgeAuditoriaV3`);
+  - Suíte adversarial Red-Team aprovada em 10 vetores de ataque (`tests/seguranca/auditor-cognitivo-adversarial.test.ts`).
 
 ---
 

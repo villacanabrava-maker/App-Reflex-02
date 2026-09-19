@@ -31,6 +31,7 @@ export interface GoldenTestCase {
   isWave1Executable: boolean; // Flag para distinguir testes executáveis na Wave 1
   isWave2Executable?: boolean; // Flag para casos executáveis na Wave 2 (Event Ledger e Transições)
   isWave3Executable?: boolean; // Flag para casos executáveis na Wave 3 (Taxonomia SKOS e Ancoragem)
+  isWave5Executable?: boolean; // Flag para casos executáveis na Wave 5 (Auditor Cognitivo e Abstenção)
   sourceInput: {
     text: string;
     sourceType: "obra" | "versao_obra" | "fragmento" | "reflexao" | "nota_avulsa";
@@ -313,5 +314,99 @@ export const GOLDEN_DATASET_V3_SEEDS: GoldenTestCase[] = [
       mustContainHashMatching: true,
     },
     notes: "Verifica que a normalização NFC e o cálculo UTF-16 não quebram o span factual.",
+  },
+
+  // --------------------------------------------------------------------------
+  // WAVE 5 CASOS EXECUTÁVEIS: AUDITOR COGNITIVO & ABSTENÇÃO HONESTA
+  // --------------------------------------------------------------------------
+  {
+    id: "CBR-09-ABSTAIN-NO-EVIDENCE-EXEC",
+    family: "ABSTENTION",
+    description: "Abstenção pré-geração honesta mandatória quando não há nenhuma evidência documental.",
+    isWave1Executable: false,
+    isWave5Executable: true,
+    sourceInput: {
+      text: "Como você desenvolve computação quântica em semicondutores?",
+      sourceType: "reflexao",
+      sourceId: "cbr09-no-evi-001",
+      sourceVersion: 1,
+    },
+    expectedBehavior: {
+      shouldExtract: false,
+      shouldAbstain: true,
+    },
+    notes: "Deve acionar NO_EVIDENCE com mensagem templated sem inventar fatos.",
+  },
+  {
+    id: "CBR-09-ABSTAIN-AUTHORIAL-UNKNOWN-EXEC",
+    family: "ABSTENTION",
+    description: "Abstenção imediata quando consulta autoral só possui fontes externas no acervo.",
+    isWave1Executable: false,
+    isWave5Executable: true,
+    sourceInput: {
+      text: "Qual é a sua opinião pessoal sobre a dialética de Hegel?",
+      sourceType: "reflexao",
+      sourceId: "cbr09-auth-unk-002",
+      sourceVersion: 1,
+    },
+    expectedBehavior: {
+      shouldExtract: false,
+      shouldAbstain: true,
+    },
+    notes: "Deve classificar como AUTHORIAL_UNKNOWN ou SOURCE_ONLY sem gerar alucinação autoral.",
+  },
+  {
+    id: "CBR-10-GENERATION-ALLOWED-USE-EXEC",
+    family: "GENERATION",
+    description: "Auditor intercepta uso indevido de fonte externa para atribuir crença ao autor.",
+    isWave1Executable: false,
+    isWave5Executable: true,
+    sourceInput: {
+      text: "Você acredita firmemente que a vontade de poder move a história.",
+      sourceType: "reflexao",
+      sourceId: "cbr10-gen-allowed-001",
+      sourceVersion: 1,
+    },
+    expectedBehavior: {
+      shouldExtract: true,
+      mustRejectFirewallViolation: true,
+    },
+    notes: "Deve gerar FORBIDDEN_USE e BLOCK se sustentado apenas por fonte externa (Nietzsche).",
+  },
+  {
+    id: "CBR-08-AUTHOR-FIREWALL-BREACH-EXEC",
+    family: "AUTHOR",
+    description: "Detecção de violação do Memory-Inference Firewall e cálculo estrito de MILR/AMR.",
+    isWave1Executable: false,
+    isWave5Executable: true,
+    sourceInput: {
+      text: "Você costuma rejeitar o utilitarismo porque prefere a ética kantiana.",
+      sourceType: "reflexao",
+      sourceId: "cbr08-firewall-001",
+      sourceVersion: 1,
+    },
+    expectedBehavior: {
+      shouldExtract: true,
+      mustRejectFirewallViolation: true,
+    },
+    notes: "Auditor deve marcar ação BLOCK ou REWRITE com atenuação obrigatória.",
+  },
+  {
+    id: "CBR-12-PROVENANCE-LINEAGE-COMPLETE-EXEC",
+    family: "PROVENANCE",
+    description: "Linhagem completa auditável: Output Claim -> Dossier Item -> Source.",
+    isWave1Executable: false,
+    isWave5Executable: true,
+    sourceInput: {
+      text: "Minha tese é que a atenção plena antecede a escrita densa.",
+      sourceType: "reflexao",
+      sourceId: "cbr12-lineage-001",
+      sourceVersion: 1,
+    },
+    expectedBehavior: {
+      shouldExtract: true,
+      mustContainHashMatching: true,
+    },
+    notes: "Afirmação suportada por item autoral legítimo recebe PASS e linhagem completa.",
   },
 ];

@@ -564,6 +564,7 @@ export const DossierItemSchema = z.object({
   explanation: z.string().optional(),
 }).strict();
 export type DossierItem = z.infer<typeof DossierItemSchema>;
+export type AuthorialScope = "autoral" | "externo" | "indeterminado";
 
 export const DossierV31Schema = z.object({
   id: z.string().uuid(),
@@ -571,6 +572,9 @@ export const DossierV31Schema = z.object({
   intent: QueryIntentEnum,
   target_token_budget: z.number().int().min(500),
   actual_tokens_total: z.number().int().min(0),
+  estimated_tokens: z.number().int().min(0).optional(),
+  token_estimator_version: z.string().default("char_ratio_v1.0"),
+  configuration_version: z.string().default("v3.1-uncalibrated-2026-09-19"),
   compartments: z.record(
     DossierCompartmentEnum,
     z.array(DossierItemSchema)
@@ -726,3 +730,115 @@ export function calculateAMR(
     notes: `AMR calculado sobre ${totalAuthorAttributedCount} atribuições de autoria.`,
   };
 }
+
+// ============================================================================
+// 7. AUDITOR COGNITIVO V3.1 & MOTOR DE ABSTENÇÃO HONESTA (WAVE 5)
+// ============================================================================
+
+export const AuditorStatusEnum = z.enum([
+  "PASS",
+  "PASS_WITH_CORRECTIONS",
+  "ABSTAIN",
+  "BLOCK"
+]);
+export type AuditorStatus = z.infer<typeof AuditorStatusEnum>;
+
+export const ClaimAuditActionEnum = z.enum([
+  "PASS",
+  "HEDGE",
+  "REWRITE",
+  "REMOVE",
+  "BLOCK"
+]);
+export type ClaimAuditAction = z.infer<typeof ClaimAuditActionEnum>;
+
+export const ClaimSupportStatusEnum = z.enum([
+  "SUPPORTED",
+  "PARTIALLY_SUPPORTED",
+  "UNSUPPORTED",
+  "CONTRADICTED",
+  "FORBIDDEN_USE",
+  "AMBIGUOUS"
+]);
+export type ClaimSupportStatus = z.infer<typeof ClaimSupportStatusEnum>;
+
+export const GeneratedClaimTypeEnum = z.enum([
+  "AUTHORIAL_ASSERTION",
+  "EXTERNAL_ASSERTION",
+  "FACTUAL_ASSERTION",
+  "PROCEDURAL_STATEMENT",
+  "INTERPRETIVE_SYNTHESIS",
+  "HYPOTHESIS",
+  "QUESTION",
+  "NON_CLAIM"
+]);
+export type GeneratedClaimType = z.infer<typeof GeneratedClaimTypeEnum>;
+
+export const AbstentionCategoryEnum = z.enum([
+  "NO_EVIDENCE",
+  "LOW_SUPPORT",
+  "CONTRADICTORY_EVIDENCE",
+  "OUT_OF_SCOPE",
+  "AUTHORIAL_UNKNOWN",
+  "SOURCE_ONLY",
+  "AMBIGUOUS"
+]);
+export type AbstentionCategory = z.infer<typeof AbstentionCategoryEnum>;
+
+/**
+ * Declaração explícita de sustentação fornecida pelo Writer V3.1 para cada afirmação gerada
+ */
+export const WriterSupportDeclarationSchema = z.object({
+  generated_claim: z.string().min(3),
+  generated_span: z.string().min(1),
+  support_dossier_item_ids: z.array(z.string()),
+  declarative_nature: z.enum(["authorial", "external", "hypothetical", "interpretive", "procedural"]).default("interpretive"),
+}).strict();
+export type WriterSupportDeclaration = z.infer<typeof WriterSupportDeclarationSchema>;
+
+/**
+ * Auditoria proposicional detalhada de cada afirmação extraída da saída
+ */
+export const OutputClaimAuditSchema = z.object({
+  claim_id: z.string(),
+  claim_text: z.string(),
+  claim_span: z.string(),
+  claim_type: GeneratedClaimTypeEnum,
+  declared_support_ids: z.array(z.string()),
+  effective_support_ids: z.array(z.string()),
+  support_status: ClaimSupportStatusEnum,
+  action_recommended: ClaimAuditActionEnum,
+  violates_allowed_use: z.boolean().default(false),
+  violates_memory_firewall: z.boolean().default(false),
+  justification: z.string(),
+  suggested_intervention: z.string().optional(),
+}).strict();
+export type OutputClaimAudit = z.infer<typeof OutputClaimAuditSchema>;
+
+/**
+ * Relatório formal e imutável de Auditoria Cognitiva V3.1
+ */
+export const AuditReportV31Schema = z.object({
+  id: z.string().uuid(),
+  usuario_id: z.string().uuid(),
+  versao_reflexao_id: z.string().uuid(),
+  dossier_snapshot_id: z.string().uuid(),
+  snapshot_hash: z.string().length(64),
+  auditor_version: z.string(),
+  status: AuditorStatusEnum,
+  abstention_category: AbstentionCategoryEnum.optional(),
+  claims_audit: z.array(OutputClaimAuditSchema),
+  milr: z.number().min(0).max(100),
+  amr: z.number().min(0).max(100),
+  unsupported_claim_rate: z.number().min(0).max(100),
+  forbidden_use_rate: z.number().min(0).max(100),
+  citation_precision: z.number().min(0).max(100),
+  intervencoes: z.array(z.object({
+    original: z.string(),
+    corrigido: z.string(),
+    motivo: z.string(),
+  })).default([]),
+  created_at: z.string(),
+}).strict();
+export type AuditReportV31 = z.infer<typeof AuditReportV31Schema>;
+

@@ -276,4 +276,127 @@ describe("Golden Dataset V3 Runner — Avaliação Epistêmica das 12 Famílias 
     expect(zeroAmr.is_applicable).toBe(false);
     expect(zeroAmr.value).toBeNull();
   });
+
+  test("Execução dos Casos Executáveis da Wave 5 — Auditor Cognitivo, Abstenção Honesta e Allowed Use", async () => {
+    const { MotorAbstencaoHonesta } = await import("../../src/dominios/cerebro/motor-abstencao");
+    const { MontadorDossieContextual } = await import("../../src/dominios/cerebro/montador-dossie");
+    const { AuditorCognitivoV31 } = await import("../../src/dominios/cerebro/auditor-cognitivo-v3");
+
+    const wave5Cases = GOLDEN_DATASET_V3_SEEDS.filter((s) => s.isWave5Executable);
+    expect(wave5Cases.length).toBeGreaterThanOrEqual(4);
+
+    // 1. Teste CBR-09-ABSTAIN-NO-EVIDENCE-EXEC
+    const dossieVazio = MontadorDossieContextual.montar({
+      query: "Como você desenvolve computação quântica?",
+      intent: "FACTUAL_LOCAL",
+      usuarioId: usuarioTesteId,
+      itemsRecuperados: [],
+      abstained: true,
+      abstentionReason: "INSUFFICIENT_EVIDENCE",
+    });
+
+    const resAbstencaoVazio = MotorAbstencaoHonesta.avaliarPreGeracao(dossieVazio);
+    expect(resAbstencaoVazio.deve_abster).toBe(true);
+    expect(resAbstencaoVazio.categoria).toBe("NO_EVIDENCE");
+    expect(resAbstencaoVazio.tipo_resultado).toBe("COGNITIVE_ABSTENTION");
+
+    // 2. Teste CBR-09-ABSTAIN-AUTHORIAL-UNKNOWN-EXEC
+    const dossieApenasExterno = MontadorDossieContextual.montar({
+      query: "Qual é a sua opinião pessoal sobre a dialética de Hegel?",
+      intent: "AUTHORIAL",
+      usuarioId: usuarioTesteId,
+      itemsRecuperados: [
+        {
+          id: "ext_hegel_001",
+          conteudo: "Hegel escreveu a Fenomenologia do Espírito em 1807 sobre o devir dialético.",
+          obra_id: "obra_ext_01",
+          obra_titulo: "História da Filosofia",
+          obra_natureza: "externa",
+          score_final: 0.9,
+          individual_scores: { dense_sim: 0.9 },
+          taxonomy_match: false,
+          epistemic_status: "extracted",
+          temporal_fit: 1.0,
+          counterevidence_flag: false,
+          retrieval_route: "Route D",
+          explanation: "Fonte de terceiro",
+        },
+      ],
+    });
+
+    const resAbstencaoAutor = MotorAbstencaoHonesta.avaliarPreGeracao(dossieApenasExterno);
+    expect(resAbstencaoAutor.deve_abster).toBe(true);
+    expect(resAbstencaoAutor.categoria).toBe("SOURCE_ONLY");
+
+    // 3. Teste CBR-10-GENERATION-ALLOWED-USE-EXEC & CBR-08-AUTHOR-FIREWALL-BREACH-EXEC
+    const relatorioViolacao = await AuditorCognitivoV31.auditar({
+      textoGerado: "Você acredita firmemente que a vontade de poder move a história.",
+      dossierSnapshotId: dossieApenasExterno.id,
+      versaoReflexaoId: "11111111-1111-1111-1111-111111111111",
+      usuarioId: usuarioTesteId,
+      dossieObjeto: dossieApenasExterno,
+      declaracoesSuporte: [
+        {
+          generated_claim: "Você acredita firmemente que a vontade de poder move a história.",
+          generated_span: "Você acredita firmemente que a vontade de poder move a história.",
+          support_dossier_item_ids: ["item_ext_hegel_001_1"],
+          declarative_nature: "authorial",
+        },
+      ],
+    });
+
+    expect(relatorioViolacao.status).toBe("BLOCK");
+    expect(relatorioViolacao.forbidden_use_rate).toBe(100);
+    expect(relatorioViolacao.claims_audit[0].support_status).toBe("FORBIDDEN_USE");
+    expect(relatorioViolacao.claims_audit[0].violates_memory_firewall).toBe(true);
+    expect(relatorioViolacao.milr).toBe(100);
+    expect(relatorioViolacao.amr).toBe(100);
+    expect(relatorioViolacao.intervencoes.length).toBeGreaterThan(0);
+
+    // 4. Teste CBR-12-PROVENANCE-LINEAGE-COMPLETE-EXEC (Caso Legítimo Aprovado)
+    const dossieAutoral = MontadorDossieContextual.montar({
+      query: "Atenção plena e escrita",
+      intent: "AUTHORIAL",
+      usuarioId: usuarioTesteId,
+      itemsRecuperados: [
+        {
+          id: "aut_atencao_001",
+          conteudo: "Minha tese é que a atenção plena antecede a escrita densa.",
+          obra_id: "obra_aut_01",
+          obra_titulo: "Caderno Reflexivo 2024",
+          obra_natureza: "autoral",
+          score_final: 0.95,
+          individual_scores: { dense_sim: 0.95 },
+          taxonomy_match: true,
+          epistemic_status: "confirmed_authorial",
+          temporal_fit: 1.0,
+          counterevidence_flag: false,
+          retrieval_route: "Route D",
+          explanation: "Memória confirmada do autor",
+        },
+      ],
+    });
+
+    const relatorioAprovado = await AuditorCognitivoV31.auditar({
+      textoGerado: "Minha tese é que a atenção plena antecede a escrita densa.",
+      dossierSnapshotId: dossieAutoral.id,
+      versaoReflexaoId: "22222222-2222-2222-2222-222222222222",
+      usuarioId: usuarioTesteId,
+      dossieObjeto: dossieAutoral,
+      declaracoesSuporte: [
+        {
+          generated_claim: "Minha tese é que a atenção plena antecede a escrita densa.",
+          generated_span: "Minha tese é que a atenção plena antecede a escrita densa.",
+          support_dossier_item_ids: ["item_aut_atencao_001_1"],
+          declarative_nature: "authorial",
+        },
+      ],
+    });
+
+    expect(relatorioAprovado.status).toBe("PASS");
+    expect(relatorioAprovado.milr).toBe(0);
+    expect(relatorioAprovado.amr).toBe(0);
+    expect(relatorioAprovado.forbidden_use_rate).toBe(0);
+    expect(relatorioAprovado.claims_audit[0].support_status).toBe("SUPPORTED");
+  });
 });

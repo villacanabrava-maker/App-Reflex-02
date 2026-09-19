@@ -8,15 +8,15 @@
 
 - GitHub: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, **36 migrations aplicadas live**, registradas em `public._migrations`, RLS ativo em todos os schemas e buckets privados em 50MB.
+- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, **37 migrations aplicadas live**, registradas em `public._migrations`, RLS ativo em todos os schemas e buckets privados em 50MB.
 - Decisão de Segurança: `SECURITY-EXCEPTION-DEV-001` (RISK ACCEPTED BY USER — DEVELOPMENT/TEST ONLY). A rotação da credencial foi adiada compulsoriamente para o **Production Security Gate** antes de qualquer publicação/produção.
 - Hospedagem / Vercel: **ADIADO — NÃO CONFIGURAR NEM PUBLICAR** nesta etapa por decisão do usuário.
 - Domínio de produção: AINDA NÃO DEFINIDO.
 - Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
 - Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
-- Último Marco Concluído: **MIS-0010 — Wave 4: Retrieval Híbrido Multi-Sinal, Working Memory e Dossiê Contextual Epistêmico V3.1** (Gate 0 concluído com revogação de mutação direta para taxonomia, RPCs de curadoria humana via `auth.uid()`, `search_key` vs `identity_key`, remoção do default mágico 0.85; Migrations 0031 a 0036 aplicadas live no Supabase DEV/TEST; Query Intent Router com 9 classes cognitivas; Motor de Retrieval V3.1 com 5 rotas comparativas e abstenção honesta; Montador de Dossiê Contextual com sanitização anti-prompt-injection, 9 compartimentos e snapshot SHA-256; Eliminação de hidden retrieval no Redator e Planejador; 127 testes passando 100% verde; relatórios WAVE_4_RETRIEVAL_WORKING_MEMORY_RESULT.md e AG-0010.md).
-- Próxima Missão: **MIS-0011 — Wave 5: Auditor Cognitivo Pós-Geração e Abstenção Honesta**.
+- Último Marco Concluído: **MIS-0011 — Wave 5: Auditor Cognitivo Pós-Geração, Motor de Abstenção Honesta e Integração End-to-End do Dossiê V3.1** (Resolução das 12 pendências da Wave 4; RPC `buscar_multi_sinal_v3_1` sem sinais simulados e com suporte real a contraevidências; migration `0037_auditor_cognitivo_v3_1.sql` aplicada live no Supabase DEV/TEST; imutabilidade e persistência de snapshots e relatórios; hash SHA-256 canônico profundo; proteção de budget estrito em abstenção; eliminação de presunção de autoria em propostas; Auditor Cognitivo V3.1 em 3 camadas com MILR=0% e AMR=0%; Motor de Abstenção Honesta em 7 categorias; UI badge `BadgeAuditoriaV3`; suíte adversarial Red-Team aprovada em 10 vetores; 143 testes passando 100% verde em 27 arquivos; relatórios WAVE_5_AUDITOR_ABSTENTION_RESULT.md e AG-0011.md).
+- Próxima Missão Planejada: **MIS-0012 — Wave 6: Consolidação Epistêmica e Aprendizado Ativo**.
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 

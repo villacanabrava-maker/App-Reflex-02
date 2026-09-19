@@ -49,7 +49,7 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     }
   });
 
-  it("as migrations 0026 a 0036 existem no repositório e cobrem RLS, isolamento, storage, event ledger hardening, SKOS e retrieval V3.1", () => {
+  it("as migrations 0026 a 0037 existem no repositório e cobrem RLS, isolamento, storage, event ledger hardening, SKOS, retrieval e auditoria V3.1", () => {
     const migrationsDir = path.join(process.cwd(), "supabase", "migrations");
     const m26 = fs.readFileSync(path.join(migrationsDir, "0026_motor_taxonomia_automatica.sql"), "utf-8");
     const m27 = fs.readFileSync(path.join(migrationsDir, "0027_grants_propostas_atualizacao.sql"), "utf-8");
@@ -59,6 +59,7 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     const m31 = fs.readFileSync(path.join(migrationsDir, "0031_claims_ledger.sql"), "utf-8");
     const m32 = fs.readFileSync(path.join(migrationsDir, "0032_episodic_event_ledger.sql"), "utf-8");
     const m33 = fs.readFileSync(path.join(migrationsDir, "0033_event_ledger_hardening.sql"), "utf-8");
+
 
     // 0026
     expect(m26).toContain("taxonomia.analises");
@@ -132,6 +133,15 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     expect(m36).toContain("p_rrf_k NUMERIC DEFAULT 60.0");
     expect(m36).toContain("candidatos_taxonomia");
     expect(m36).toContain("score_rrf");
+
+    // 0037 (Wave 5 - Auditor Cognitivo V3.1, Imutabilidade e Retrieval Real)
+    const m37 = fs.readFileSync(path.join(migrationsDir, "0037_auditor_cognitivo_v3_1.sql"), "utf-8");
+    expect(m37).toContain("auditoria.relatorios_auditoria_v3_1 ENABLE ROW LEVEL SECURITY");
+    expect(m37).toContain("trg_dossies_snapshots_imutaveis");
+    expect(m37).toContain("persistir_dossie_snapshot");
+    expect(m37).toContain("trg_relatorios_auditoria_v31_imutaveis");
+    expect(m37).toContain("registrar_relatorio_auditoria_v3_1");
+    expect(m37).toContain("fk_audit_snapshot_tenant");
   });
 
   it("todas as tabelas do schema sistema possuem RLS habilitado no banco ativo", { timeout: 15000 }, async () => {

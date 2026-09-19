@@ -9,6 +9,8 @@ import { z } from "zod";
 import { criarClienteAdmin } from "@/infraestrutura/supabase/cliente-admin";
 import { executarChamadaEstruturada, protegerEntradaDeDados, PAPEIS_IA } from "@/ia/orquestrador";
 import type { ConflitoDetectado, DossieContextual, FormatoReflexao } from "@/tipos/reflexoes";
+import { isFlagAtiva } from "@/config/feature-flags";
+import { RepositorioDossieContextual } from "@/dominios/cerebro/repositorio-dossie";
 
 const EsquemaPlanoZod = z.object({
   tese_central: z.string().describe("Tese autoral profunda, assertiva e provocativa que o autor defenderá"),
@@ -44,6 +46,7 @@ export async function gerarPlanoReflexao({
   publicoAlvo,
   formatoDesejado,
   restricoesEspecificas,
+  dossierSnapshotId,
 }: {
   entradaId: string;
   usuarioId: string;
@@ -56,6 +59,7 @@ export async function gerarPlanoReflexao({
   publicoAlvo?: string | null;
   formatoDesejado: FormatoReflexao;
   restricoesEspecificas?: string | null;
+  dossierSnapshotId?: string;
 }) {
   const admin = criarClienteAdmin();
 
@@ -75,7 +79,28 @@ export async function gerarPlanoReflexao({
     (conflito) => conflito.considerado_no_plano !== false
   );
 
-  const dossie = (entradaDb?.dossie_contexto as DossieContextual | null) || null;
+  let dossie = (entradaDb?.dossie_contexto as DossieContextual | null) || null;
+
+  // Se fornecido dossierSnapshotId e o dossiê legado não estiver na entrada, tenta carregar snapshot V3.1
+  if (!dossie && dossierSnapshotId) {
+    try {
+      const snapshotV31 = await RepositorioDossieContextual.obterSnapshotPorId(dossierSnapshotId, usuarioId);
+      if (snapshotV31) {
+        const todosItens = Object.values(snapshotV31.compartments).flat();
+        dossie = {
+          fragmentos_selecionados: todosItens.map((item) => ({
+            id: item.source_ids[0] || item.dossier_item_id,
+            conteudo: item.content,
+            obra_titulo: (item.provenance?.obra_titulo as string) || "Memória",
+          })),
+          conceitos_chave: [],
+          regras_aplicaveis: [],
+        } as any;
+      }
+    } catch {
+      // Continua com verificação rigorosa de flag abaixo
+    }
+  }
 
   // 2. Usar exatamente as memórias persistidas no dossiê desta reflexão.
   // Sem dossiê real, seguir com corpus vazio em vez de substituir por fragmentos genéricos.
@@ -88,9 +113,7 @@ export async function gerarPlanoReflexao({
   const fontesIds = fragmentosDossie.map((f) => f.id);
 
   // NO CAMINHO V3.1: PROIBIDO CONSULTAR BANCO SILENCIOSAMENTE SEM DOSSIÊ
-  const isV31DossierAtivo =
-    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "shadow" ||
-    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "on";
+  const isV31DossierAtivo = isFlagAtiva("FEATURE_COGNITIVE_V31_DOSSIER");
 
   if (isV31DossierAtivo && !dossie) {
     throw new Error(

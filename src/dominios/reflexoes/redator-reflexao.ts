@@ -8,6 +8,7 @@
 import { z } from "zod";
 import { criarClienteAdmin } from "@/infraestrutura/supabase/cliente-admin";
 import { executarChamadaEstruturada, protegerEntradaDeDados, PAPEIS_IA } from "@/ia/orquestrador";
+import { isFlagAtiva } from "@/config/feature-flags";
 
 const EsquemaRedacaoZod = z.object({
   titulo_gerado: z.string().describe("Título definitivo, autoral, impactante e expressivo para a reflexão"),
@@ -27,10 +28,12 @@ export async function redigirReflexao({
   entradaId,
   planoId,
   usuarioId,
+  dossierSnapshotId: _dossierSnapshotId,
 }: {
   entradaId: string;
   planoId: string;
   usuarioId: string;
+  dossierSnapshotId?: string;
 }) {
   const admin = criarClienteAdmin();
 
@@ -62,19 +65,17 @@ export async function redigirReflexao({
     ? plano.fontes_mobilizadas
     : [];
 
-  let fragmentos: { id: string; conteudo: string; obra_titulo?: string }[] = [];
+  let fragmentos: { id: string; conteudo: string; obra_titulo?: string; obra_natureza?: string }[] = [];
   if (fontesIds.length > 0) {
     const { data: frags } = await admin
       .from("v_fragmentos_detalhados")
-      .select("id, conteudo, obra_titulo")
+      .select("id, conteudo, obra_titulo, obra_natureza")
       .in("id", fontesIds);
     fragmentos = (frags as any) || [];
   }
 
   // NO CAMINHO V3.1: PROIBIDO O FALLBACK DE 8 FRAGMENTOS SILENCIOSOS
-  const isV31DossierAtivo =
-    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "shadow" ||
-    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "on";
+  const isV31DossierAtivo = isFlagAtiva("FEATURE_COGNITIVE_V31_DOSSIER");
 
   if (fragmentos.length === 0) {
     if (isV31DossierAtivo) {
@@ -86,7 +87,7 @@ export async function redigirReflexao({
     // Modo Legado Preservado (apenas quando V3.1 está off)
     const { data: fragsRecentes } = await admin
       .from("v_fragmentos_detalhados")
-      .select("id, conteudo, obra_titulo")
+      .select("id, conteudo, obra_titulo, obra_natureza")
       .eq("usuario_id", usuarioId)
       .eq("obra_natureza", "autoral")
       .limit(8);
@@ -186,15 +187,17 @@ Gere o texto completo em Markdown e indique os vínculos de proveniência corres
     throw new Error(`Falha ao salvar versão da reflexão: ${errVersao?.message}`);
   }
 
-  // 6. Inserir Citações / Evidências de Proveniência
+  // 6. Inserir Citações / Evidências de Proveniência (Sem Misattribution)
   if (redacao.citacoes_identificadas && redacao.citacoes_identificadas.length > 0) {
     for (const c of redacao.citacoes_identificadas) {
       const fragRef = fragmentos[c.fragmento_index - 1];
+      const tipoFonteReal =
+        fragRef?.obra_natureza === "externa" ? "fonte_externa" : "nucleo_autoral";
 
       await admin.schema("reflexoes").from("citacoes_evidencias").insert({
         versao_reflexao_id: versaoSalva.id,
         fragmento_id: fragRef ? fragRef.id : null,
-        tipo_fonte: "nucleo_autoral",
+        tipo_fonte: tipoFonteReal,
         trecho_afirmacao_gerada: c.trecho_afirmacao_gerada,
         trecho_original_citado: c.trecho_original_citado,
         obra_titulo: fragRef?.obra_titulo || "Memória Autoral",
