@@ -23,7 +23,7 @@ function Invoke-Vercel([string[]]$Arguments) {
 }
 
 function Set-VercelEnv([string]$Name, [string]$Value, [string]$Target, [string]$Token) {
-  $Value | & npx vercel@latest env add $Name $Target --token $Token --yes
+  $Value | & npx vercel@latest env add $Name $Target --scope $vercelScope --token $Token --yes
   if ($LASTEXITCODE -ne 0) {
     throw "Falha ao configurar a variavel $Name em $Target."
   }
@@ -51,21 +51,22 @@ $vercelToken = Read-SecretPlainText "Cole o Vercel token"
 $supabaseSecret = Read-SecretPlainText "Cole a SUPABASE_SECRET_KEY do projeto App Reflex 02"
 $openAiKey = Read-SecretPlainText "Cole a OPENAI_API_KEY"
 
+$vercelScope = "naninne"
 $supabaseUrl = "https://xenapowdtfhdwcfthfrn.supabase.co"
 $supabasePublishableKey = "sb_publishable_6zpcIpceFQ2ygpjztBQTnw_DIFo0ocd"
 
 Write-Host ""
 Write-Host "1/5 Criando ou localizando o projeto Vercel..." -ForegroundColor Cyan
-& npx vercel@latest project add $ProjectName --token $vercelToken --yes
+& npx vercel@latest project add $ProjectName --scope $vercelScope --token $vercelToken --yes
 if ($LASTEXITCODE -ne 0) {
   Write-Host "O projeto pode ja existir; tentando vincular..." -ForegroundColor Yellow
 }
 
 Write-Host "2/5 Vinculando o diretorio local..." -ForegroundColor Cyan
-Invoke-Vercel @("link", "--yes", "--project", $ProjectName, "--token", $vercelToken)
+Invoke-Vercel @("link", "--yes", "--project", $ProjectName, "--scope", $vercelScope, "--token", $vercelToken)
 
 Write-Host "3/5 Conectando o GitHub ao projeto Vercel..." -ForegroundColor Cyan
-& npx vercel@latest git connect --yes --token $vercelToken
+& npx vercel@latest git connect --yes --scope $vercelScope --token $vercelToken
 if ($LASTEXITCODE -ne 0) {
   Write-Host "Nao foi possivel conectar o Git automaticamente. O deploy direto ainda pode prosseguir." -ForegroundColor Yellow
 }
@@ -92,7 +93,7 @@ foreach ($target in $targets) {
 }
 
 Write-Host "5/5 Executando deploy de producao para teste..." -ForegroundColor Cyan
-Invoke-Vercel @("--prod", "--token", $vercelToken, "--yes")
+Invoke-Vercel @("--prod", "--scope", $vercelScope, "--token", $vercelToken, "--yes")
 
 Write-Host ""
 Write-Host "Deploy concluido." -ForegroundColor Green
