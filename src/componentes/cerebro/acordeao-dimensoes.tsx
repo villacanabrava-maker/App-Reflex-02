@@ -59,7 +59,9 @@ export function AcordeaoDimensoes({ dimensoes, caracteristicas, regras }: Props)
       setMensagemStatus({
         dimensaoId,
         tipo: "sucesso",
-        texto: `Análise concluída com sucesso! ${resultado.totalCaracteristicas} características e ${resultado.totalRegras} regras registradas no Cérebro.`,
+        texto:
+          resultado.mensagem ||
+          `Análise concluída: ${resultado.totalCaracteristicas} características candidatas e ${resultado.totalRegras} regras foram preparadas para sua revisão em Aprendizados.`,
       });
     } catch (err: any) {
       setMensagemStatus({
@@ -213,7 +215,7 @@ export function AcordeaoDimensoes({ dimensoes, caracteristicas, regras }: Props)
                       ) : (
                         <>
                           <Sparkles className="w-3.5 h-3.5" />
-                          <span>Analisar dimensão</span>
+                          <span>Analisar corpus ativo</span>
                         </>
                       )}
                     </button>
@@ -253,7 +255,7 @@ export function AcordeaoDimensoes({ dimensoes, caracteristicas, regras }: Props)
                           Nenhuma característica mapeada ainda para esta dimensão.
                         </p>
                         <p className="text-[11px] text-slate-400 mt-1">
-                          Clique no botão “Analisar dimensão” acima para extrair o padrão autoral a partir dos fragmentos.
+                          Clique em “Analisar corpus ativo” para gerar candidatos sustentados pelos livros autorais selecionados.
                         </p>
                       </div>
                     ) : (

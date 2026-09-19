@@ -122,6 +122,16 @@ export interface PropostaAtualizacaoCerebro {
   criado_em: string;
 }
 
+export interface ObraCorpusCerebro {
+  id: string;
+  titulo: string;
+  tipo: string;
+  estado_processamento: string;
+  participa_cerebro: boolean;
+  total_fragmentos: number;
+  total_palavras: number;
+}
+
 export interface ResumoCerebro {
   usuario_id: string;
   total_caracteristicas: number;

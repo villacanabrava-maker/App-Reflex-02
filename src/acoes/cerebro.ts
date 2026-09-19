@@ -3,14 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { criarClienteAdmin } from "@/infraestrutura/supabase/cliente-admin";
 import { obterUsuarioAtualId } from "@/infraestrutura/auth/usuario-atual";
-import { analisarDimensaoComIA } from "@/dominios/cerebro/analisador-dimensoes";
-import { isFlagAtiva } from "@/config/feature-flags";
+import { proporAnaliseDimensaoComIA } from "@/dominios/cerebro/analisador-dimensoes";
 import type {
   DimensaoCerebro,
   CaracteristicaCerebro,
   RegraCerebro,
   ResumoCerebro,
   PropostaAtualizacaoCerebro,
+  ObraCorpusCerebro,
 } from "@/tipos/cerebro";
 
 /**
@@ -152,20 +152,113 @@ export async function obterResumoCerebro(): Promise<ResumoCerebro> {
 }
 
 /**
- * Dispara a análise cognitiva com OpenAI gpt-4o para extrair características
- * e regras metodológicas de uma dimensão a partir dos fragmentos autorais.
+ * Lista obras autorais processadas e permite ao usuário controlar quais participam
+ * do corpus ativo usado nas análises do Cérebro.
  */
-export async function acionarAnaliseDimensao(dimensaoId: string) {
-  if (!isFlagAtiva("FEATURE_LEGACY_BRAIN_ANALYZER")) {
-    throw new Error(
-      "Análise legada do Cérebro desativada por segurança epistemológica. Use o fluxo de propostas e confirmação humana."
-    );
-  }
-
+export async function obterCorpusAutoralCerebro(): Promise<ObraCorpusCerebro[]> {
   const usuarioId = await obterUsuarioAtualId();
   const admin = criarClienteAdmin();
 
-  // 1. Obter metadados da dimensão
+  const { data, error } = await admin
+    .from("v_obras_detalhadas")
+    .select("id, titulo, tipo, estado_processamento, participa_cerebro, total_palavras_estimado")
+    .eq("usuario_id", usuarioId)
+    .eq("natureza", "autoral")
+    .eq("estado_processamento", "processado")
+    .order("criado_em", { ascending: false });
+
+  if (error) {
+    console.error("Erro ao listar corpus autoral do Cérebro:", error);
+    return [];
+  }
+
+  const obras = data || [];
+  if (obras.length === 0) return [];
+
+  const ids = obras.map((obra) => obra.id);
+  const { data: fragmentos } = await admin
+    .from("v_fragmentos_detalhados")
+    .select("obra_id")
+    .eq("usuario_id", usuarioId)
+    .in("obra_id", ids);
+
+  const contagemPorObra = new Map<string, number>();
+  for (const fragmento of fragmentos || []) {
+    if (!fragmento.obra_id) continue;
+    contagemPorObra.set(
+      fragmento.obra_id,
+      (contagemPorObra.get(fragmento.obra_id) || 0) + 1
+    );
+  }
+
+  return obras.map((obra) => ({
+    id: obra.id,
+    titulo: obra.titulo,
+    tipo: obra.tipo,
+    estado_processamento: obra.estado_processamento,
+    participa_cerebro: Boolean(obra.participa_cerebro),
+    total_fragmentos: contagemPorObra.get(obra.id) || 0,
+    total_palavras: Number(obra.total_palavras_estimado || 0),
+  }));
+}
+
+export async function definirParticipacaoObraCerebro({
+  obraId,
+  ativa,
+}: {
+  obraId: string;
+  ativa: boolean;
+}) {
+  const usuarioId = await obterUsuarioAtualId();
+  const admin = criarClienteAdmin();
+
+  const { data: obra, error: erroObra } = await admin
+    .schema("biblioteca")
+    .from("obras")
+    .select("id, natureza")
+    .eq("id", obraId)
+    .eq("usuario_id", usuarioId)
+    .maybeSingle();
+
+  if (erroObra || !obra) {
+    throw new Error("Obra não encontrada.");
+  }
+  if (obra.natureza !== "autoral") {
+    throw new Error("Somente obras autorais podem integrar o núcleo autoral do Cérebro.");
+  }
+
+  const { error } = await admin
+    .schema("biblioteca")
+    .from("obras")
+    .update({
+      participa_cerebro: ativa,
+      participacao_cerebro: ativa ? "nucleo_autoral" : "excluida",
+      atualizado_em: new Date().toISOString(),
+    })
+    .eq("id", obraId)
+    .eq("usuario_id", usuarioId);
+
+  if (error) {
+    throw new Error(`Falha ao atualizar corpus do Cérebro: ${error.message}`);
+  }
+
+  try {
+    revalidatePath("/cerebro");
+    revalidatePath("/biblioteca");
+  } catch {}
+
+  return { sucesso: true, ativa };
+}
+
+/**
+ * Analisa a dimensão usando somente o corpus autoral selecionado pelo usuário.
+ * O resultado entra como PROPOSTA pendente; nada é promovido automaticamente
+ * ao perfil ativo do Cérebro.
+ */
+export async function acionarAnaliseDimensao(dimensaoId: string) {
+  const usuarioId = await obterUsuarioAtualId();
+  const admin = criarClienteAdmin();
+
   const { data: dimensao, error: errDim } = await admin
     .schema("cerebro_autoral")
     .from("dimensoes")
@@ -177,38 +270,151 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
     throw new Error("Dimensão não encontrada.");
   }
 
-  // 2. Buscar fragmentos autorais ativos para subsidiar a análise
-  const { data: fragmentos, error: errFrags } = await admin
-    .from("v_fragmentos_detalhados")
-    .select("id, conteudo, obra_titulo")
+  const { data: obrasAtivas, error: erroObras } = await admin
+    .schema("biblioteca")
+    .from("obras")
+    .select("id, titulo")
     .eq("usuario_id", usuarioId)
-    .eq("obra_natureza", "autoral")
-    .limit(15);
+    .eq("natureza", "autoral")
+    .eq("participa_cerebro", true);
 
-  if (errFrags || !fragmentos || fragmentos.length === 0) {
+  if (erroObras) {
+    throw new Error(`Falha ao carregar o corpus autoral ativo: ${erroObras.message}`);
+  }
+
+  if (!obrasAtivas || obrasAtivas.length === 0) {
     throw new Error(
-      "Nenhum fragmento autoral processado encontrado. Processe obras autorais na Biblioteca antes de analisar o Cérebro."
+      "Nenhuma obra autoral está ativa no Cérebro. Selecione ao menos uma obra na seção Corpus Autoral."
     );
   }
 
-  // 3. Executar o motor cognitivo de extração com OpenAI gpt-4o
-  const resultado = await analisarDimensaoComIA({
+  const idsObrasAtivas = obrasAtivas.map((obra) => obra.id);
+  const { data: fragmentosBrutos, error: errFrags } = await admin
+    .from("v_fragmentos_detalhados")
+    .select("id, conteudo, obra_id, obra_titulo, ordem")
+    .eq("usuario_id", usuarioId)
+    .eq("obra_natureza", "autoral")
+    .eq("participa_cerebro", true)
+    .in("obra_id", idsObrasAtivas)
+    .order("ordem", { ascending: true })
+    .limit(180);
+
+  if (errFrags || !fragmentosBrutos || fragmentosBrutos.length === 0) {
+    throw new Error(
+      "As obras selecionadas ainda não possuem fragmentos autorais processados disponíveis para análise."
+    );
+  }
+
+  // Amostragem balanceada: evita que uma obra longa domine o perfil quando
+  // várias obras estiverem ativas simultaneamente.
+  const porObra = new Map<string, typeof fragmentosBrutos>();
+  for (const fragmento of fragmentosBrutos) {
+    const grupo = porObra.get(fragmento.obra_id) || [];
+    grupo.push(fragmento);
+    porObra.set(fragmento.obra_id, grupo);
+  }
+
+  const fragmentosSelecionados = Array.from(porObra.values())
+    .flatMap((grupo) => grupo.slice(0, 8))
+    .slice(0, 24);
+
+  const analise = await proporAnaliseDimensaoComIA({
     dimensaoId: dimensao.id,
     dimensaoCodigo: dimensao.codigo,
     dimensaoNome: dimensao.nome,
     dimensaoDescricao: dimensao.descricao,
     usuarioId,
-    fragmentos: fragmentos as any,
+    fragmentos: fragmentosSelecionados.map((fragmento) => ({
+      id: fragmento.id,
+      conteudo: fragmento.conteudo,
+      obra_titulo: fragmento.obra_titulo,
+      obra_id: fragmento.obra_id,
+    })),
   });
+
+  if (analise.caracteristicas.length === 0) {
+    return {
+      sucesso: true,
+      totalCaracteristicas: 0,
+      totalRegras: 0,
+      totalEvidencias: 0,
+      totalPropostas: 0,
+      mensagem:
+        "Não foram encontradas evidências suficientemente fortes nesta dimensão para o corpus selecionado.",
+    };
+  }
+
+  let totalPropostas = 0;
+  let totalRegras = 0;
+  let totalEvidencias = 0;
+
+  for (const caracteristica of analise.caracteristicas) {
+    const forcas = caracteristica.evidencias.map((evidencia) => evidencia.forca_evidencia);
+    const confianca =
+      forcas.length > 0
+        ? Math.min(0.99, forcas.reduce((soma, valor) => soma + valor, 0) / forcas.length)
+        : 0;
+
+    const { error } = await admin
+      .schema("cerebro_autoral")
+      .from("propostas_atualizacao")
+      .insert({
+        usuario_id: usuarioId,
+        tipo_proposta: "nova_caracteristica",
+        estado_decisao: "pendente",
+        dados_propostos: {
+          origem: {
+            tipo: "analise_dimensao_corpus_autoral",
+            entrada_id: dimensao.id,
+          },
+          dimensao: {
+            id: dimensao.id,
+            codigo: dimensao.codigo,
+            nome: dimensao.nome,
+          },
+          corpus: {
+            obras: obrasAtivas.map((obra) => ({ id: obra.id, titulo: obra.titulo })),
+            total_fragmentos_amostrados: fragmentosSelecionados.length,
+          },
+          aprendizado: {
+            titulo: caracteristica.titulo,
+            descricao: caracteristica.descricao,
+          },
+          caracteristica: {
+            titulo: caracteristica.titulo,
+            descricao: caracteristica.descricao,
+            formula_metodologica: caracteristica.formula_metodologica,
+            regras: caracteristica.regras,
+            evidencias: caracteristica.evidencias,
+          },
+        },
+        justificativa_ia:
+          "Característica candidata extraída exclusivamente do corpus autoral ativo, com evidências literais. Requer confirmação humana antes de integrar o perfil ativo.",
+        confianca_calculada: Number(confianca.toFixed(2)),
+      });
+
+    if (error) {
+      throw new Error(`Falha ao registrar proposta de análise: ${error.message}`);
+    }
+
+    totalPropostas++;
+    totalRegras += caracteristica.regras.length;
+    totalEvidencias += caracteristica.evidencias.length;
+  }
 
   try {
     revalidatePath("/cerebro");
-    revalidatePath("/");
-  } catch {
-    // Ignorado fora do ciclo de requisição HTTP
-  }
+  } catch {}
 
-  return resultado;
+  return {
+    sucesso: true,
+    totalCaracteristicas: analise.caracteristicas.length,
+    totalRegras,
+    totalEvidencias,
+    totalPropostas,
+    mensagem:
+      "Análise concluída. As características candidatas foram enviadas para Aprendizados e aguardam sua confirmação.",
+  };
 }
 
 /**
@@ -237,8 +443,8 @@ export async function obterPropostasAtualizacaoCerebro(): Promise<PropostaAtuali
 
 /**
  * Registra a decisão soberana do autor sobre uma proposta.
- * Confirmar torna o aprendizado elegível para dossiês futuros;
- * rejeitar preserva o histórico sem influenciar novas reflexões.
+ * Para propostas de análise do corpus, a confirmação materializa a característica,
+ * suas regras e evidências no perfil ativo. A rejeição apenas preserva o histórico.
  */
 export async function decidirPropostaAtualizacaoCerebro({
   propostaId,
@@ -255,7 +461,7 @@ export async function decidirPropostaAtualizacaoCerebro({
   const { data: proposta, error: erroBusca } = await admin
     .schema("cerebro_autoral")
     .from("propostas_atualizacao")
-    .select("id, estado_decisao")
+    .select("*")
     .eq("id", propostaId)
     .eq("usuario_id", usuarioId)
     .single();
@@ -266,6 +472,139 @@ export async function decidirPropostaAtualizacaoCerebro({
 
   if (proposta.estado_decisao !== "pendente") {
     throw new Error("Esta proposta já recebeu uma decisão e foi preservada no histórico.");
+  }
+
+  if (decisao === "confirmada" && proposta.tipo_proposta === "nova_caracteristica") {
+    const dados = (proposta.dados_propostos || {}) as any;
+    const dimensaoId = dados?.dimensao?.id as string | undefined;
+    const candidata = dados?.caracteristica as
+      | {
+          titulo?: string;
+          descricao?: string;
+          formula_metodologica?: string | null;
+          regras?: Array<{
+            tipo: "prescritiva" | "proscritiva" | "preferencia" | "restricao_estilo";
+            enunciado: string;
+            explicacao: string;
+          }>;
+          evidencias?: Array<{
+            fragmento_id: string;
+            trecho_citado: string;
+            explicacao: string;
+            forca_evidencia: number;
+          }>;
+        }
+      | undefined;
+
+    if (dimensaoId && candidata?.titulo && candidata?.descricao) {
+      const { data: existente } = await admin
+        .schema("cerebro_autoral")
+        .from("caracteristicas")
+        .select("id")
+        .eq("usuario_id", usuarioId)
+        .contains("metadados", { proposta_id: propostaId })
+        .maybeSingle();
+
+      let caracteristicaId = existente?.id as string | undefined;
+
+      if (!caracteristicaId) {
+        const evidencias = Array.isArray(candidata.evidencias) ? candidata.evidencias : [];
+        const regras = Array.isArray(candidata.regras) ? candidata.regras : [];
+        const corpusObras = Array.isArray(dados?.corpus?.obras) ? dados.corpus.obras : [];
+
+        const { data: novaCaracteristica, error: erroCaracteristica } = await admin
+          .schema("cerebro_autoral")
+          .from("caracteristicas")
+          .insert({
+            dimensao_id: dimensaoId,
+            usuario_id: usuarioId,
+            titulo: candidata.titulo,
+            descricao: candidata.descricao,
+            formula_metodologica: candidata.formula_metodologica || null,
+            origem: "nucleo_autoral",
+            confianca_calculada: Number(proposta.confianca_calculada || 0),
+            total_evidencias: evidencias.length,
+            total_contraevidencias: 0,
+            total_obras_distintas: Math.max(1, corpusObras.length),
+            estado_revisao: "confirmada",
+            estado_proposta: "confirmada",
+            componentes_confianca: {
+              evidencias: evidencias.length,
+              contraevidencias: 0,
+              obras_distintas: corpusObras.length,
+              periodos_distintos: 0,
+              consistencia: Number(proposta.confianca_calculada || 0),
+              confirmacao_humana: true,
+            },
+            metadados: {
+              proposta_id: propostaId,
+              origem: "analise_dimensao_corpus_autoral",
+              corpus_obras: corpusObras,
+              confirmado_em: new Date().toISOString(),
+            },
+          })
+          .select("id")
+          .single();
+
+        if (erroCaracteristica || !novaCaracteristica) {
+          throw new Error(
+            `Falha ao incorporar característica ao Cérebro: ${erroCaracteristica?.message || "registro ausente"}`
+          );
+        }
+
+        caracteristicaId = novaCaracteristica.id;
+
+        for (const regra of regras) {
+          const { error: erroRegra } = await admin
+            .schema("cerebro_autoral")
+            .from("regras")
+            .insert({
+              usuario_id: usuarioId,
+              dimensao_id: dimensaoId,
+              caracteristica_id: caracteristicaId,
+              tipo_regra: regra.tipo,
+              enunciado: regra.enunciado,
+              explicacao: regra.explicacao,
+              peso: 1.0,
+              ativa: true,
+            });
+          if (erroRegra) {
+            throw new Error(`Falha ao incorporar regra confirmada: ${erroRegra.message}`);
+          }
+        }
+
+        for (const evidencia of evidencias) {
+          const { data: fragmentoValido } = await admin
+            .from("v_fragmentos_detalhados")
+            .select("id")
+            .eq("id", evidencia.fragmento_id)
+            .eq("usuario_id", usuarioId)
+            .eq("obra_natureza", "autoral")
+            .maybeSingle();
+
+          if (!fragmentoValido) continue;
+
+          const { error: erroEvidencia } = await admin
+            .schema("processamento")
+            .from("evidencias")
+            .insert({
+              usuario_id: usuarioId,
+              fragmento_id: evidencia.fragmento_id,
+              dimensao_id: dimensaoId,
+              trecho_citado: evidencia.trecho_citado,
+              explicacao: evidencia.explicacao,
+              forca_evidencia: evidencia.forca_evidencia,
+              estado_revisao: "confirmada",
+            });
+
+          if (erroEvidencia) {
+            throw new Error(
+              `Falha ao incorporar evidência confirmada: ${erroEvidencia.message}`
+            );
+          }
+        }
+      }
+    }
   }
 
   const { error: erroAtualizacao } = await admin
@@ -287,9 +626,7 @@ export async function decidirPropostaAtualizacaoCerebro({
   try {
     revalidatePath("/cerebro");
     revalidatePath("/reflexoes");
-  } catch {
-    // Ignorado fora do ciclo de requisição HTTP.
-  }
+  } catch {}
 
   return { sucesso: true, estado: decisao };
 }

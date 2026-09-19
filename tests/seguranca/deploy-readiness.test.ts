@@ -35,7 +35,9 @@ describe("Deploy readiness — trust boundaries e fail-safe", () => {
 
     expect(flags).toContain("FEATURE_LEGACY_BRAIN_ANALYZER");
     expect(flags).toContain('(process.env.FEATURE_LEGACY_BRAIN_ANALYZER as FeatureFlagState) || "off"');
-    expect(acoes).toContain('isFlagAtiva("FEATURE_LEGACY_BRAIN_ANALYZER")');
+    expect(acoes).toContain("proporAnaliseDimensaoComIA");
+    expect(acoes).not.toContain("analisarDimensaoComIA");
+    expect(acoes).not.toContain('isFlagAtiva("FEATURE_LEGACY_BRAIN_ANALYZER")');
   });
 
   it("usa o valor de citação externa aceito pelo contrato live do banco", () => {
