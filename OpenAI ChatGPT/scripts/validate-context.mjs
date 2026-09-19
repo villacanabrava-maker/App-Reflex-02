@@ -11,6 +11,17 @@ const required = [
   "OpenAI ChatGPT/PROJECT_MAP.md",
   "OpenAI ChatGPT/CONTINUITY_LEDGER.md",
   "OpenAI ChatGPT/DECISIONS.md",
+  "OpenAI ChatGPT/CODEX_NATIVE_INTEGRATION.md",
+  ".codex/config.toml",
+  ".codex/agents/reflex-orchestrator.toml",
+  ".codex/agents/reflex-architecture.toml",
+  ".codex/agents/reflex-supabase.toml",
+  ".codex/agents/reflex-frontend.toml",
+  ".codex/agents/reflex-cognitive.toml",
+  ".codex/agents/reflex-qa.toml",
+  ".codex/agents/reflex-platform.toml",
+  ".codex/agents/reflex-research.toml",
+  ".codex/agents/reflex-continuity.toml",
 ];
 
 const skills = [
@@ -19,6 +30,9 @@ const skills = [
   "openai-reflex-supabase-safe",
   "openai-reflex-cognitive-integrity",
   "openai-reflex-continuity",
+  "openai-reflex-feature-delivery",
+  "openai-reflex-research-evidence",
+  "openai-reflex-release-verify",
 ];
 
 const secretPatterns = [
