@@ -52,7 +52,6 @@ async function executarAnaliseEstruturada({
   const openai = obterClienteOpenAI();
 
   const fragmentosFormatados = fragmentos
-    .slice(0, 15)
     .map(
       (f) => `[FRAGMENTO_ID: ${f.id}] (Obra: ${f.obra_titulo})\n${f.conteudo}\n---`
     )
@@ -66,7 +65,7 @@ Dimensão: "${dimensaoNome}" (${dimensaoCodigo})
 Escopo Canônico: "${dimensaoDescricao}"
 
 Regras obrigatórias:
-1. Trabalhe SOMENTE com os fragmentos fornecidos e com as obras selecionadas pelo usuário para o corpus ativo.
+1. Trabalhe SOMENTE com os fragmentos explicitamente selecionados pelo usuário para esta análise. Não suponha contexto fora desse escopo.
 2. Identifique características específicas e distintivas apenas quando houver sustentação textual.
 3. Extraia regras PRESCRITIVAS e PROSCRITIVAS / ANTI-REGRAS apenas como propostas candidatas.
 4. Cada característica deve conter evidências literais exatas e o [FRAGMENTO_ID] correspondente.
