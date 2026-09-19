@@ -11,6 +11,8 @@ import type {
   ResumoCerebro,
   PropostaAtualizacaoCerebro,
   ObraCorpusCerebro,
+  EstruturaObraCerebro,
+  EscopoAnaliseCerebro,
 } from "@/tipos/cerebro";
 
 /**
@@ -202,6 +204,103 @@ export async function obterCorpusAutoralCerebro(): Promise<ObraCorpusCerebro[]> 
   }));
 }
 
+export async function obterEstruturaObraCerebro(
+  obraId: string
+): Promise<EstruturaObraCerebro> {
+  const usuarioId = await obterUsuarioAtualId();
+  const admin = criarClienteAdmin();
+
+  const { data: obra, error: erroObra } = await admin
+    .schema("biblioteca")
+    .from("obras")
+    .select("id, titulo, natureza, participa_cerebro")
+    .eq("id", obraId)
+    .eq("usuario_id", usuarioId)
+    .maybeSingle();
+
+  if (
+    erroObra ||
+    !obra ||
+    obra.natureza !== "autoral" ||
+    !obra.participa_cerebro
+  ) {
+    throw new Error("A obra precisa estar ativa no corpus autoral para definir o escopo.");
+  }
+
+  const { data: versao, error: erroVersao } = await admin
+    .schema("biblioteca")
+    .from("versoes_obras")
+    .select("id")
+    .eq("obra_id", obraId)
+    .eq("usuario_id", usuarioId)
+    .eq("estado_processamento", "processado")
+    .order("numero_versao", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (erroVersao || !versao) {
+    throw new Error("A obra ativa ainda não possui uma versão processada disponível.");
+  }
+
+  const { data: documento, error: erroDocumento } = await admin
+    .schema("processamento")
+    .from("documentos_processados")
+    .select("id")
+    .eq("versao_obra_id", versao.id)
+    .eq("usuario_id", usuarioId)
+    .eq("estado_publicacao", "ativo")
+    .maybeSingle();
+
+  if (erroDocumento || !documento) {
+    throw new Error("O documento processado ativo não foi encontrado.");
+  }
+
+  const [{ data: secoes, error: erroSecoes }, { data: fragmentos, error: erroFragmentos }] =
+    await Promise.all([
+      admin
+        .schema("processamento")
+        .from("secoes")
+        .select("id, titulo, ordem")
+        .eq("documento_processado_id", documento.id)
+        .eq("usuario_id", usuarioId)
+        .order("ordem", { ascending: true }),
+      admin
+        .schema("processamento")
+        .from("fragmentos")
+        .select("id, secao_id, ordem, conteudo, total_palavras")
+        .eq("documento_processado_id", documento.id)
+        .eq("usuario_id", usuarioId)
+        .order("ordem", { ascending: true }),
+    ]);
+
+  if (erroSecoes || erroFragmentos) {
+    throw new Error(
+      `Falha ao carregar capítulos e fragmentos: ${erroSecoes?.message || erroFragmentos?.message}`
+    );
+  }
+
+  return {
+    obra_id: obra.id,
+    obra_titulo: obra.titulo,
+    secoes: (secoes || []).map((secao) => ({
+      id: secao.id,
+      titulo: secao.titulo,
+      ordem: secao.ordem,
+      fragmentos: (fragmentos || [])
+        .filter((fragmento) => fragmento.secao_id === secao.id)
+        .map((fragmento) => ({
+          id: fragmento.id,
+          ordem: fragmento.ordem,
+          conteudo_preview:
+            fragmento.conteudo.length > 220
+              ? `${fragmento.conteudo.slice(0, 220)}…`
+              : fragmento.conteudo,
+          total_palavras: fragmento.total_palavras,
+        })),
+    })),
+  };
+}
+
 export async function definirParticipacaoObraCerebro({
   obraId,
   ativa,
@@ -251,13 +350,21 @@ export async function definirParticipacaoObraCerebro({
 }
 
 /**
- * Analisa a dimensão usando somente o corpus autoral selecionado pelo usuário.
- * O resultado entra como PROPOSTA pendente; nada é promovido automaticamente
- * ao perfil ativo do Cérebro.
+ * Analisa uma dimensão usando SOMENTE o escopo explicitamente selecionado pelo autor.
+ * Não existe amostragem aleatória nem seleção implícita.
  */
-export async function acionarAnaliseDimensao(dimensaoId: string) {
+export async function acionarAnaliseDimensao(
+  dimensaoId: string,
+  escopo: EscopoAnaliseCerebro
+) {
   const usuarioId = await obterUsuarioAtualId();
   const admin = criarClienteAdmin();
+
+  if (!escopo?.itens?.length) {
+    throw new Error(
+      "Defina primeiro o escopo da análise: livro inteiro, capítulos/seções ou fragmentos específicos."
+    );
+  }
 
   const { data: dimensao, error: errDim } = await admin
     .schema("cerebro_autoral")
@@ -282,41 +389,77 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
     throw new Error(`Falha ao carregar o corpus autoral ativo: ${erroObras.message}`);
   }
 
-  if (!obrasAtivas || obrasAtivas.length === 0) {
-    throw new Error(
-      "Nenhuma obra autoral está ativa no Cérebro. Selecione ao menos uma obra na seção Corpus Autoral."
-    );
+  if (!obrasAtivas?.length) {
+    throw new Error("Nenhuma obra autoral está ativa no Cérebro.");
   }
 
-  const idsObrasAtivas = obrasAtivas.map((obra) => obra.id);
-  const { data: fragmentosBrutos, error: errFrags } = await admin
+  const idsObrasAtivas = new Set(obrasAtivas.map((obra) => obra.id));
+  const itensObra = escopo.itens.filter((item) => item.tipo === "obra").map((item) => item.id);
+  const itensSecao = escopo.itens.filter((item) => item.tipo === "secao").map((item) => item.id);
+  const itensFragmento = escopo.itens
+    .filter((item) => item.tipo === "fragmento")
+    .map((item) => item.id);
+
+  for (const obraId of itensObra) {
+    if (!idsObrasAtivas.has(obraId)) {
+      throw new Error("O escopo contém uma obra que não está ativa no Cérebro.");
+    }
+  }
+
+  const query = admin
     .from("v_fragmentos_detalhados")
-    .select("id, conteudo, obra_id, obra_titulo, ordem")
+    .select("id, conteudo, obra_id, obra_titulo, secao_id, secao_titulo, ordem")
     .eq("usuario_id", usuarioId)
     .eq("obra_natureza", "autoral")
     .eq("participa_cerebro", true)
-    .in("obra_id", idsObrasAtivas)
-    .order("ordem", { ascending: true })
-    .limit(180);
+    .order("obra_titulo", { ascending: true })
+    .order("ordem", { ascending: true });
 
-  if (errFrags || !fragmentosBrutos || fragmentosBrutos.length === 0) {
+  const { data: todosFragmentos, error: errFrags } = await query;
+  if (errFrags) {
+    throw new Error(`Falha ao carregar os fragmentos elegíveis: ${errFrags.message}`);
+  }
+
+  const fragmentosSelecionados = (todosFragmentos || []).filter((fragmento) => {
+    if (!idsObrasAtivas.has(fragmento.obra_id)) return false;
+    if (itensObra.includes(fragmento.obra_id)) return true;
+    if (fragmento.secao_id && itensSecao.includes(fragmento.secao_id)) return true;
+    return itensFragmento.includes(fragmento.id);
+  });
+
+  if (fragmentosSelecionados.length === 0) {
+    throw new Error("O escopo selecionado não contém fragmentos válidos para análise.");
+  }
+
+  const totalTokensEstimados = fragmentosSelecionados.reduce(
+    (soma, fragmento) => soma + Math.ceil(fragmento.conteudo.length / 3.8),
+    0
+  );
+
+  if (totalTokensEstimados > 60000) {
     throw new Error(
-      "As obras selecionadas ainda não possuem fragmentos autorais processados disponíveis para análise."
+      `O escopo escolhido contém aproximadamente ${totalTokensEstimados.toLocaleString("pt-BR")} tokens. Reduza a seleção para capítulos ou fragmentos mais específicos.`
     );
   }
 
-  // Amostragem balanceada: evita que uma obra longa domine o perfil quando
-  // várias obras estiverem ativas simultaneamente.
-  const porObra = new Map<string, typeof fragmentosBrutos>();
-  for (const fragmento of fragmentosBrutos) {
-    const grupo = porObra.get(fragmento.obra_id) || [];
-    grupo.push(fragmento);
-    porObra.set(fragmento.obra_id, grupo);
-  }
-
-  const fragmentosSelecionados = Array.from(porObra.values())
-    .flatMap((grupo) => grupo.slice(0, 8))
-    .slice(0, 24);
+  const idsObrasUsadas = Array.from(
+    new Set(fragmentosSelecionados.map((fragmento) => fragmento.obra_id))
+  );
+  const obrasUsadas = obrasAtivas.filter((obra) => idsObrasUsadas.includes(obra.id));
+  const secoesUsadas = Array.from(
+    new Map(
+      fragmentosSelecionados
+        .filter((fragmento) => fragmento.secao_id)
+        .map((fragmento) => [
+          fragmento.secao_id,
+          {
+            id: fragmento.secao_id,
+            titulo: fragmento.secao_titulo,
+            obra_id: fragmento.obra_id,
+          },
+        ])
+    ).values()
+  );
 
   const analise = await proporAnaliseDimensaoComIA({
     dimensaoId: dimensao.id,
@@ -340,7 +483,7 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
       totalEvidencias: 0,
       totalPropostas: 0,
       mensagem:
-        "Não foram encontradas evidências suficientemente fortes nesta dimensão para o corpus selecionado.",
+        "Não foram encontradas evidências suficientemente fortes no conteúdo que você selecionou.",
     };
   }
 
@@ -364,7 +507,7 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
         estado_decisao: "pendente",
         dados_propostos: {
           origem: {
-            tipo: "analise_dimensao_corpus_autoral",
+            tipo: "analise_dimensao_escopo_explicito",
             entrada_id: dimensao.id,
           },
           dimensao: {
@@ -373,8 +516,19 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
             nome: dimensao.nome,
           },
           corpus: {
-            obras: obrasAtivas.map((obra) => ({ id: obra.id, titulo: obra.titulo })),
-            total_fragmentos_amostrados: fragmentosSelecionados.length,
+            modo_selecao: "explicito",
+            obras: obrasUsadas.map((obra) => ({ id: obra.id, titulo: obra.titulo })),
+            secoes: secoesUsadas,
+            fragmentos_selecionados: fragmentosSelecionados.map((fragmento) => ({
+              id: fragmento.id,
+              secao_id: fragmento.secao_id,
+              secao_titulo: fragmento.secao_titulo,
+              obra_id: fragmento.obra_id,
+              obra_titulo: fragmento.obra_titulo,
+              ordem: fragmento.ordem,
+            })),
+            total_fragmentos: fragmentosSelecionados.length,
+            tokens_estimados: totalTokensEstimados,
           },
           aprendizado: {
             titulo: caracteristica.titulo,
@@ -389,7 +543,7 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
           },
         },
         justificativa_ia:
-          "Característica candidata extraída exclusivamente do corpus autoral ativo, com evidências literais. Requer confirmação humana antes de integrar o perfil ativo.",
+          "Característica candidata extraída exclusivamente do escopo escolhido manualmente pelo autor. Requer confirmação humana antes de integrar o perfil ativo.",
         confianca_calculada: Number(confianca.toFixed(2)),
       });
 
@@ -413,7 +567,7 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
     totalEvidencias,
     totalPropostas,
     mensagem:
-      "Análise concluída. As características candidatas foram enviadas para Aprendizados e aguardam sua confirmação.",
+      `Análise concluída sobre ${fragmentosSelecionados.length} fragmentos escolhidos por você. As propostas foram enviadas para Aprendizados.`,
   };
 }
 

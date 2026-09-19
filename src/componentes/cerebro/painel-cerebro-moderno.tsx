@@ -325,6 +325,7 @@ export function PainelCerebroModerno({
             dimensoes={dimensoes}
             caracteristicas={caracteristicas}
             regras={regras}
+            corpusAutoral={corpusAutoral}
           />
         </div>
       )}
