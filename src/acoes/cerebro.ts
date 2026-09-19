@@ -152,6 +152,105 @@ export async function obterResumoCerebro(): Promise<ResumoCerebro> {
 }
 
 /**
+ * Lista obras autorais processadas e permite ao usuário controlar quais participam
+ * do corpus ativo usado nas análises do Cérebro.
+ */
+export async function obterCorpusAutoralCerebro(): Promise<ObraCorpusCerebro[]> {
+  const usuarioId = await obterUsuarioAtualId();
+  const admin = criarClienteAdmin();
+
+  const { data, error } = await admin
+    .from("v_obras_detalhadas")
+    .select("id, titulo, tipo, estado_processamento, participa_cerebro, total_palavras_estimado")
+    .eq("usuario_id", usuarioId)
+    .eq("natureza", "autoral")
+    .eq("estado_processamento", "processado")
+    .order("criado_em", { ascending: false });
+
+  if (error) {
+    console.error("Erro ao listar corpus autoral do Cérebro:", error);
+    return [];
+  }
+
+  const obras = data || [];
+  if (obras.length === 0) return [];
+
+  const ids = obras.map((obra) => obra.id);
+  const { data: fragmentos } = await admin
+    .from("v_fragmentos_detalhados")
+    .select("obra_id")
+    .eq("usuario_id", usuarioId)
+    .in("obra_id", ids);
+
+  const contagemPorObra = new Map<string, number>();
+  for (const fragmento of fragmentos || []) {
+    if (!fragmento.obra_id) continue;
+    contagemPorObra.set(
+      fragmento.obra_id,
+      (contagemPorObra.get(fragmento.obra_id) || 0) + 1
+    );
+  }
+
+  return obras.map((obra) => ({
+    id: obra.id,
+    titulo: obra.titulo,
+    tipo: obra.tipo,
+    estado_processamento: obra.estado_processamento,
+    participa_cerebro: Boolean(obra.participa_cerebro),
+    total_fragmentos: contagemPorObra.get(obra.id) || 0,
+    total_palavras: Number(obra.total_palavras_estimado || 0),
+  }));
+}
+
+export async function definirParticipacaoObraCerebro({
+  obraId,
+  ativa,
+}: {
+  obraId: string;
+  ativa: boolean;
+}) {
+  const usuarioId = await obterUsuarioAtualId();
+  const admin = criarClienteAdmin();
+
+  const { data: obra, error: erroObra } = await admin
+    .schema("biblioteca")
+    .from("obras")
+    .select("id, natureza")
+    .eq("id", obraId)
+    .eq("usuario_id", usuarioId)
+    .maybeSingle();
+
+  if (erroObra || !obra) {
+    throw new Error("Obra não encontrada.");
+  }
+  if (obra.natureza !== "autoral") {
+    throw new Error("Somente obras autorais podem integrar o núcleo autoral do Cérebro.");
+  }
+
+  const { error } = await admin
+    .schema("biblioteca")
+    .from("obras")
+    .update({
+      participa_cerebro: ativa,
+      participacao_cerebro: ativa ? "nucleo_autoral" : "excluida",
+      atualizado_em: new Date().toISOString(),
+    })
+    .eq("id", obraId)
+    .eq("usuario_id", usuarioId);
+
+  if (error) {
+    throw new Error(`Falha ao atualizar corpus do Cérebro: ${error.message}`);
+  }
+
+  try {
+    revalidatePath("/cerebro");
+    revalidatePath("/biblioteca");
+  } catch {}
+
+  return { sucesso: true, ativa };
+}
+
+/**
  * Dispara a análise cognitiva com OpenAI gpt-4o para extrair características
  * e regras metodológicas de uma dimensão a partir dos fragmentos autorais.
  */
