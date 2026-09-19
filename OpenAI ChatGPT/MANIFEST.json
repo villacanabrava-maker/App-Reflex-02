@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "updated_at": "2026-09-19T11:40:00-03:00",
+  "version": "2.0.0",
+  "updated_at": "2026-09-19T13:05:00-03:00",
   "project": {
     "name": "App Reflex 02",
     "repository": "villacanabrava-maker/App-Reflex-02",
@@ -32,7 +32,10 @@
     "openai-reflex-runtime-debug",
     "openai-reflex-supabase-safe",
     "openai-reflex-cognitive-integrity",
-    "openai-reflex-continuity"
+    "openai-reflex-continuity",
+    "openai-reflex-feature-delivery",
+    "openai-reflex-research-evidence",
+    "openai-reflex-release-verify"
   ],
   "quality_gates": [
     "npx tsc --noEmit",
@@ -45,5 +48,21 @@
     "OpenAI ChatGPT/CURRENT_STATE.md",
     "OpenAI ChatGPT/CONTINUITY_LEDGER.md",
     "OpenAI ChatGPT/DECISIONS.md"
-  ]
+  ],
+  "codex": {
+    "project_config": ".codex/config.toml",
+    "native_agents_dir": ".codex/agents",
+    "native_agents": [
+      "reflex_orchestrator",
+      "reflex_architecture",
+      "reflex_supabase",
+      "reflex_frontend",
+      "reflex_cognitive",
+      "reflex_qa",
+      "reflex_platform",
+      "reflex_research",
+      "reflex_continuity"
+    ],
+    "trust_required": true
+  }
 }

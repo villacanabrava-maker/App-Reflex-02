@@ -43,3 +43,10 @@ HEAD associado: `d15fdf410e5c0c879196e66e3efba1f5541f7349`
 Um preview antigo exibiu erro do analisador legado. Diagnóstico reconciliou URL → deployment → branch → SHA. A branch de preview foi sincronizada com `main`.
 
 Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel.
+
+## 2026-09-19 — Integração nativa Codex O1–O9
+- camada OpenAI revisada contra documentação oficial atual de AGENTS.md, configuração, subagentes, Skills e Agents SDK;
+- adicionada configuração de projeto Codex com aprovação on-request e sandbox controlado;
+- adicionados 9 papéis nativos em .codex/agents, espelhando O1–O9 com menor privilégio;
+- adicionadas Skills de entrega de feature, pesquisa baseada em evidência e verificação de release;
+- continuidade continua proibindo segredos, transcrições integrais e chain-of-thought.

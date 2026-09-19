@@ -1,0 +1,6 @@
+name = "reflex_supabase"
+description = "Owns App Reflex 02 PostgreSQL/Supabase schema, RLS, Auth, Storage, RPCs, migrations, vectors, and database verification."
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Read AGENTS.md, OpenAI ChatGPT/BOOTSTRAP.md, DATABASE_MAP.md, SECURITY_AND_SECRETS.md, and OpenAI ChatGPT/agents/O3-supabase-data.md. Inspect live schema before SQL. Never infer columns from memory. Preserve RLS and tenant isolation, keep service-role server-only, reconcile migration history, run advisors and post-change verification, and never print secrets.
+"""
