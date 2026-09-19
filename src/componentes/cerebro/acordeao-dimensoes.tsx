@@ -17,7 +17,7 @@ interface Props {
   dimensoes: DimensaoCerebro[];
   caracteristicas: CaracteristicaCerebro[];
   regras: RegraCerebro[];
-  corpusAutoral: ObraCorpusCerebro[];
+  corpusAutoral?: ObraCorpusCerebro[];
 }
 
 const INFO_PLANOS: Record<
@@ -48,7 +48,7 @@ export function AcordeaoDimensoes({
   dimensoes,
   caracteristicas,
   regras,
-  corpusAutoral,
+  corpusAutoral = [],
 }: Props) {
   const [planoFiltro, setPlanoFiltro] = useState<string>("todos");
   const [dimensaoAbertaId, setDimensaoAbertaId] = useState<string | null>(
