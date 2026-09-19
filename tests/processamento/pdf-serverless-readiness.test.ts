@@ -14,7 +14,8 @@ describe("PDF serverless readiness", () => {
       "utf8"
     );
 
-    expect(source).toContain('import pdfParse from "pdf-parse"');
+    expect(source).toContain('import { createRequire } from "node:module"');
+    expect(source).toContain('requireNode("pdf-parse")');
     expect(source).toContain("await pdfParse(buffer)");
     expect(source).not.toContain("PDFParse.setWorker");
     expect(source).not.toContain('import("pdf-parse/worker")');
