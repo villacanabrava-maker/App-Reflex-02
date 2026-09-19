@@ -600,6 +600,24 @@ export async function obterPropostasAtualizacaoCerebro(): Promise<PropostaAtuali
  * Para propostas de análise do corpus, a confirmação materializa a característica,
  * suas regras e evidências no perfil ativo. A rejeição apenas preserva o histórico.
  */
+export interface ResultadoDecisaoPropostaAtualizacao {
+  success: boolean;
+  idempotent: boolean;
+  proposta_id: string;
+  estado: "confirmada" | "rejeitada";
+  entidade_tipo: "caracteristica" | "regra" | "metodologia" | "nenhuma";
+  entidade_id: string | null;
+  evento_id: string | null;
+}
+
+/**
+ * Registra a decisão soberana do autor sobre uma proposta.
+ *
+ * A materialização ocorre dentro da RPC transacional
+ * cerebro_autoral.decidir_proposta_atualizacao_atomica. Assim, proposta,
+ * entidade cognitiva e evento de memória são persistidos integralmente ou a
+ * transação é revertida por completo.
+ */
 export async function decidirPropostaAtualizacaoCerebro({
   propostaId,
   decisao,
@@ -612,169 +630,27 @@ export async function decidirPropostaAtualizacaoCerebro({
   const usuarioId = await obterUsuarioAtualId();
   const admin = criarClienteAdmin();
 
-  const { data: proposta, error: erroBusca } = await admin
+  const { data, error } = await admin
     .schema("cerebro_autoral")
-    .from("propostas_atualizacao")
-    .select("*")
-    .eq("id", propostaId)
-    .eq("usuario_id", usuarioId)
-    .single();
+    .rpc("decidir_proposta_atualizacao_atomica", {
+      p_usuario_id: usuarioId,
+      p_proposta_id: propostaId,
+      p_decisao: decisao,
+      p_notas_autor: notasAutor?.trim() || null,
+    });
 
-  if (erroBusca || !proposta) {
-    throw new Error("Proposta de aprendizado não encontrada.");
+  if (error) {
+    throw new Error(
+      `Falha ao decidir/materializar proposta de aprendizado: ${error.message}`
+    );
   }
 
-  if (proposta.estado_decisao !== "pendente") {
-    throw new Error("Esta proposta já recebeu uma decisão e foi preservada no histórico.");
-  }
+  const resultado = data as ResultadoDecisaoPropostaAtualizacao | null;
 
-  if (decisao === "confirmada" && proposta.tipo_proposta === "nova_caracteristica") {
-    const dados = (proposta.dados_propostos || {}) as any;
-    const dimensaoId = dados?.dimensao?.id as string | undefined;
-    const candidata = dados?.caracteristica as
-      | {
-          titulo?: string;
-          descricao?: string;
-          formula_metodologica?: string | null;
-          regras?: Array<{
-            tipo: "prescritiva" | "proscritiva" | "preferencia" | "restricao_estilo";
-            enunciado: string;
-            explicacao: string;
-          }>;
-          evidencias?: Array<{
-            fragmento_id: string;
-            trecho_citado: string;
-            explicacao: string;
-            forca_evidencia: number;
-          }>;
-        }
-      | undefined;
-
-    if (dimensaoId && candidata?.titulo && candidata?.descricao) {
-      const { data: existente } = await admin
-        .schema("cerebro_autoral")
-        .from("caracteristicas")
-        .select("id")
-        .eq("usuario_id", usuarioId)
-        .contains("metadados", { proposta_id: propostaId })
-        .maybeSingle();
-
-      let caracteristicaId = existente?.id as string | undefined;
-
-      if (!caracteristicaId) {
-        const evidencias = Array.isArray(candidata.evidencias) ? candidata.evidencias : [];
-        const regras = Array.isArray(candidata.regras) ? candidata.regras : [];
-        const corpusObras = Array.isArray(dados?.corpus?.obras) ? dados.corpus.obras : [];
-
-        const { data: novaCaracteristica, error: erroCaracteristica } = await admin
-          .schema("cerebro_autoral")
-          .from("caracteristicas")
-          .insert({
-            dimensao_id: dimensaoId,
-            usuario_id: usuarioId,
-            titulo: candidata.titulo,
-            descricao: candidata.descricao,
-            formula_metodologica: candidata.formula_metodologica || null,
-            origem: "nucleo_autoral",
-            confianca_calculada: Number(proposta.confianca_calculada || 0),
-            total_evidencias: evidencias.length,
-            total_contraevidencias: 0,
-            total_obras_distintas: Math.max(1, corpusObras.length),
-            estado_revisao: "confirmada",
-            estado_proposta: "confirmada",
-            componentes_confianca: {
-              evidencias: evidencias.length,
-              contraevidencias: 0,
-              obras_distintas: corpusObras.length,
-              periodos_distintos: 0,
-              consistencia: Number(proposta.confianca_calculada || 0),
-              confirmacao_humana: true,
-            },
-            metadados: {
-              proposta_id: propostaId,
-              origem: "analise_dimensao_corpus_autoral",
-              corpus_obras: corpusObras,
-              confirmado_em: new Date().toISOString(),
-            },
-          })
-          .select("id")
-          .single();
-
-        if (erroCaracteristica || !novaCaracteristica) {
-          throw new Error(
-            `Falha ao incorporar característica ao Cérebro: ${erroCaracteristica?.message || "registro ausente"}`
-          );
-        }
-
-        caracteristicaId = novaCaracteristica.id;
-
-        for (const regra of regras) {
-          const { error: erroRegra } = await admin
-            .schema("cerebro_autoral")
-            .from("regras")
-            .insert({
-              usuario_id: usuarioId,
-              dimensao_id: dimensaoId,
-              caracteristica_id: caracteristicaId,
-              tipo_regra: regra.tipo,
-              enunciado: regra.enunciado,
-              explicacao: regra.explicacao,
-              peso: 1.0,
-              ativa: true,
-            });
-          if (erroRegra) {
-            throw new Error(`Falha ao incorporar regra confirmada: ${erroRegra.message}`);
-          }
-        }
-
-        for (const evidencia of evidencias) {
-          const { data: fragmentoValido } = await admin
-            .from("v_fragmentos_detalhados")
-            .select("id")
-            .eq("id", evidencia.fragmento_id)
-            .eq("usuario_id", usuarioId)
-            .eq("obra_natureza", "autoral")
-            .maybeSingle();
-
-          if (!fragmentoValido) continue;
-
-          const { error: erroEvidencia } = await admin
-            .schema("processamento")
-            .from("evidencias")
-            .insert({
-              usuario_id: usuarioId,
-              fragmento_id: evidencia.fragmento_id,
-              dimensao_id: dimensaoId,
-              trecho_citado: evidencia.trecho_citado,
-              explicacao: evidencia.explicacao,
-              forca_evidencia: evidencia.forca_evidencia,
-              estado_revisao: "confirmada",
-            });
-
-          if (erroEvidencia) {
-            throw new Error(
-              `Falha ao incorporar evidência confirmada: ${erroEvidencia.message}`
-            );
-          }
-        }
-      }
-    }
-  }
-
-  const { error: erroAtualizacao } = await admin
-    .schema("cerebro_autoral")
-    .from("propostas_atualizacao")
-    .update({
-      estado_decisao: decisao,
-      decidido_em: new Date().toISOString(),
-      notas_autor: notasAutor?.trim() || null,
-    })
-    .eq("id", propostaId)
-    .eq("usuario_id", usuarioId)
-    .eq("estado_decisao", "pendente");
-
-  if (erroAtualizacao) {
-    throw new Error(`Falha ao registrar decisão sobre o aprendizado: ${erroAtualizacao.message}`);
+  if (!resultado?.success || resultado.estado !== decisao) {
+    throw new Error(
+      "A decisão da proposta não retornou uma confirmação transacional válida."
+    );
   }
 
   try {
@@ -782,5 +658,12 @@ export async function decidirPropostaAtualizacaoCerebro({
     revalidatePath("/reflexoes");
   } catch {}
 
-  return { sucesso: true, estado: decisao };
+  return {
+    sucesso: true,
+    estado: resultado.estado,
+    idempotente: resultado.idempotent,
+    entidadeTipo: resultado.entidade_tipo,
+    entidadeId: resultado.entidade_id,
+    eventoId: resultado.evento_id,
+  };
 }
