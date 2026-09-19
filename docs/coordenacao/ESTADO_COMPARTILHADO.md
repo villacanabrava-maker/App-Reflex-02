@@ -1,11 +1,11 @@
 # Estado Compartilhado do Projeto — App Reflex 02
 
 **Data da Última Reconciliação:** 18 de setembro de 2026  
-**Responsável pela Reconciliação:** A9 (rflex-continuity-evidence) em conjunto com A1 (rflex-architect) e A8 (rflex-research-evolution)  
+**Responsável pela Reconciliação:** A9 (rflex-continuity-evidence) em conjunto com A1 (rflex-architect) e A7 (rflex-qa-security)  
 **Branch Canônica:** `main`  
 **Repositório Remoto:** `https://github.com/villacanabrava-maker/App-Reflex-02.git`  
 **Status do Pipeline:** Verde (100% dos testes e build passando)  
-**Última Missão Concluída:** MIS-0005 (Fusão Epistemológica, Memória Tipada, Claims e Especificação Executável do Cérebro Reflex V3.1)  
+**Última Missão Concluída:** AGENT HARNESS V2 (Modernização, Especialização, Teste e Governança dos 9 Agentes)  
 
 ---
 
@@ -14,49 +14,49 @@
 | Componente | Estado Operacional | Classificação de Evidência | Detalhes & Configurações |
 | :--- | :--- | :--- | :--- |
 | **Repositório Git** | `ATIVO / CANÔNICO` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-CI]` | Sincronizado no GitHub (`villacanabrava-maker/App-Reflex-02`). |
-| **Supabase** | `RECONCILIADO / 100% PARIDADE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas, RLS ativo em todos os schemas (`sistema`, `cerebro_autoral`, etc.), bucket `originais-biblioteca` ajustado em 50MB. Schema V3 suspenso aguardando faseamento de claims. |
-| **Segurança & AppSec** | `P0 ABERTO — CREDENCIAL REVOGAÇÃO PENDENTE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Saneado no código local e de CI (`tests/seguranca/supabase-isolamento-rls.test.ts`). Aguardando redefinição da senha do banco pelo usuário no console web Supabase. |
+| **Equipe Multiagente** | `HARNESS V2 OPERACIONAL` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes (A1 a A9) modernizados: A1 como único `mainAgent: true`, A2 a A9 como `subagent: true`, prompts em 15 seções com descrições negativas, Task Packets e Output Contracts tipados. |
+| **Supabase** | `RECONCILIADO / 100% PARIDADE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas, RLS ativo em todos os schemas, bucket `originais-biblioteca` em 50MB. |
+| **Segurança & AppSec** | `P0 ABERTO — CREDENCIAL REVOGAÇÃO PENDENTE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Saneado no código local e de CI. Aguardando redefinição da senha do banco pelo usuário no console web Supabase. |
 | **Hospedagem / Vercel** | `ADIADO / FORA DE ESCOPO` | `[CONFIRMADO-CODIGO]` | Nenhum deploy, CLI ou webhook Vercel ativo. Proibido por regra de governança. |
-| **Equipe Multiagente** | `OPERACIONAL (9 AGENTES)` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes (A1 a A9) governados por suas atribuições constitucionais estritas. |
-| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 20 arquivos de testes Vitest (74 testes) cobrindo segurança, RLS, IA, guardrails, isolamento e qualificação. |
+| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 21 arquivos de testes Vitest (80 testes) cobrindo segurança, isolamento RLS, guardrails, qualificação de agentes e acessibilidade. |
 | **Build de Produção** | `CONCLUÍDO COM SUCESSO` | `[CONFIRMADO-TESTE]` | Next.js 15 compilando estaticamente e rotas dinâmicas validadas. |
 
 ---
 
-## 2. Mapa dos 9 Agentes Constitucionais
+## 2. Mapa dos 9 Agentes no Harness V2
 
-| ID | Nome Canônico | Atribuição Exclusiva e Inegociável |
-| :--- | :--- | :--- |
-| **A1** | `rflex-architect` | Arquitetura e Coordenação Geral |
-| **A2** | `rflex-product-design` | Design e UX (Interfaces, Design System e Acessibilidade WCAG AA) |
-| **A3** | `rflex-frontend` | Frontend (Next.js 15, React 19, Componentes e Navegação) |
-| **A4** | `rflex-backend-supabase` | Backend e Supabase (PostgreSQL 17, RLS, Storage TUS e Migrations) |
-| **A5** | `rflex-ai-knowledge` | IA e Conhecimento (Claims, RAG, NLI, Memory Firewall, Taxonomia SKOS) |
-| **A6** | `rflex-platform` | Plataforma e SRE (CI/CD, GitHub Actions, Ambiente Git e Observabilidade) |
-| **A7** | `rflex-qa-security` | Qualidade e Segurança (Evals, AppSec, Auditoria RLS e Testes Automatizados) |
-| **A8** | `rflex-research-evolution` | Pesquisa e Evolução (Literatura de ponta, Benchmarks e Diagnósticos) |
-| **A9** | `rflex-continuity-evidence` | Continuidade, Evidência e Comunicação (Livro-razão de fatos, protocolos tripartite) |
+| ID | Nome Canônico | Função Sistêmica | mainAgent | subagent | Modelo Típico | Responsabilidade Primária |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A1** | `rflex-architect` | PLANNER / ORCHESTRATOR | **`true`** | `true` | `pro` / `inherit` | Coordenação Geral, Decomposição em Task Packets e ADRs |
+| **A2** | `rflex-product-design` | GENERATOR (Design) | `false` | `true` | `flash` / `pro` | Design System, UX, Tokens e Acessibilidade WCAG 2.2 AA |
+| **A3** | `rflex-frontend` | GENERATOR (Frontend) | `false` | `true` | `flash` / `pro` | Interfaces Next.js 15, React 19, Componentes e Rotas |
+| **A4** | `rflex-backend-supabase` | GENERATOR (Backend) | `false` | `true` | `pro` | PostgreSQL 17, RLS, Storage TUS e Safe Migrations |
+| **A5** | `rflex-ai-knowledge` | GENERATOR (Cognitivo) | `false` | `true` | `pro` | Claims, Schemas Zod, RAG, NLI e Memory Firewall |
+| **A6** | `rflex-platform` | PLATAFORMA / SRE | `false` | `true` | `flash` / `inherit` | CI/CD, GitHub Actions, Hygiene de Segredos e Git |
+| **A7** | `rflex-qa-security` | EVALUATOR (Zero-Trust) | `false` | `true` | `pro` | Auditoria Independente, Suíte E2E e Laudos de Release |
+| **A8** | `rflex-research-evolution`| RESEARCH (Consultivo) | `false` | `true` | `pro` / `flash` | Pesquisa Baseada em Evidências e Diagnósticos |
+| **A9** | `rflex-continuity-evidence`| EVIDENCE / HANDOFF | `false` | `true` | `flash` / `inherit`| Livro-Razão de Evidências e Intercâmbio Tripartite |
 
 ---
 
-## 3. Estado Cognitivo e Arquitetura de Inteligência V3.1
+## 3. Acervo de Governança do Harness V2
 
-A MIS-0005 consolidou o salto epistemológico do projeto:
-- **Fusão Epistemológica:** Unificação da MIS-0004 com o documento aprofundado do usuário, literatura acadêmica (Claimify, LongMemEval, LoCoMo, BEAM, HippoRAG 2, Graphiti, SKOS) e auditoria do código real.
-- **Claims como Unidade Atômica:** Proposição verificável e descontextualizada com validação por NLI Entailment e regra *Ambiguidade $\to$ Não Extrai*.
-- **10 Estados Epistemológicos:** `observed`, `quoted`, `extracted`, `consolidated`, `confirmed_authorial`, `inferred`, `hypothesized`, `proposed`, `rejected`, `superseded`.
-- **Memory-Inference Firewall:** Barreira que impede inferências do modelo de serem apresentadas como memórias, governada pela métrica **MILR (Memory-Inference Leakage Rate)** com meta de $0.0\%$.
-- **Vetor de Confiança (Confidence Vector):** Substituição do número escalar arbitrário por vetor de 10 dimensões calibráveis por tarefa.
-- **Taxonomia de Abstenção:** 7 categorias estruturadas de recusa consciente de resposta.
-- **Reclassificação Epistêmica:** Todos os parâmetros numéricos fixos da V3 reclassificados como `BASELINE EXPERIMENTAL` a calibrar.
-- **Novo Roadmap em 10 Fases:** Sequenciamento iniciando por Claims e Provenance (Fase 1) e Evals/MILR (Fase 2).
-- **ADR 0003:** Formalizado em substituição qualificadora ao histórico ADR 0002.
+A governança multiagente está consolidada e normatizada nos seguintes documentos:
+- `AGENTS.md` (Constituição multiagente atualizada);
+- `docs/agentes/ARQUITETURA_MULTIAGENTE_V2.md` (Harness operacional completo);
+- `docs/agentes/MATRIZ_OWNERSHIP.md` (Mapa de CODEOWNERS e Matriz RACI);
+- `docs/agentes/MATRIZ_PERMISSOES.md` (Matriz de Menor Privilégio e política DENY > ASK > ALLOW);
+- `docs/agentes/CONTRATOS_HANDOFF.md` (Task Packets e Output Contracts tipados);
+- `docs/agentes/ORCHESTRATION_MODES.md` (Os 6 modos de despacho de subagentes);
+- `docs/agentes/AGENT_EVALS.md` (Suíte de testes individuais, cross-agent e adversários);
+- `docs/agentes/AGENT_OBSERVABILITY.md` (As 12 métricas de telemetria e KPIs);
+- `docs/agentes/CHANGELOG_AGENTES.md` (Histórico de versões e critérios de promoção).
 
 ---
 
 ## 4. Bloqueios e Restrições Vigentes
 
 1. `[BLOQUEADO]` **Vercel:** Não realizar tentativas de deploy ou linkage de projeto até aprovação explícita do usuário.
-2. `[BLOQUEADO]` **Migrations de Schema V3:** Suspensas migrações de tabelas da V3 até que a Fase 1 (Claims) e Fase 2 (Evals) estejam prototipadas e validadas.
-3. `[BLOQUEADO]` **Mutações Destrutivas no Supabase:** Toda evolução de schema requer migration versionada e revisão de segurança prévia (A4/A7).
-4. `[BLOQUEADO]` **Reescrita Cognitiva em Produção:** Qualquer avanço nas fases do Roadmap V3.1 requer aprovação do usuário e ChatGPT via novos prompts dedicados por ciclo.
+2. `[BLOQUEADO]` **Self-Review como Substituta de Auditoria:** Especialistas não podem aprovar o próprio código para merge na `main`; A7 é obrigatório.
+3. `[BLOQUEADO]` **Alterações Diretas de A1 em Código de Produto:** A1 atua como Planner e deve despachar aos especialistas (A2–A6).
+4. `[BLOQUEADO]` **Pesquisa Sem Orçamento:** A8 deve operar sob orçamento delimitado (máx 3 sub-perguntas e 5 fontes primárias).
