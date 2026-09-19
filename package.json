@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "App Reflex 02 — plataforma pessoal de inteligência autoral e memória reflexiva.",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
