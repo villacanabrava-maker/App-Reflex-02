@@ -2,13 +2,22 @@
 
 import { useState } from "react";
 import { ChevronDown, Sparkles, Loader2, ShieldCheck, Ban, CheckCircle2, Cpu } from "lucide-react";
-import type { DimensaoCerebro, CaracteristicaCerebro, RegraCerebro, PlanoCanonico } from "@/tipos/cerebro";
+import type {
+  DimensaoCerebro,
+  CaracteristicaCerebro,
+  RegraCerebro,
+  PlanoCanonico,
+  ObraCorpusCerebro,
+  EscopoAnaliseCerebro,
+} from "@/tipos/cerebro";
 import { acionarAnaliseDimensao } from "@/acoes/cerebro";
+import { SeletorEscopoAnalise } from "./seletor-escopo-analise";
 
 interface Props {
   dimensoes: DimensaoCerebro[];
   caracteristicas: CaracteristicaCerebro[];
   regras: RegraCerebro[];
+  corpusAutoral: ObraCorpusCerebro[];
 }
 
 const INFO_PLANOS: Record<
@@ -35,12 +44,18 @@ const INFO_PLANOS: Record<
   },
 };
 
-export function AcordeaoDimensoes({ dimensoes, caracteristicas, regras }: Props) {
+export function AcordeaoDimensoes({
+  dimensoes,
+  caracteristicas,
+  regras,
+  corpusAutoral,
+}: Props) {
   const [planoFiltro, setPlanoFiltro] = useState<string>("todos");
   const [dimensaoAbertaId, setDimensaoAbertaId] = useState<string | null>(
     dimensoes[0]?.id || null
   );
   const [analisandoId, setAnalisandoId] = useState<string | null>(null);
+  const [escopos, setEscopos] = useState<Record<string, EscopoAnaliseCerebro>>({});
   const [mensagemStatus, setMensagemStatus] = useState<{
     dimensaoId: string;
     tipo: "sucesso" | "erro";
@@ -55,7 +70,8 @@ export function AcordeaoDimensoes({ dimensoes, caracteristicas, regras }: Props)
     try {
       setAnalisandoId(dimensaoId);
       setMensagemStatus(null);
-      const resultado = await acionarAnaliseDimensao(dimensaoId);
+      const escopo = escopos[dimensaoId] || { itens: [] };
+      const resultado = await acionarAnaliseDimensao(dimensaoId, escopo);
       setMensagemStatus({
         dimensaoId,
         tipo: "sucesso",
@@ -215,11 +231,19 @@ export function AcordeaoDimensoes({ dimensoes, caracteristicas, regras }: Props)
                       ) : (
                         <>
                           <Sparkles className="w-3.5 h-3.5" />
-                          <span>Analisar corpus ativo</span>
+                          <span>Analisar conteúdo selecionado</span>
                         </>
                       )}
                     </button>
                   </div>
+
+                  <SeletorEscopoAnalise
+                    obras={corpusAutoral}
+                    valor={escopos[dimensao.id] || { itens: [] }}
+                    onChange={(escopo) =>
+                      setEscopos((atual) => ({ ...atual, [dimensao.id]: escopo }))
+                    }
+                  />
 
                   {/* Mensagem de Feedback da IA */}
                   {mensagemStatus &&
@@ -255,7 +279,7 @@ export function AcordeaoDimensoes({ dimensoes, caracteristicas, regras }: Props)
                           Nenhuma característica mapeada ainda para esta dimensão.
                         </p>
                         <p className="text-[11px] text-slate-400 mt-1">
-                          Clique em “Analisar corpus ativo” para gerar candidatos sustentados pelos livros autorais selecionados.
+                          Defina acima o livro, capítulos ou fragmentos que podem sustentar esta análise e clique em “Analisar conteúdo selecionado”.
                         </p>
                       </div>
                     ) : (
