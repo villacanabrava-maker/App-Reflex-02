@@ -51,7 +51,7 @@ Não mobilizamos 9 agentes para todas as tarefas. O Arquiteto (A1) opera como de
 6. **Auditoria Independente Obrigatória:** Nenhuma alteração entra em `main` sem o laudo formal emitido por A7.
 7. **Proteção Total de Segredos:** Chaves de serviço (`service_role`, senhas) jamais são commitadas ou expostas.
 8. **Isolamento no Windows:** Proteções ativas via hooks Node.js (`pre-tool-guard.js`) e SOPs de segurança.
-9. **CI Gate e Branches Curtas:** Todo PR exige aprovação no GitHub Actions (testes, lint, types, build). Vercel permanece estritamente fora de escopo.
+9. **CI Gate, Branches Curtas e Runtime Reconciliado:** Todo PR exige GitHub Actions verde (testes, lint, types, build). A Vercel de produção está ativa; qualquer deploy ou diagnóstico deve reconciliar projeto, deployment, branch, SHA e alias, sem tratar previews antigos como produção.
 10. **Atestado de Reconciliação A9:** Toda missão concluída exige relatório `AG-XXXX.md` com evidências `[CONFIRMADO-*]`.
 
 ---
@@ -81,8 +81,10 @@ Agentes OpenAI (ChatGPT, Codex e derivados) devem usar a pasta `OpenAI ChatGPT/`
 3. `OpenAI ChatGPT/METHODOLOGY.md`
 4. workflow específico em `OpenAI ChatGPT/workflows/`
 
-### Skills OpenAI
+### Skills e subagentes OpenAI
 As Skills auto-descobertas do projeto usam prefixo `openai-reflex-` em `.agents/skills/` e apontam para os playbooks canônicos de `OpenAI ChatGPT/skills/`.
+
+Quando o Codex suportar configuração de projeto, `.codex/config.toml` e `.codex/agents/*.toml` disponibilizam papéis O1–O9 nativos equivalentes à camada descrita em `OpenAI ChatGPT/ORCHESTRATION.md`. Esses arquivos não contêm segredos e só devem ser carregados em repositório confiável.
 
 ### Precedência
 Quando documentação histórica divergir do runtime atual, agentes OpenAI devem reconciliar GitHub, Supabase e Vercel live antes de agir. Restrições de fases anteriores não devem ser aplicadas cegamente depois de uma decisão humana posterior comprovada.
