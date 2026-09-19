@@ -108,7 +108,7 @@ export function BarraLateralDesktop() {
           <PenaIcone className="h-5 w-5 text-white" />
         </div>
         <div>
-          <h1 className="text-sm font-bold leading-tight text-white">Rflex01</h1>
+          <h1 className="text-sm font-bold leading-tight text-white">Reflex 02</h1>
           <p className="text-xs font-normal text-slate-400">Cérebro Autoral</p>
         </div>
       </Link>
