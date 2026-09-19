@@ -2,6 +2,7 @@ import { describe, test, expect } from "vitest";
 import { GOLDEN_DATASET_V3_SEEDS } from "./fixtures/golden-dataset-seeds";
 import { ExtratorClaimsV3 } from "../../src/dominios/cerebro/extrator-claims";
 import { GerenciadorEventosMemoria } from "../../src/dominios/cerebro/gerenciador-eventos";
+import { MotorTaxonomicoSKOS } from "../../src/dominios/taxonomia/motor-skos";
 import { calculateMILR, calculateAMR } from "../../src/tipos/cognitivo-v3";
 
 describe("Golden Dataset V3 Runner — Avaliação Epistêmica das 12 Famílias CBR (Wave 1)", () => {
@@ -187,6 +188,79 @@ describe("Golden Dataset V3 Runner — Avaliação Epistêmica das 12 Famílias 
       expect(resultadoTransicao.novo_status).toBe("superseded");
       expect(resultadoTransicao.event_type).toBe("CLAIM_SUPERSEDED");
       expect(resultadoTransicao.event_id).toBeDefined();
+    }
+  });
+
+  test("Execução dos Casos Executáveis da Wave 3 — Taxonomia SKOS, Anti-Inflação e Ancoragem", async () => {
+    const wave3Cases = GOLDEN_DATASET_V3_SEEDS.filter((s) => s.isWave3Executable);
+    expect(wave3Cases.length).toBeGreaterThanOrEqual(1);
+
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    for (const testCase of wave3Cases) {
+      // 1. Extração do Claim da Fonte
+      const extracao = await extrator.processar({
+        usuario_id: usuarioTesteId,
+        source_type: testCase.sourceInput.sourceType,
+        source_id: testCase.sourceInput.sourceId,
+        source_version: testCase.sourceInput.sourceVersion,
+        texto_completo: testCase.sourceInput.text,
+      });
+
+      expect(extracao.claims_validados.length).toBeGreaterThanOrEqual(1);
+      const claim = extracao.claims_validados[0];
+      expect(claim.source_role).toBe("UNKNOWN"); // Não autoral
+
+      // 2. Proposição de Conceito SKOS
+      const conceito = MotorTaxonomicoSKOS.proporConceito({
+        usuario_id: usuarioTesteId,
+        pref_label: "Hermenêutica Filosófica",
+        alt_labels: ["Hermenêutica", "Interpretação Textual"],
+        definicao: "Teoria e metodologia de interpretação e compreensão de textos filosóficos.",
+      });
+
+      expect(conceito.pref_label_normalizado).toBe("hermeneutica filosofica");
+      expect(conceito.recorrencia_contagem).toBe(1);
+
+      // 3. Teste de Anti-Inflação: Propor variação idêntica/normalizada incrementa recorrência
+      const conceitoRepetido = MotorTaxonomicoSKOS.proporConceito({
+        usuario_id: usuarioTesteId,
+        pref_label: "  hermenêutica filosófica  ",
+      });
+      expect(conceitoRepetido.id).toBe(conceito.id);
+      expect(conceitoRepetido.recorrencia_contagem).toBe(2);
+
+      // 4. Teste de Resolução de Aliases
+      const aliasResolvido = MotorTaxonomicoSKOS.resolverAlias(usuarioTesteId, "Hermenêutica");
+      expect(aliasResolvido).not.toBeNull();
+      expect(aliasResolvido?.id).toBe(conceito.id);
+
+      // 5. Teste de Relações Ontológicas SKOS (BROADER)
+      const conceitoPai = MotorTaxonomicoSKOS.proporConceito({
+        usuario_id: usuarioTesteId,
+        pref_label: "Filosofia",
+      });
+      const relacao = MotorTaxonomicoSKOS.adicionarRelacao(
+        usuarioTesteId,
+        conceito.id!,
+        conceitoPai.id!,
+        "BROADER"
+      );
+      expect(relacao.tipo_relacao).toBe("BROADER");
+
+      // 6. Teste de Ancoragem Conceitual Claim <-> Conceito
+      const link = MotorTaxonomicoSKOS.vincularClaimConceito({
+        usuario_id: usuarioTesteId,
+        claim_id: "55555555-5555-5555-5555-555555555555",
+        conceito_id: conceito.id!,
+        tipo_vinculo: "DISCUSSES_CONCEPT",
+        confianca: 0.92,
+      });
+      expect(link.tipo_vinculo).toBe("DISCUSSES_CONCEPT");
+      expect(link.confianca).toBe(0.92);
+
+      // 7. Salvaguarda do Firewall: O claim original permanece com seu papel inalterado
+      expect(claim.source_role).toBe("UNKNOWN");
     }
   });
 

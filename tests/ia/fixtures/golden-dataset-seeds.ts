@@ -30,6 +30,7 @@ export interface GoldenTestCase {
   description: string;
   isWave1Executable: boolean; // Flag para distinguir testes executáveis na Wave 1
   isWave2Executable?: boolean; // Flag para casos executáveis na Wave 2 (Event Ledger e Transições)
+  isWave3Executable?: boolean; // Flag para casos executáveis na Wave 3 (Taxonomia SKOS e Ancoragem)
   sourceInput: {
     text: string;
     sourceType: "obra" | "versao_obra" | "fragmento" | "reflexao" | "nota_avulsa";
@@ -150,8 +151,9 @@ export const GOLDEN_DATASET_V3_SEEDS: GoldenTestCase[] = [
   {
     id: "CBR-05-TAXONOMY-SKOS-ALIGNMENT",
     family: "TAXONOMY",
-    description: "Contrato futuro: associação de claim com conceito ontológico SKOS.",
-    isWave1Executable: false, // Executável na Wave 3 (Ontologia SKOS)
+    description: "Associação de claim com nó ontológico SKOS, normalização, hierarquia e separação de autoria.",
+    isWave1Executable: false,
+    isWave3Executable: true, // Executável na Wave 3 (Ontologia SKOS)
     sourceInput: {
       text: "A hermenêutica filosófica difere do método empírico.",
       sourceType: "fragmento",
@@ -160,8 +162,10 @@ export const GOLDEN_DATASET_V3_SEEDS: GoldenTestCase[] = [
     },
     expectedBehavior: {
       shouldExtract: true,
+      expectedClaimType: "SOURCE_CLAIM",
+      expectedAuthorialRole: "UNKNOWN",
     },
-    notes: "Contrato formal para a Wave 3.",
+    notes: "Verifica que o conceito Hermenêutica Filosófica é normalizado, não duplica e não transforma claim em autoral.",
   },
 
   // --------------------------------------------------------------------------

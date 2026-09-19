@@ -304,36 +304,110 @@ export const ClaimCreatedPayloadSchema = z.object({
 }).strict();
 
 export const ClaimValidatedPayloadSchema = z.object({
-  nli_model: z.string(),
-  confidence: z.number(),
-  threshold_used: z.number(),
+  status_anterior: EpistemicStatusEnum.optional(),
+  novo_status: EpistemicStatusEnum.optional(),
+  justificativa: z.string().optional(),
+  nli_model: z.string().optional(),
+  confidence: z.number().optional(),
+  threshold_used: z.number().optional(),
   reasoning: z.string().optional(),
+  extra: z.record(z.string(), z.unknown()).optional(),
 }).strict();
 
 export const ClaimConfirmedAuthorPayloadSchema = z.object({
+  status_anterior: EpistemicStatusEnum.optional(),
+  novo_status: z.literal("confirmed_authorial").optional(),
+  justificativa: z.string().optional(),
   author_action: z.literal("CONFIRM"),
   notes: z.string().optional(),
   user_interface: z.string().default("web_review"),
+  extra: z.record(z.string(), z.unknown()).optional(),
 }).strict();
 
 export const ClaimSupersededPayloadSchema = z.object({
+  status_anterior: EpistemicStatusEnum.optional(),
+  novo_status: z.literal("superseded").optional(),
+  justificativa: z.string().optional(),
   superseding_claim_id: z.string().uuid().optional(),
-  superseding_reason: z.string(),
+  superseding_reason: z.string().optional(),
   temporal_scope: z.string().optional(),
+  extra: z.record(z.string(), z.unknown()).optional(),
+}).strict();
+
+export const ClaimRejectedPayloadSchema = z.object({
+  status_anterior: EpistemicStatusEnum.optional(),
+  novo_status: z.literal("rejected").optional(),
+  justificativa: z.string().min(1),
+  rejection_reason: z.string().optional(),
+  threshold_failed: z.number().optional(),
+  confidence_observed: z.number().optional(),
+  extra: z.record(z.string(), z.unknown()).optional(),
+}).strict();
+
+export const ClaimProposedPayloadSchema = z.object({
+  status_anterior: EpistemicStatusEnum.optional(),
+  novo_status: z.literal("proposed").optional(),
+  justificativa: z.string().min(1),
+  proposal_reason: z.string().optional(),
+  evidence_score: z.number().optional(),
+  extra: z.record(z.string(), z.unknown()).optional(),
+}).strict();
+
+export const ClaimRejectedByAuthorPayloadSchema = z.object({
+  status_anterior: EpistemicStatusEnum.optional(),
+  novo_status: z.literal("rejected").optional(),
+  justificativa: z.string().min(1),
+  author_notes: z.string().optional(),
+  user_interface: z.string().default("web_review"),
+  extra: z.record(z.string(), z.unknown()).optional(),
+}).strict();
+
+export const ContradictionDetectedPayloadSchema = z.object({
+  conflicting_claim_id: z.string().uuid(),
+  detection_model: z.string().default("nli_contradiction_eval"),
+  contradiction_score: z.number().min(0).max(1),
+  justificativa: z.string(),
+  extra: z.record(z.string(), z.unknown()).optional(),
+}).strict();
+
+export const SourceIngestedPayloadSchema = z.object({
+  source_type: z.string(),
+  source_id: z.string().uuid(),
+  source_version: z.number().int().min(1),
+  content_hash: z.string(),
+  total_spans: z.number().int().min(0),
+  extra: z.record(z.string(), z.unknown()).optional(),
+}).strict();
+
+export const SourceReprocessedPayloadSchema = z.object({
+  source_type: z.string(),
+  source_id: z.string().uuid(),
+  source_version: z.number().int().min(1),
+  reprocess_reason: z.string(),
+  changes_detected: z.boolean(),
+  extra: z.record(z.string(), z.unknown()).optional(),
+}).strict();
+
+export const LegacyStateImportedPayloadSchema = z.object({
+  legacy_source: z.string(),
+  legacy_id: z.string(),
+  import_batch_id: z.string().uuid(),
+  mapped_status: EpistemicStatusEnum,
+  metadata_snapshot: z.record(z.string(), z.unknown()).default({}),
 }).strict();
 
 export const MemoryEventPayloadUnion = z.discriminatedUnion("event_type", [
   z.object({ event_type: z.literal("CLAIM_CREATED"), data: ClaimCreatedPayloadSchema }),
   z.object({ event_type: z.literal("CLAIM_VALIDATED"), data: ClaimValidatedPayloadSchema }),
-  z.object({ event_type: z.literal("CLAIM_REJECTED"), data: z.record(z.string(), z.unknown()) }),
-  z.object({ event_type: z.literal("CLAIM_PROPOSED"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("CLAIM_REJECTED"), data: ClaimRejectedPayloadSchema }),
+  z.object({ event_type: z.literal("CLAIM_PROPOSED"), data: ClaimProposedPayloadSchema }),
   z.object({ event_type: z.literal("CLAIM_CONFIRMED_BY_AUTHOR"), data: ClaimConfirmedAuthorPayloadSchema }),
-  z.object({ event_type: z.literal("CLAIM_REJECTED_BY_AUTHOR"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("CLAIM_REJECTED_BY_AUTHOR"), data: ClaimRejectedByAuthorPayloadSchema }),
   z.object({ event_type: z.literal("CLAIM_SUPERSEDED"), data: ClaimSupersededPayloadSchema }),
-  z.object({ event_type: z.literal("CONTRADICTION_DETECTED"), data: z.record(z.string(), z.unknown()) }),
-  z.object({ event_type: z.literal("SOURCE_INGESTED"), data: z.record(z.string(), z.unknown()) }),
-  z.object({ event_type: z.literal("SOURCE_REPROCESSED"), data: z.record(z.string(), z.unknown()) }),
-  z.object({ event_type: z.literal("LEGACY_STATE_IMPORTED"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("CONTRADICTION_DETECTED"), data: ContradictionDetectedPayloadSchema }),
+  z.object({ event_type: z.literal("SOURCE_INGESTED"), data: SourceIngestedPayloadSchema }),
+  z.object({ event_type: z.literal("SOURCE_REPROCESSED"), data: SourceReprocessedPayloadSchema }),
+  z.object({ event_type: z.literal("LEGACY_STATE_IMPORTED"), data: LegacyStateImportedPayloadSchema }),
 ]);
 
 export interface MemoryEvent {
@@ -355,6 +429,75 @@ export interface MemoryEvent {
   payload_schema_version: number;
   criado_em: string;
 }
+
+// ============================================================================
+// 3.2 ENUMS E SCHEMAS DA TAXONOMIA SKOS (WAVE 3)
+// ============================================================================
+
+export const SKOSConceptStatusEnum = z.enum([
+  "proposed",
+  "active",
+  "merged",
+  "rejected",
+  "deprecated"
+]);
+export type SKOSConceptStatus = z.infer<typeof SKOSConceptStatusEnum>;
+
+export const SKOSRelationTypeEnum = z.enum([
+  "BROADER",
+  "NARROWER",
+  "RELATED"
+]);
+export type SKOSRelationType = z.infer<typeof SKOSRelationTypeEnum>;
+
+export const ClaimConceptLinkTypeEnum = z.enum([
+  "EXPRESSES_CONCEPT",
+  "DISCUSSES_CONCEPT",
+  "CRITICIZES_CONCEPT"
+]);
+export type ClaimConceptLinkType = z.infer<typeof ClaimConceptLinkTypeEnum>;
+
+export const SKOSConceptSchema = z.object({
+  id: z.string().uuid().optional(),
+  usuario_id: z.string().uuid(),
+  pref_label: z.string().min(2, "pref_label deve ter ao menos 2 caracteres"),
+  pref_label_normalizado: z.string().min(2),
+  alt_labels: z.array(z.string()).default([]),
+  idioma: z.string().default("pt-BR"),
+  definicao: z.string().nullable().optional(),
+  dominio_escopo: z.string().nullable().optional(),
+  status: SKOSConceptStatusEnum.default("proposed"),
+  recorrencia_contagem: z.number().int().min(1).default(1),
+  merged_into_id: z.string().uuid().nullable().optional(),
+  metadados: z.record(z.string(), z.unknown()).default({}),
+  criado_em: z.string().optional(),
+  atualizado_em: z.string().optional(),
+}).strict();
+export type SKOSConcept = z.infer<typeof SKOSConceptSchema>;
+
+export const SKOSRelationSchema = z.object({
+  id: z.string().uuid().optional(),
+  usuario_id: z.string().uuid(),
+  conceito_origem_id: z.string().uuid(),
+  conceito_destino_id: z.string().uuid(),
+  tipo_relacao: SKOSRelationTypeEnum,
+  status: z.enum(["proposed", "active", "rejected"]).default("proposed"),
+  criado_em: z.string().optional(),
+}).strict();
+export type SKOSRelation = z.infer<typeof SKOSRelationSchema>;
+
+export const ClaimConceptLinkSchema = z.object({
+  id: z.string().uuid().optional(),
+  usuario_id: z.string().uuid(),
+  claim_id: z.string().uuid(),
+  conceito_id: z.string().uuid(),
+  tipo_vinculo: ClaimConceptLinkTypeEnum.default("DISCUSSES_CONCEPT"),
+  confianca: z.number().min(0.0).max(1.0).default(0.85),
+  origem: z.enum(["IA_SUGGESTION", "HUMAN_CURATED"]).default("IA_SUGGESTION"),
+  status: z.enum(["proposed", "confirmed", "rejected"]).default("proposed"),
+  criado_em: z.string().optional(),
+}).strict();
+export type ClaimConceptLink = z.infer<typeof ClaimConceptLinkSchema>;
 
 /**
  * 4.1 Schema de Extração Bruta (RawExtraction) gerada pela LLM

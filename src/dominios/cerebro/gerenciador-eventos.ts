@@ -67,15 +67,20 @@ export class GerenciadorEventosMemoria {
   }
 
   /**
-   * Gera uma chave de idempotência determinística
+   * Gera uma chave de idempotência determinística a partir do comando
    */
   public static gerarIdempotencyKey(
     usuarioId: string,
     aggregateId: string,
     eventType: EventType,
-    suffix?: string
+    payload: Record<string, unknown>,
+    toStatus?: EpistemicStatus
   ): string {
-    const raw = `${usuarioId}:${aggregateId}:${eventType}:${suffix || ""}`;
+    const payloadHash = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(payload || {}), "utf8")
+      .digest("hex");
+    const raw = `${usuarioId}:${aggregateId}:${eventType}:${toStatus || ""}:${payloadHash}`;
     return crypto.createHash("sha256").update(raw, "utf8").digest("hex");
   }
 
@@ -83,14 +88,15 @@ export class GerenciadorEventosMemoria {
    * Registra um evento imutável no ledger episódico
    */
   public async registrarEvento(input: RegistrarEventoInput): Promise<MemoryEvent> {
-    // 1. Validar e gerar idempotency_key
+    // 1. Validar e gerar idempotency_key determinística (nunca usa timestamp volátil)
     const idempotencyKey =
       input.idempotency_key ||
       GerenciadorEventosMemoria.gerarIdempotencyKey(
         input.usuario_id,
         input.aggregate_id,
         input.event_type,
-        Date.now().toString()
+        input.payload,
+        input.to_epistemic_status
       );
 
     const fullIdempotencyKey = `${input.usuario_id}:${idempotencyKey}`;
@@ -102,18 +108,12 @@ export class GerenciadorEventosMemoria {
       if (existente) return existente;
     }
 
-    // 2. Validar payload se aplicável ao tipo de evento
-    try {
-      MemoryEventPayloadUnion.parse({
-        event_type: input.event_type,
-        data: input.payload,
-      });
-    } catch {
-      // Para eventos com payload flexível ou compatibilidade retroativa, permite se for objeto válido
-      if (typeof input.payload !== "object" || input.payload === null) {
-        throw new Error(`Payload inválido para evento do tipo ${input.event_type}`);
-      }
-    }
+    // 2. Validação Estrita do Payload via Zod Union discriminada (SEM FAIL-OPEN)
+    // Se o payload não cumprir o contrato tipado do evento, lança erro explicitamente.
+    MemoryEventPayloadUnion.parse({
+      event_type: input.event_type,
+      data: input.payload,
+    });
 
     const agora = new Date().toISOString();
     const eventId = crypto.randomUUID();
@@ -196,17 +196,26 @@ export class GerenciadorEventosMemoria {
       }
     }
 
-    // 3. Validação de pré-condições da Máquina de Estados Epistemológica
+    // 3. Validação Integral da Máquina de Estados Epistemológica: FROM + TO + ACTOR
+    const actorMap: Record<ActorType, "extractor_pipeline" | "nli_validator" | "cognitive_agent" | "human" | "system_worker"> = {
+      HUMAN: "human",
+      EXTRACTOR_PIPELINE: "extractor_pipeline",
+      NLI_VALIDATOR: "nli_validator",
+      COGNITIVE_AGENT: "cognitive_agent",
+      SYSTEM_WORKER: "system_worker",
+      IMPORTER: "system_worker",
+    };
+    const mappedActor = actorMap[input.ator_tipo];
+
     const transicaoPermitida = EPISTEMIC_STATE_MACHINE.some(
-      (t) => t.from === input.status_atual && t.to === input.novo_status
+      (t) => t.from === input.status_atual && t.to === input.novo_status && t.actor === mappedActor
     );
 
-    // Se não estiver na máquina explícita nem for reconciliação legítima de auditoria
-    if (!transicaoPermitida && input.novo_status !== "superseded" && input.novo_status !== "rejected") {
+    if (!transicaoPermitida) {
       throw new FirewallViolationError(
         "INVALID_STATE_TRANSITION",
-        `Transição não permitida na máquina de estados: de '${input.status_atual}' para '${input.novo_status}'`,
-        { from: input.status_atual, to: input.novo_status }
+        `Transição não permitida na máquina de estados: de '${input.status_atual}' para '${input.novo_status}' pelo ator '${input.ator_tipo}'`,
+        { from: input.status_atual, to: input.novo_status, actor: input.ator_tipo }
       );
     }
 
@@ -224,7 +233,19 @@ export class GerenciadorEventosMemoria {
       eventType = "CLAIM_VALIDATED";
     }
 
-    // 5. Gravar o evento append-only na memória episódica
+    // 5. Gravar o evento append-only na memória episódica com payload estritamente compatível
+    const payloadEvento: Record<string, unknown> = {
+      status_anterior: input.status_atual,
+      novo_status: input.novo_status,
+      justificativa: input.justificativa,
+      ...(input.payload_extra ? { extra: input.payload_extra } : {}),
+    };
+
+    if (eventType === "CLAIM_CONFIRMED_BY_AUTHOR") {
+      payloadEvento.author_action = "CONFIRM";
+      payloadEvento.user_interface = "web_review";
+    }
+
     const evento = await this.registrarEvento({
       usuario_id: input.usuario_id,
       event_type: eventType,
@@ -236,12 +257,7 @@ export class GerenciadorEventosMemoria {
       to_epistemic_status: input.novo_status,
       causation_event_id: input.causation_event_id,
       idempotency_key: input.idempotency_key,
-      payload: {
-        status_anterior: input.status_atual,
-        novo_status: input.novo_status,
-        justificativa: input.justificativa,
-        ...(input.payload_extra || {}),
-      },
+      payload: payloadEvento,
     });
 
     return {

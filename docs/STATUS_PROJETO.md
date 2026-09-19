@@ -8,14 +8,15 @@
 
 - GitHub: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, 30 migrations aplicadas live, migrations 0031 e 0032 prontas no repositório (`READY-BUT-NOT-APPLIED`), RLS ativo em todos os schemas e buckets privados em 50MB.
+- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, 30 migrations aplicadas live, migrations 0031 a 0034 prontas no repositório (`READY-BUT-NOT-APPLIED`), RLS ativo em todos os schemas e buckets privados em 50MB.
+- Decisão de Segurança: `SECURITY-EXCEPTION-DEV-001` (RISK ACCEPTED BY USER — DEVELOPMENT/TEST ONLY). A rotação da credencial foi adiada compulsoriamente para o **Production Security Gate** antes de qualquer publicação/produção.
 - Hospedagem / Vercel: **ADIADO — NÃO CONFIGURAR NEM PUBLICAR** nesta etapa por decisão do usuário.
 - Domínio de produção: AINDA NÃO DEFINIDO.
 - Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
 - Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
-- Último Marco Concluído: MIS-0008 — Wave 2: Episodic Event Ledger, Timeline Epistêmica e Hardening Transacional da Fundação de Claims (Gate 0 de hardening da Wave 1 concluído; qualificação de Shadow Validator e Scaffold; default off de feature flag; fingerprint canônico persistente; telemetria sem custos simulados; UTF16_CODE_UNIT; migration 0032_episodic_event_ledger.sql com tabela imutável memory_events, trigger de imutabilidade, remoção de mutação de claims por clientes e RPC transacional transicionar_estado_claim com row-locking e soberania autoral; serviços GerenciadorEventosMemoria e TimelineEpistemicaAPI; suíte em 23 arquivos com 100 testes passando 100% verde; relatório WAVE_2_EVENT_LEDGER_RESULT.md e handoff AG-0008.md).
-- Próxima Missão: MIS-0009 — Wave 3: SKOS Ontologia, Taxonomia Formal e Ancoragem Conceitual.
+- Último Marco Concluído: MIS-0009 — Wave 3: Gate de Integridade do Event Ledger + Taxonomia SKOS, Ontologia Formal e Ancoragem Conceitual (Gate 0 concluído com revogação de event forgery, eliminação de actor_type de cliente, state machine no PostgreSQL, paridade TS/DB, anti-cross-tenant, sem fail-open; Migration 0033 de hardening; Migration 0034 com skos_conceitos, skos_relacoes e claim_conceitos; MotorTaxonomicoSKOS com anti-inflação e aliases; CBR-05 executável com 100% de precisão; suíte com 110 testes passando 100% verde; relatórios WAVE_3_TAXONOMIA_SKOS_RESULT.md e AG-0009.md).
+- Próxima Missão: MIS-0010 — Wave 4: Working Memory & Retrieval Híbrido Multi-Sinal.
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 

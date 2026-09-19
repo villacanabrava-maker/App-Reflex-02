@@ -49,7 +49,7 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     }
   });
 
-  it("as migrations 0026 a 0032 existem no repositório e cobrem RLS, isolamento, storage e event ledger", () => {
+  it("as migrations 0026 a 0034 existem no repositório e cobrem RLS, isolamento, storage, event ledger hardening e SKOS", () => {
     const migrationsDir = path.join(process.cwd(), "supabase", "migrations");
     const m26 = fs.readFileSync(path.join(migrationsDir, "0026_motor_taxonomia_automatica.sql"), "utf-8");
     const m27 = fs.readFileSync(path.join(migrationsDir, "0027_grants_propostas_atualizacao.sql"), "utf-8");
@@ -58,6 +58,7 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     const m30 = fs.readFileSync(path.join(migrationsDir, "0030_sistema_rls_hardening.sql"), "utf-8");
     const m31 = fs.readFileSync(path.join(migrationsDir, "0031_claims_ledger.sql"), "utf-8");
     const m32 = fs.readFileSync(path.join(migrationsDir, "0032_episodic_event_ledger.sql"), "utf-8");
+    const m33 = fs.readFileSync(path.join(migrationsDir, "0033_event_ledger_hardening.sql"), "utf-8");
 
     // 0026
     expect(m26).toContain("taxonomia.analises");
@@ -95,6 +96,26 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     expect(m32).toContain("DROP POLICY IF EXISTS \"provenance_delete_owner\"");
     expect(m32).toContain("uq_memory_events_idempotency");
     expect(m32).toContain("fk_claims_origin_event");
+
+    // 0033 (Wave 3 - Gate 0 Event Ledger Hardening)
+    expect(m33).toContain("DROP POLICY IF EXISTS \"memory_events_insert_owner\""); // Proibição de event forgery
+    expect(m33).toContain("uq_memory_events_id_usuario");
+    expect(m33).toContain("fk_claims_origin_event_tenant"); // Anti-cross-tenant
+    expect(m33).toContain("fk_memory_events_causation_tenant"); // Anti-cross-tenant
+    expect(m33).toContain("validar_transicao_epistemica");
+    expect(m33).toContain("transicionar_estado_claim_humano");
+    expect(m33).toContain("transicionar_estado_claim_sistema");
+
+    // 0034 (Wave 3 - Taxonomia SKOS e Ancoragem Conceitual)
+    const m34 = fs.readFileSync(path.join(migrationsDir, "0034_taxonomia_skos_e_claim_concepts.sql"), "utf-8");
+    expect(m34).toContain("taxonomia.skos_conceitos ENABLE ROW LEVEL SECURITY");
+    expect(m34).toContain("taxonomia.skos_relacoes ENABLE ROW LEVEL SECURITY");
+    expect(m34).toContain("taxonomia.claim_conceitos ENABLE ROW LEVEL SECURITY");
+    expect(m34).toContain("fk_skos_relacao_origem_tenant");
+    expect(m34).toContain("fk_skos_relacao_destino_tenant");
+    expect(m34).toContain("fk_claim_conceito_claim_tenant");
+    expect(m34).toContain("fk_claim_conceito_conceito_tenant");
+    expect(m34).toContain("uq_skos_conceito_label_tenant");
   });
 
   it("todas as tabelas do schema sistema possuem RLS habilitado no banco ativo", { timeout: 15000 }, async () => {

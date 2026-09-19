@@ -5,8 +5,8 @@
 **Branch Canônica:** `main`  
 **Repositório Remoto:** `https://github.com/villacanabrava-maker/App-Reflex-02.git`  
 **Status do Pipeline:** Verde (100% dos testes e build passando)  
-**Última Missão Concluída:** MIS-0008 — Wave 2: Episodic Event Ledger, Timeline Epistêmica e Hardening Transacional da Fundação de Claims  
-**Próxima Missão:** MIS-0009 — Wave 3: SKOS Ontologia, Taxonomia Formal e Ancoragem Conceitual  
+**Última Missão Concluída:** MIS-0009 — Wave 3: Gate de Integridade do Event Ledger + Taxonomia SKOS, Ontologia Formal e Ancoragem Conceitual  
+**Próxima Missão:** MIS-0010 — Wave 4: Working Memory & Retrieval Híbrido Multi-Sinal  
 
 ---
 
@@ -15,13 +15,13 @@
 | Componente | Estado Operacional | Classificação de Evidência | Detalhes & Configurações |
 | :--- | :--- | :--- | :--- |
 | **Repositório Git** | `ATIVO / CANÔNICO` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-CI]` | Sincronizado no GitHub (`villacanabrava-maker/App-Reflex-02`). |
-| **Arquitetura Cognitiva** | `WAVE 2 HOMOLOGADA / V3.1` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-DOCUMENTO]` | Event Ledger implementado (`memory_events`), imutabilidade real via trigger, RPC transacional `transicionar_estado_claim` com row locking e soberania autoral humana estrita, Timeline API com cursor, relatórios `WAVE_1_CLAIMS_EVALS_RESULT.md` e `WAVE_2_EVENT_LEDGER_RESULT.md`. |
+| **Arquitetura Cognitiva** | `WAVE 3 HOMOLOGADA / V3.1` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-DOCUMENTO]` | Event Ledger blindado (sem INSERT direto por clientes, actor_type resolvido no banco via RPC humana/sistêmica, state machine completa e constraints anti-cross-tenant), Ontologia SKOS (`skos_conceitos`, `skos_relacoes`), ancoragem `claim_conceitos` com preservação estrita do Firewall de Autoria, Golden Evals `CBR-05-TAXONOMY` executável com 100% de precisão e 0% duplicação, relatório `WAVE_3_TAXONOMIA_SKOS_RESULT.md`. |
 | **Equipe Multiagente** | `HARNESS V2 OPERACIONAL` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes operando no modo `MULTI-DOMAIN SEQUENTIAL` via Task Packets tipados. |
-| **Supabase** | `32 MIGRATIONS / ISOLADO` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas live; migrations 0031 e 0032 prontas no repositório (`READY-BUT-NOT-APPLIED`). RLS e imutabilidade auditados via testes locais. |
-| **Segurança & AppSec** | `P0 ABERTO — CREDENCIAL REVOGAÇÃO PENDENTE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Saneado no código local e de CI. Push live bloqueado para proteger contra uso de credenciais pendentes de rotação no console web. |
+| **Supabase** | `34 MIGRATIONS / ISOLADO` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas live; migrations 0031 a 0034 prontas no repositório (`READY-BUT-NOT-APPLIED` sob exceção formal). RLS, imutabilidade e integridade referencial testadas localmente. |
+| **Segurança & AppSec** | `SECURITY-EXCEPTION-DEV-001` | `[DECLARADO-USUARIO]` / `[CONFIRMADO-CODIGO]` | Decisão humana formalizada: `RISK ACCEPTED BY USER — DEVELOPMENT/TEST ONLY`. Credencial de teste mantida ativa; rotação postergada compulsoriamente para o `PRODUCTION SECURITY GATE`. Proibido `supabase db push --linked`. |
 | **Hospedagem / Vercel** | `ADIADO / FORA DE ESCOPO` | `[CONFIRMADO-CODIGO]` | Nenhum deploy, CLI ou webhook Vercel ativo. Proibido por regra de governança. |
-| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 23 arquivos de testes Vitest (100 testes) cobrindo segurança, isolamento RLS, guardrails, golden dataset de 12 famílias, imutabilidade episódica e timeline. |
-| **Build de Produção** | `CONCLUÍDO COM SUCESSO` | `[CONFIRMADO-TESTE]` | Next.js 15 compilando estaticamente e rotas dinâmicas validadas. |
+| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 23 arquivos de testes Vitest (110 testes) cobrindo segurança, isolamento RLS, guardrails, golden dataset, integridade episódica, state machine, anti-cross-tenant e ontologia SKOS. |
+| **Build de Produção** | `CONCLUÍDO COM SUCESSO` | `[CONFIRMADO-TESTE]` | Next.js 15 compilando estaticamente e rotas dinâmicas validadas (7.3s). |
 
 ---
 

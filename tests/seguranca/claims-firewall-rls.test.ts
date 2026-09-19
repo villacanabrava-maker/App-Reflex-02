@@ -4,6 +4,7 @@ import { ExtratorClaimsV3 } from "../../src/dominios/cerebro/extrator-claims";
 import { LocalReflexNLIValidator } from "../../src/dominios/cerebro/validador-nli";
 import { GerenciadorEventosMemoria } from "../../src/dominios/cerebro/gerenciador-eventos";
 import { TimelineEpistemicaAPI } from "../../src/dominios/cerebro/timeline-api";
+import { MotorTaxonomicoSKOS } from "../../src/dominios/taxonomia/motor-skos";
 import { ClaimCandidate, ValidatedClaim, MemoryEvent } from "../../src/tipos/cognitivo-v3";
 
 describe("Auditoria Zero-Trust (A7) — Segurança, Invariantes do Firewall e Integridade Epistêmica", () => {
@@ -379,3 +380,193 @@ describe("Auditoria Wave 2 — Episodic Event Ledger, Imutabilidade e Timeline E
     expect(historico?.trilha_eventos[2].actor_type).toBe("HUMAN");
   });
 });
+
+describe("Auditoria Zero-Trust (A7) — Gate 0: Hardening do Event Ledger (Wave 3)", () => {
+  const usuarioA = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+  const usuarioB = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+  const claimId = "44444444-4444-4444-4444-444444444444";
+
+  test("Gate 0.1 — Proibição de Fail-Open: payload inválido para o tipo de evento deve falhar estritamente", async () => {
+    const gerenciador = new GerenciadorEventosMemoria();
+
+    // Evento CLAIM_CONFIRMED_BY_AUTHOR sem os campos requeridos
+    await expect(
+      gerenciador.registrarEvento({
+        usuario_id: usuarioA,
+        event_type: "CLAIM_CONFIRMED_BY_AUTHOR",
+        aggregate_type: "claim",
+        aggregate_id: claimId,
+        actor_type: "HUMAN",
+        actor_id: usuarioA,
+        from_epistemic_status: "proposed",
+        to_epistemic_status: "confirmed_authorial",
+        payload: {
+          campo_invalido_qualquer: 123, // Falha de schema: falta author_action = "CONFIRM"
+        },
+      })
+    ).rejects.toThrow();
+  });
+
+  test("Gate 0.2 — Idempotência Determinística Real: duas chamadas com mesmo payload geram chave idêntica sem timestamp volátil", () => {
+    const payload = {
+      status_anterior: "proposed",
+      novo_status: "confirmed_authorial",
+      justificativa: "Confirmação autoral canônica.",
+    };
+
+    const key1 = GerenciadorEventosMemoria.gerarIdempotencyKey(
+      usuarioA,
+      claimId,
+      "CLAIM_CONFIRMED_BY_AUTHOR",
+      payload,
+      "confirmed_authorial"
+    );
+
+    const key2 = GerenciadorEventosMemoria.gerarIdempotencyKey(
+      usuarioA,
+      claimId,
+      "CLAIM_CONFIRMED_BY_AUTHOR",
+      payload,
+      "confirmed_authorial"
+    );
+
+    expect(key1).toBe(key2);
+    expect(key1.length).toBe(64); // Hash SHA-256
+  });
+
+  test("Gate 0.3 — State Machine Completa: bloqueio de transições não mapeadas (FROM + TO + ACTOR)", async () => {
+    const gerenciador = new GerenciadorEventosMemoria();
+
+    // Tentativa ilegal: extractor_pipeline tentar pular direto de observed para proposed
+    await expect(
+      gerenciador.transicionarEstado({
+        usuario_id: usuarioA,
+        claim_id: claimId,
+        status_atual: "observed",
+        novo_status: "proposed",
+        ator_tipo: "EXTRACTOR_PIPELINE",
+        ator_id: "extrator_v3",
+        justificativa: "Tentativa de atalho ilegal na máquina de estados.",
+      })
+    ).rejects.toThrow(FirewallViolationError);
+
+    // Tentativa ilegal: cognitive_agent tentar fazer quoted -> extracted (papel exclusivo de nli_validator)
+    await expect(
+      gerenciador.transicionarEstado({
+        usuario_id: usuarioA,
+        claim_id: claimId,
+        status_atual: "quoted",
+        novo_status: "extracted",
+        ator_tipo: "COGNITIVE_AGENT",
+        ator_id: "agent_a5",
+        justificativa: "Agente cognitivo tentando atuar como validador NLI.",
+      })
+    ).rejects.toThrow(FirewallViolationError);
+  });
+
+  test("Gate 0.4 — Anti-Cross-Tenant: tentativa de correlacionar claim de Tenant A com Tenant B deve falhar", () => {
+    const payloadA = { justificativa: "Tenant A evento" };
+    const payloadB = { justificativa: "Tenant A evento" }; // mesmo conteúdo
+
+    const keyA = GerenciadorEventosMemoria.gerarIdempotencyKey(
+      usuarioA,
+      claimId,
+      "CLAIM_PROPOSED",
+      payloadA,
+      "proposed"
+    );
+    const keyB = GerenciadorEventosMemoria.gerarIdempotencyKey(
+      usuarioB,
+      claimId,
+      "CLAIM_PROPOSED",
+      payloadB,
+      "proposed"
+    );
+
+    // Chaves de inquilinos diferentes são matematicamente distintas
+    expect(keyA).not.toBe(keyB);
+  });
+
+  test("Gate 0.5 — Soberania Autoral Inviolável: IA não pode usurpar confirmação mesmo com justificativa válida", async () => {
+    const gerenciador = new GerenciadorEventosMemoria();
+
+    await expect(
+      gerenciador.transicionarEstado({
+        usuario_id: usuarioA,
+        claim_id: claimId,
+        status_atual: "proposed",
+        novo_status: "confirmed_authorial",
+        ator_tipo: "COGNITIVE_AGENT",
+        ator_id: "agent_a4_analista",
+        justificativa: "A IA considera que o autor concorda 100%.",
+      })
+    ).rejects.toThrow(FirewallViolationError);
+  });
+});
+
+describe("Auditoria Zero-Trust (A7) — Taxonomia SKOS, Ontologia e Anti-Cross-Tenant (Wave 3)", () => {
+  const user1 = "11111111-1111-1111-1111-111111111111";
+  const user2 = "22222222-2222-2222-2222-222222222222";
+
+  test("Taxonomia 1 — Auto-Relação Proibida: conceito não pode ter relação com ele mesmo", () => {
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    const c1 = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: user1,
+      pref_label: "Ontologia",
+    });
+
+    expect(() =>
+      MotorTaxonomicoSKOS.adicionarRelacao(user1, c1.id!, c1.id!, "BROADER")
+    ).toThrow("auto-relação proibida");
+  });
+
+  test("Taxonomia 2 — Isolamento Multi-Tenant: relação entre conceitos de tenants diferentes é rejeitada", () => {
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    const cUser1 = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: user1,
+      pref_label: "Lógica Formal",
+    });
+
+    const cUser2 = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: user2,
+      pref_label: "Matemática",
+    });
+
+    // Tentativa de relacionar conceito do user1 com conceito do user2
+    expect(() =>
+      MotorTaxonomicoSKOS.adicionarRelacao(user1, cUser1.id!, cUser2.id!, "BROADER")
+    ).toThrow("mesmo usuário");
+  });
+
+  test("Taxonomia 3 — Validação de Rótulo Mínimo (Anti-Spam / Anti-Spurious)", () => {
+    expect(() =>
+      MotorTaxonomicoSKOS.proporConceito({
+        usuario_id: user1,
+        pref_label: "a", // Apenas 1 caractere
+      })
+    ).toThrow("no mínimo 2 caracteres");
+  });
+
+  test("Taxonomia 4 — Preservação da Soberania Autoral: ancorar claim em conceito taxonômico não promove para crença autoral", () => {
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    const c = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: user1,
+      pref_label: "Fenomenologia",
+    });
+
+    const link = MotorTaxonomicoSKOS.vincularClaimConceito({
+      usuario_id: user1,
+      claim_id: "66666666-6666-6666-6666-666666666666",
+      conceito_id: c.id!,
+      tipo_vinculo: "DISCUSSES_CONCEPT",
+      origem: "IA_SUGGESTION",
+    });
+
+    expect(link.status).toBe("proposed");
+    expect(link.tipo_vinculo).toBe("DISCUSSES_CONCEPT");
+  });
+});
+
