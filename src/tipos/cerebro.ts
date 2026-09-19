@@ -130,4 +130,7 @@ export interface ResumoCerebro {
   total_nucleo_autoral: number;
   total_influencias_externas: number;
   confianca_media_geral: number;
+  total_obras_autorais_processadas: number;
+  total_fragmentos_autorais: number;
+  total_fontes_autorais_memoria: number;
 }
