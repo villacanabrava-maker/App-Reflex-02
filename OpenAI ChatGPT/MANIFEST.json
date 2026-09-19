@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-09-19T11:40:00-03:00",
+  "project": {
+    "name": "App Reflex 02",
+    "repository": "villacanabrava-maker/App-Reflex-02",
+    "branch": "main",
+    "supabase_project_ref": "xenapowdtfhdwcfthfrn",
+    "vercel_project": "app-reflex-02",
+    "production_url": "https://app-reflex-02.vercel.app"
+  },
+  "read_first": [
+    "AGENTS.md",
+    "OpenAI ChatGPT/BOOTSTRAP.md",
+    "OpenAI ChatGPT/CURRENT_STATE.md",
+    "OpenAI ChatGPT/METHODOLOGY.md",
+    "OpenAI ChatGPT/PROJECT_MAP.md"
+  ],
+  "agents": [
+    "O1-orchestrator",
+    "O2-repository-architecture",
+    "O3-supabase-data",
+    "O4-frontend-product",
+    "O5-cognitive-ai",
+    "O6-qa-security-evals",
+    "O7-platform-vercel",
+    "O8-research-evolution",
+    "O9-continuity-evidence"
+  ],
+  "skills": [
+    "openai-reflex-bootstrap",
+    "openai-reflex-runtime-debug",
+    "openai-reflex-supabase-safe",
+    "openai-reflex-cognitive-integrity",
+    "openai-reflex-continuity"
+  ],
+  "quality_gates": [
+    "npx tsc --noEmit",
+    "npm run lint",
+    "npm test",
+    "npm run build",
+    "GitHub Actions success"
+  ],
+  "continuity_files": [
+    "OpenAI ChatGPT/CURRENT_STATE.md",
+    "OpenAI ChatGPT/CONTINUITY_LEDGER.md",
+    "OpenAI ChatGPT/DECISIONS.md"
+  ]
+}

@@ -1,0 +1,5 @@
+interface:
+  display_name: "openai reflex cognitive integrity"
+  short_description: "App Reflex 02 project workflow"
+policy:
+  allow_implicit_invocation: true
