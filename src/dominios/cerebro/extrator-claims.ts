@@ -1,10 +1,10 @@
 /**
  * Motor de Extração de Claims Atômicos — Cérebro Reflex V3.1
- * Missão: MIS-0007 (Wave 1: Fundação Epistemológica Executável)
- * 
- * Implementa descontextualização de proposições, cálculo de hash SHA-256 canônico,
- * filtragem por NLI Entailment (Ambiguidade -> Não Extrai), proteção contra
- * injeção de prompt e controle por Feature Flag (off / shadow / on).
+ * CLASSIFICAÇÃO: CLAIM EXTRACTION SCAFFOLD / SHADOW V1
+ * NOTA TÉCNICA: Este extrator opera como scaffold de descontextualização e segmentação
+ * em Shadow Mode para as Waves 1 e 2. Ele implementa o protocolo de hashing canônico SHA-256,
+ * offsets UTF-16, deduplicação e checagem de firewall. A implementação de descontextualização
+ * completa baseada no Claimify integral será integrada em experimentos posteriores.
  */
 
 import * as crypto from "node:crypto";
@@ -15,6 +15,7 @@ import {
   CognitiveFeatureFlagValue,
   SourceRole,
   ClaimType,
+  CostTelemetry,
 } from "../../tipos/cognitivo-v3";
 import { MemoryInferenceFirewall } from "./firewall-memoria";
 import { LocalReflexNLIValidator } from "./validador-nli";
@@ -41,7 +42,7 @@ export interface ExtracaoMetricas {
   ambiguos: number;
   tempo_execucao_ms: number;
   chamadas_nli: number;
-  custo_estimado_usd: number;
+  telemetria_custo: CostTelemetry;
 }
 
 export interface ExtracaoResultado {
@@ -60,9 +61,9 @@ export class ExtratorClaimsV3 {
     featureFlag?: CognitiveFeatureFlagValue
   ) {
     this.nliValidator = nliValidator || new LocalReflexNLIValidator();
-    // Convenção Canônica Única de Feature Flag
+    // Convenção Canônica: AUSÊNCIA DE CONFIGURAÇÃO = OFF (Não ativa shadow implicitamente)
     const envFlag = process.env.FEATURE_COGNITIVE_V31_CLAIMS as CognitiveFeatureFlagValue | undefined;
-    this.featureFlag = featureFlag || envFlag || "shadow";
+    this.featureFlag = featureFlag || envFlag || "off";
   }
 
   /**
@@ -83,6 +84,22 @@ export class ExtratorClaimsV3 {
     spanEnd: number
   ): string {
     return `${sourceVersion}:${contentHash}:${spanStart}:${spanEnd}`;
+  }
+
+  /**
+   * Gera o fingerprint canônico de idempotência persistente no banco de dados:
+   * sha256(usuario_id + ":" + source_id + ":" + source_version + ":" + span_start + ":" + span_end + ":" + claim_normalized_hash)
+   */
+  public static gerarClaimFingerprint(
+    usuarioId: string,
+    sourceId: string,
+    sourceVersion: number,
+    spanStart: number,
+    spanEnd: number,
+    claimNormalizedHash: string
+  ): string {
+    const raw = `${usuarioId}:${sourceId}:${sourceVersion}:${spanStart}:${spanEnd}:${claimNormalizedHash}`;
+    return crypto.createHash("sha256").update(raw, "utf8").digest("hex");
   }
 
   /**
@@ -112,7 +129,15 @@ export class ExtratorClaimsV3 {
           ambiguos: 0,
           tempo_execucao_ms: Date.now() - startMs,
           chamadas_nli: 0,
-          custo_estimado_usd: 0.0,
+          telemetria_custo: {
+            provider_cost_usd: 0.0,
+            cost_basis: {
+              provider: "local",
+              model: "none",
+              pricing_date: "2026-09-19",
+              is_estimated: false,
+            },
+          },
         },
         feature_flag: "off",
       };
@@ -152,6 +177,16 @@ export class ExtratorClaimsV3 {
         claimType = "SOURCE_CLAIM";
       }
 
+      const claimNormalizedHash = ExtratorClaimsV3.computarHashSpan(cleanSpanText);
+      const claimFingerprint = ExtratorClaimsV3.gerarClaimFingerprint(
+        input.usuario_id,
+        input.source_id,
+        input.source_version,
+        span.span_start,
+        span.span_end,
+        claimNormalizedHash
+      );
+
       // Monta candidato inicial
       const candidatoInicial: ClaimCandidate = {
         declaracao_atomica: cleanSpanText,
@@ -165,9 +200,11 @@ export class ExtratorClaimsV3 {
           span_texto_original: cleanSpanText,
           span_start: span.span_start,
           span_end: span.span_end,
+          offset_encoding: "UTF16_CODE_UNIT",
           content_hash: contentHash,
           metadados_localizacao: {
             dedupe_key: dedupeKey,
+            claim_fingerprint: claimFingerprint,
           },
         },
       };
@@ -207,6 +244,7 @@ export class ExtratorClaimsV3 {
         provenance: candidatoFiltrado.provenance,
         metadados: {
           feature_flag: this.featureFlag,
+          claim_fingerprint: claimFingerprint,
         },
       };
 
@@ -218,8 +256,28 @@ export class ExtratorClaimsV3 {
     }
 
     const durationMs = Date.now() - startMs;
-    // Estimativa de custo real dos tokens (baseada em ~50 tokens por chamada NLI no gpt-4o-mini a $0.15 / 1M tokens)
-    const custoEstimado = (chamadasNli * 50 * 0.00000015);
+    const isLocal = this.nliValidator instanceof LocalReflexNLIValidator || this.nliValidator.constructor.name.includes("Local");
+    const telemetriaCusto: CostTelemetry = isLocal
+      ? {
+          provider_cost_usd: 0.0,
+          cost_basis: {
+            provider: "local",
+            model: this.nliValidator.constructor.name,
+            pricing_date: "2026-09-19",
+            is_estimated: false,
+          },
+        }
+      : {
+          provider_cost_usd: null,
+          estimated_cost_usd: Number((chamadasNli * 50 * 0.00000015).toFixed(6)),
+          cost_basis: {
+            provider: "remote_model",
+            model: "shadow-nli",
+            pricing_date: "2026-09-19",
+            input_tokens: chamadasNli * 50,
+            is_estimated: true,
+          },
+        };
 
     return {
       claims_validados: claimsValidados,
@@ -231,7 +289,7 @@ export class ExtratorClaimsV3 {
         ambiguos,
         tempo_execucao_ms: durationMs,
         chamadas_nli: chamadasNli,
-        custo_estimado_usd: Number(custoEstimado.toFixed(6)),
+        telemetria_custo: telemetriaCusto,
       },
       feature_flag: this.featureFlag,
     };

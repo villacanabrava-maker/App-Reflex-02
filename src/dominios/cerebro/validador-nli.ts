@@ -1,9 +1,10 @@
 /**
  * Validador de Natural Language Inference (NLI) — Cérebro Reflex V3.1
- * Missão: MIS-0007 (Wave 1: Fundação Epistemológica Executável)
- * 
- * Implementa validador desacoplado e plugável para testar a implicação lógica (Entailment)
- * entre o Span Original (Premissa) e o Claim Atômico Descontextualizado (Hipótese).
+ * CLASSIFICAÇÃO: HEURISTIC SHADOW VALIDATOR V1
+ * NOTA TÉCNICA: Este validador opera como motor de regras determinísticas locais
+ * (sobreposição lexical lematizada, inversão de negação e thresholds de segurança)
+ * para a fase de Shadow Mode das Waves 1 e 2. Ele NÃO é um modelo NLI semântico completo
+ * baseado em transformers ou LLM, o qual será objeto de benchmarking futuro.
  */
 
 import {
@@ -35,7 +36,7 @@ export class LocalReflexNLIValidator implements INLIValidator {
         confidence: 0.0,
         is_entailed: false,
         threshold_used: this.config.thresholdEntailment,
-        model_name: "local_reflex_nli_rule_engine",
+        model_name: "HEURISTIC_SHADOW_VALIDATOR_V1",
         model_version: this.config.modelVersion,
         prompt_version: this.config.promptVersion,
         reasoning: "Premissa ou hipótese vazia.",
@@ -102,7 +103,7 @@ export class LocalReflexNLIValidator implements INLIValidator {
       confidence,
       is_entailed: isEntailed,
       threshold_used: this.config.thresholdEntailment,
-      model_name: "local_reflex_nli_rule_engine",
+      model_name: "HEURISTIC_SHADOW_VALIDATOR_V1",
       model_version: this.config.modelVersion,
       prompt_version: this.config.promptVersion,
       reasoning,

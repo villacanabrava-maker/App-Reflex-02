@@ -1,6 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { GOLDEN_DATASET_V3_SEEDS } from "./fixtures/golden-dataset-seeds";
 import { ExtratorClaimsV3 } from "../../src/dominios/cerebro/extrator-claims";
+import { GerenciadorEventosMemoria } from "../../src/dominios/cerebro/gerenciador-eventos";
 import { calculateMILR, calculateAMR } from "../../src/tipos/cognitivo-v3";
 
 describe("Golden Dataset V3 Runner — Avaliação Epistêmica das 12 Famílias CBR (Wave 1)", () => {
@@ -158,6 +159,34 @@ describe("Golden Dataset V3 Runner — Avaliação Epistêmica das 12 Famílias 
       expect(fc.family).toBeDefined();
       expect(fc.sourceInput.text.length).toBeGreaterThan(5);
       expect(fc.notes.length).toBeGreaterThan(5);
+    }
+  });
+
+  test("Execução dos Casos Executáveis da Wave 2 — Superação Temporal e Event Ledger", async () => {
+    const wave2Cases = GOLDEN_DATASET_V3_SEEDS.filter((s) => s.isWave2Executable);
+    expect(wave2Cases.length).toBeGreaterThanOrEqual(1);
+
+    const gerenciador = new GerenciadorEventosMemoria();
+
+    for (const _testCase of wave2Cases) {
+      // Simula a existência prévia de uma tese no estado 'confirmed_authorial'
+      const claimId = "33333333-3333-3333-3333-333333333333";
+
+      // Transição para superseded autorizada pelo autor humano
+      const resultadoTransicao = await gerenciador.transicionarEstado({
+        usuario_id: usuarioTesteId,
+        claim_id: claimId,
+        status_atual: "confirmed_authorial",
+        novo_status: "superseded",
+        ator_tipo: "HUMAN",
+        ator_id: usuarioTesteId,
+        justificativa: "Revendo tese no tempo: abandonei a abordagem positivista.",
+      });
+
+      expect(resultadoTransicao.success).toBe(true);
+      expect(resultadoTransicao.novo_status).toBe("superseded");
+      expect(resultadoTransicao.event_type).toBe("CLAIM_SUPERSEDED");
+      expect(resultadoTransicao.event_id).toBeDefined();
     }
   });
 

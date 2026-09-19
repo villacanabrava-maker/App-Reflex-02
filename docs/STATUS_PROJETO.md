@@ -1,6 +1,6 @@
 # Estado Canônico do Projeto — App Reflex 02
 
-**Atualizado em:** 18 de setembro de 2026  
+**Atualizado em:** 19 de setembro de 2026  
 **Produto:** App Reflex 02 — Memória Reflexiva / Cérebro Autoral  
 **Fonte operacional:** `main` + Supabase canônico (`xenapowdtfhdwcfthfrn`).
 
@@ -8,14 +8,14 @@
 
 - GitHub: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, 30 migrations aplicadas e verificadas, RLS ativo em todos os schemas e buckets privados em 50MB.
+- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, 30 migrations aplicadas live, migrations 0031 e 0032 prontas no repositório (`READY-BUT-NOT-APPLIED`), RLS ativo em todos os schemas e buckets privados em 50MB.
 - Hospedagem / Vercel: **ADIADO — NÃO CONFIGURAR NEM PUBLICAR** nesta etapa por decisão do usuário.
 - Domínio de produção: AINDA NÃO DEFINIDO.
 - Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
 - Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
-- Último Marco Concluído: MIS-0007 — Wave 1: Fundação Epistemológica Executável (Gate 0 resolvido com eliminação do default true de autoria, 3 dimensões ontológicas, span UTF-16, hash SHA-256 canônico, FK composta anti-cross-user mismatch; migration aditiva 0031_claims_ledger.sql criada com RLS e testada em isolamento; motor ExtratorClaimsV3 com NLI configurável e Memory-Inference Firewall; Golden Dataset V3 runner avaliando 12 famílias CBR com MILR = 0.0%, AMR = 0.0% e Coverage = 100%; suíte de testes em 23 arquivos com 92 testes passando com 100% de sucesso; relatório WAVE_1_CLAIMS_EVALS_RESULT.md).
-- Próxima Missão: MIS-0008 — Wave 2: Episodic Event Ledger & Timeline Epistêmica.
+- Último Marco Concluído: MIS-0008 — Wave 2: Episodic Event Ledger, Timeline Epistêmica e Hardening Transacional da Fundação de Claims (Gate 0 de hardening da Wave 1 concluído; qualificação de Shadow Validator e Scaffold; default off de feature flag; fingerprint canônico persistente; telemetria sem custos simulados; UTF16_CODE_UNIT; migration 0032_episodic_event_ledger.sql com tabela imutável memory_events, trigger de imutabilidade, remoção de mutação de claims por clientes e RPC transacional transicionar_estado_claim com row-locking e soberania autoral; serviços GerenciadorEventosMemoria e TimelineEpistemicaAPI; suíte em 23 arquivos com 100 testes passando 100% verde; relatório WAVE_2_EVENT_LEDGER_RESULT.md e handoff AG-0008.md).
+- Próxima Missão: MIS-0009 — Wave 3: SKOS Ontologia, Taxonomia Formal e Ancoragem Conceitual.
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 

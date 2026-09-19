@@ -49,7 +49,7 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     }
   });
 
-  it("as migrations 0026 a 0031 existem no repositório e cobrem RLS, isolamento e storage", () => {
+  it("as migrations 0026 a 0032 existem no repositório e cobrem RLS, isolamento, storage e event ledger", () => {
     const migrationsDir = path.join(process.cwd(), "supabase", "migrations");
     const m26 = fs.readFileSync(path.join(migrationsDir, "0026_motor_taxonomia_automatica.sql"), "utf-8");
     const m27 = fs.readFileSync(path.join(migrationsDir, "0027_grants_propostas_atualizacao.sql"), "utf-8");
@@ -57,6 +57,7 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     const m29 = fs.readFileSync(path.join(migrationsDir, "0029_limite_upload_biblioteca_50mb.sql"), "utf-8");
     const m30 = fs.readFileSync(path.join(migrationsDir, "0030_sistema_rls_hardening.sql"), "utf-8");
     const m31 = fs.readFileSync(path.join(migrationsDir, "0031_claims_ledger.sql"), "utf-8");
+    const m32 = fs.readFileSync(path.join(migrationsDir, "0032_episodic_event_ledger.sql"), "utf-8");
 
     // 0026
     expect(m26).toContain("taxonomia.analises");
@@ -84,6 +85,16 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     expect(m31).toContain("fk_claim_provenance_ownership");
     expect(m31).toContain("uq_claims_id_usuario");
     expect(m31).not.toContain("is_authorial BOOLEAN NOT NULL DEFAULT true"); // Invariant: PROIBIDO default true de autoria
+
+    // 0032 (Wave 2 - Episodic Event Ledger & Timeline)
+    expect(m32).toContain("cerebro_autoral.memory_events ENABLE ROW LEVEL SECURITY");
+    expect(m32).toContain("trg_memory_events_immutable");
+    expect(m32).toContain("transicionar_estado_claim");
+    expect(m32).toContain("DROP POLICY IF EXISTS \"claims_update_owner\"");
+    expect(m32).toContain("DROP POLICY IF EXISTS \"claims_delete_owner\"");
+    expect(m32).toContain("DROP POLICY IF EXISTS \"provenance_delete_owner\"");
+    expect(m32).toContain("uq_memory_events_idempotency");
+    expect(m32).toContain("fk_claims_origin_event");
   });
 
   it("todas as tabelas do schema sistema possuem RLS habilitado no banco ativo", { timeout: 15000 }, async () => {

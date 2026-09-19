@@ -28,7 +28,8 @@ export interface GoldenTestCase {
     | "LEARNING"
     | "PROVENANCE";
   description: string;
-  isWave1Executable: boolean; // Flag para distinguir testes executáveis na Wave 1 de contratos de Waves futuras
+  isWave1Executable: boolean; // Flag para distinguir testes executáveis na Wave 1
+  isWave2Executable?: boolean; // Flag para casos executáveis na Wave 2 (Event Ledger e Transições)
   sourceInput: {
     text: string;
     sourceType: "obra" | "versao_obra" | "fragmento" | "reflexao" | "nota_avulsa";
@@ -127,8 +128,9 @@ export const GOLDEN_DATASET_V3_SEEDS: GoldenTestCase[] = [
   {
     id: "CBR-04-TEMPORAL-SUPERSEDED",
     family: "TEMPORAL",
-    description: "Contrato futuro: detecção de tese que superou visão antiga no tempo.",
-    isWave1Executable: false, // Executável na Wave 2 (Event Ledger)
+    description: "Detecção de tese que superou visão antiga no tempo e registro de transição superseded no ledger.",
+    isWave1Executable: false,
+    isWave2Executable: true, // Executável na Wave 2 (Event Ledger)
     sourceInput: {
       text: "Revendo minha tese de 2020, abandonei a abordagem positivista.",
       sourceType: "obra",

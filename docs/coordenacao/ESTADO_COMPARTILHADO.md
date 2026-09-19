@@ -5,8 +5,8 @@
 **Branch Canônica:** `main`  
 **Repositório Remoto:** `https://github.com/villacanabrava-maker/App-Reflex-02.git`  
 **Status do Pipeline:** Verde (100% dos testes e build passando)  
-**Última Missão Concluída:** MIS-0007 — Wave 1: Fundação Epistemológica Executável (Claims + Provenance + Memory-Inference Firewall + Golden Evals)  
-**Próxima Missão:** MIS-0008 — Wave 2: Episodic Event Ledger & Timeline Epistêmica  
+**Última Missão Concluída:** MIS-0008 — Wave 2: Episodic Event Ledger, Timeline Epistêmica e Hardening Transacional da Fundação de Claims  
+**Próxima Missão:** MIS-0009 — Wave 3: SKOS Ontologia, Taxonomia Formal e Ancoragem Conceitual  
 
 ---
 
@@ -15,12 +15,12 @@
 | Componente | Estado Operacional | Classificação de Evidência | Detalhes & Configurações |
 | :--- | :--- | :--- | :--- |
 | **Repositório Git** | `ATIVO / CANÔNICO` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-CI]` | Sincronizado no GitHub (`villacanabrava-maker/App-Reflex-02`). |
-| **Arquitetura Cognitiva** | `WAVE 1 HOMOLOGADA / V3.1` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-DOCUMENTO]` | Claims Ledger implementado, Gate 0 resolvido (autoria sem default, 3 dimensões, span UTF-16, hash SHA-256), Memory-Inference Firewall ativo, MILR = 0.0%, AMR = 0.0% e relatório técnico `WAVE_1_CLAIMS_EVALS_RESULT.md`. |
+| **Arquitetura Cognitiva** | `WAVE 2 HOMOLOGADA / V3.1` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-DOCUMENTO]` | Event Ledger implementado (`memory_events`), imutabilidade real via trigger, RPC transacional `transicionar_estado_claim` com row locking e soberania autoral humana estrita, Timeline API com cursor, relatórios `WAVE_1_CLAIMS_EVALS_RESULT.md` e `WAVE_2_EVENT_LEDGER_RESULT.md`. |
 | **Equipe Multiagente** | `HARNESS V2 OPERACIONAL` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes operando no modo `MULTI-DOMAIN SEQUENTIAL` via Task Packets tipados. |
-| **Supabase** | `31 MIGRATIONS / ISOLADO` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. Migration `0031_claims_ledger.sql` criada com RLS e FK composta; validada via testes locais de isolamento. Push live bloqueado até confirmação de rotação P0. |
+| **Supabase** | `32 MIGRATIONS / ISOLADO` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas live; migrations 0031 e 0032 prontas no repositório (`READY-BUT-NOT-APPLIED`). RLS e imutabilidade auditados via testes locais. |
 | **Segurança & AppSec** | `P0 ABERTO — CREDENCIAL REVOGAÇÃO PENDENTE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Saneado no código local e de CI. Push live bloqueado para proteger contra uso de credenciais pendentes de rotação no console web. |
 | **Hospedagem / Vercel** | `ADIADO / FORA DE ESCOPO` | `[CONFIRMADO-CODIGO]` | Nenhum deploy, CLI ou webhook Vercel ativo. Proibido por regra de governança. |
-| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 23 arquivos de testes Vitest (92 testes) cobrindo segurança, isolamento RLS, guardrails, golden dataset de 12 famílias e acessibilidade. |
+| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 23 arquivos de testes Vitest (100 testes) cobrindo segurança, isolamento RLS, guardrails, golden dataset de 12 famílias, imutabilidade episódica e timeline. |
 | **Build de Produção** | `CONCLUÍDO COM SUCESSO` | `[CONFIRMADO-TESTE]` | Next.js 15 compilando estaticamente e rotas dinâmicas validadas. |
 
 ---

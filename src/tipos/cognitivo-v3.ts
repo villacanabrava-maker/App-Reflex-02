@@ -234,10 +234,127 @@ export const ClaimProvenanceInputSchema = z.object({
   span_texto_original: z.string().min(1, "O span de texto original não pode ser vazio"),
   span_start: z.number().int().min(0, "span_start deve ser >= 0 (índice de caracteres UTF-16)"),
   span_end: z.number().int().min(1, "span_end deve ser > 0"),
+  offset_encoding: z.literal("UTF16_CODE_UNIT").default("UTF16_CODE_UNIT"),
   content_hash: z.string().length(64, "content_hash deve ser um hash SHA-256 hexadecimal de 64 caracteres"),
   metadados_localizacao: z.record(z.string(), z.unknown()).default({}),
 }).strict();
 export type ClaimProvenanceInput = z.infer<typeof ClaimProvenanceInputSchema>;
+
+/**
+ * Contrato de Telemetria de Custos (Zero Simulação: provider_cost_usd = 0 para execução local)
+ */
+export const CostTelemetrySchema = z.object({
+  provider_cost_usd: z.number().nullable(),
+  estimated_cost_usd: z.number().optional(),
+  cost_basis: z.object({
+    provider: z.string(),
+    model: z.string(),
+    pricing_date: z.string(),
+    input_tokens: z.number().optional(),
+    output_tokens: z.number().optional(),
+    is_estimated: z.boolean(),
+  }).optional(),
+}).strict();
+export type CostTelemetry = z.infer<typeof CostTelemetrySchema>;
+
+// ============================================================================
+// 3.1 ENUMS E SCHEMAS DA MEMÓRIA EPISÓDICA (WAVE 2: EVENT LEDGER)
+// ============================================================================
+
+export const EventTypeEnum = z.enum([
+  "CLAIM_CREATED",
+  "CLAIM_VALIDATED",
+  "CLAIM_REJECTED",
+  "CLAIM_PROPOSED",
+  "CLAIM_CONFIRMED_BY_AUTHOR",
+  "CLAIM_REJECTED_BY_AUTHOR",
+  "CLAIM_SUPERSEDED",
+  "CONTRADICTION_DETECTED",
+  "SOURCE_INGESTED",
+  "SOURCE_REPROCESSED",
+  "LEGACY_STATE_IMPORTED",
+]);
+export type EventType = z.infer<typeof EventTypeEnum>;
+
+export const ActorTypeEnum = z.enum([
+  "HUMAN",
+  "EXTRACTOR_PIPELINE",
+  "NLI_VALIDATOR",
+  "COGNITIVE_AGENT",
+  "SYSTEM_WORKER",
+  "IMPORTER",
+]);
+export type ActorType = z.infer<typeof ActorTypeEnum>;
+
+/**
+ * Schemas de Payloads Específicos por Tipo de Evento
+ */
+export const ClaimCreatedPayloadSchema = z.object({
+  declaracao_atomica: z.string(),
+  claim_type: ClaimTypeEnum,
+  source_role: SourceRoleEnum,
+  provenance_summary: z.object({
+    source_type: z.string(),
+    source_id: z.string(),
+    source_version: z.number(),
+    span_start: z.number(),
+    span_end: z.number(),
+    content_hash: z.string(),
+  }),
+}).strict();
+
+export const ClaimValidatedPayloadSchema = z.object({
+  nli_model: z.string(),
+  confidence: z.number(),
+  threshold_used: z.number(),
+  reasoning: z.string().optional(),
+}).strict();
+
+export const ClaimConfirmedAuthorPayloadSchema = z.object({
+  author_action: z.literal("CONFIRM"),
+  notes: z.string().optional(),
+  user_interface: z.string().default("web_review"),
+}).strict();
+
+export const ClaimSupersededPayloadSchema = z.object({
+  superseding_claim_id: z.string().uuid().optional(),
+  superseding_reason: z.string(),
+  temporal_scope: z.string().optional(),
+}).strict();
+
+export const MemoryEventPayloadUnion = z.discriminatedUnion("event_type", [
+  z.object({ event_type: z.literal("CLAIM_CREATED"), data: ClaimCreatedPayloadSchema }),
+  z.object({ event_type: z.literal("CLAIM_VALIDATED"), data: ClaimValidatedPayloadSchema }),
+  z.object({ event_type: z.literal("CLAIM_REJECTED"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("CLAIM_PROPOSED"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("CLAIM_CONFIRMED_BY_AUTHOR"), data: ClaimConfirmedAuthorPayloadSchema }),
+  z.object({ event_type: z.literal("CLAIM_REJECTED_BY_AUTHOR"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("CLAIM_SUPERSEDED"), data: ClaimSupersededPayloadSchema }),
+  z.object({ event_type: z.literal("CONTRADICTION_DETECTED"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("SOURCE_INGESTED"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("SOURCE_REPROCESSED"), data: z.record(z.string(), z.unknown()) }),
+  z.object({ event_type: z.literal("LEGACY_STATE_IMPORTED"), data: z.record(z.string(), z.unknown()) }),
+]);
+
+export interface MemoryEvent {
+  id: string;
+  usuario_id: string;
+  event_type: EventType;
+  aggregate_type: "claim" | "source" | "reflection";
+  aggregate_id: string;
+  actor_type: ActorType;
+  actor_id: string | null;
+  occurred_at: string;
+  recorded_at: string;
+  from_epistemic_status: EpistemicStatus | null;
+  to_epistemic_status: EpistemicStatus;
+  causation_event_id: string | null;
+  correlation_id: string;
+  idempotency_key: string;
+  payload: Record<string, unknown>;
+  payload_schema_version: number;
+  criado_em: string;
+}
 
 /**
  * 4.1 Schema de Extração Bruta (RawExtraction) gerada pela LLM
