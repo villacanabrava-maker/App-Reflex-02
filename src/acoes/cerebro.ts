@@ -406,7 +406,7 @@ export async function acionarAnaliseDimensao(
     }
   }
 
-  let query = admin
+  const query = admin
     .from("v_fragmentos_detalhados")
     .select("id, conteudo, obra_id, obra_titulo, secao_id, secao_titulo, ordem")
     .eq("usuario_id", usuarioId)
