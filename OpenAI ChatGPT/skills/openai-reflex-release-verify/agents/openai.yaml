@@ -1,0 +1,3 @@
+interface:
+  display_name: "Reflex Release Verify"
+  short_description: "Verify GitHub to Vercel releases by exact SHA"

@@ -8,6 +8,9 @@ Antes de improvisar um workflow, verifique Skills disponíveis na sessão.
 - `$openai-reflex-supabase-safe` — banco, RLS, Auth, Storage.
 - `$openai-reflex-cognitive-integrity` — Cérebro/IA/provenance.
 - `$openai-reflex-continuity` — handoff e persistência de contexto.
+- `$openai-reflex-feature-delivery` — implementação completa de feature/fix com gates.
+- `$openai-reflex-research-evidence` — pesquisa externa atual com classificação de evidência.
+- `$openai-reflex-release-verify` — release e verificação GitHub ↔ Vercel por SHA.
 
 ## Skills oficiais úteis quando disponíveis
 - Skill Creator — criar/atualizar Skills.

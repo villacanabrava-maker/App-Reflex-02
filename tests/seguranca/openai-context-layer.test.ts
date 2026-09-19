@@ -24,13 +24,16 @@ describe("OpenAI ChatGPT continuity layer", () => {
     }
   });
 
-  it("registra as cinco Skills OpenAI do projeto", () => {
+  it("registra as oito Skills OpenAI do projeto", () => {
     const skills = [
       "openai-reflex-bootstrap",
       "openai-reflex-runtime-debug",
       "openai-reflex-supabase-safe",
       "openai-reflex-cognitive-integrity",
       "openai-reflex-continuity",
+      "openai-reflex-feature-delivery",
+      "openai-reflex-research-evidence",
+      "openai-reflex-release-verify",
     ];
 
     for (const skill of skills) {
@@ -41,6 +44,31 @@ describe("OpenAI ChatGPT continuity layer", () => {
       expect(text).toContain(`name: ${skill}`);
       expect(text).toContain("description:");
       expect(text).toContain(`OpenAI ChatGPT/skills/${skill}/SKILL.md`);
+    }
+  });
+
+  it("registra configuração e nove subagentes Codex nativos", () => {
+    expect(existsSync(join(root, ".codex", "config.toml"))).toBe(true);
+
+    const agents = [
+      "reflex-orchestrator",
+      "reflex-architecture",
+      "reflex-supabase",
+      "reflex-frontend",
+      "reflex-cognitive",
+      "reflex-qa",
+      "reflex-platform",
+      "reflex-research",
+      "reflex-continuity",
+    ];
+
+    for (const agent of agents) {
+      const rel = join(root, ".codex", "agents", `${agent}.toml`);
+      expect(existsSync(rel), agent).toBe(true);
+      const text = readFileSync(rel, "utf8");
+      expect(text).toContain("name =");
+      expect(text).toContain("description =");
+      expect(text).toContain("developer_instructions");
     }
   });
 

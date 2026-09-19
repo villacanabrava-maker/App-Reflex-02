@@ -42,8 +42,10 @@ Depois confirme o estado real no GitHub/Supabase/Vercel quando a tarefa depender
 - `DECISIONS.md` — decisões operacionais vigentes.
 - `RESEARCH_SOURCES.md` — fontes externas oficiais usadas na metodologia.
 - `agents/` — perfis especializados OpenAI.
+- `CODEX_NATIVE_INTEGRATION.md` — como `AGENTS.md`, `.codex/agents` e Skills se combinam no Codex.
 - `workflows/` — procedimentos repetíveis.
 - `skills/` — playbooks canônicos; as Skills auto-descobertas pelo Codex ficam em `../.agents/skills/openai-reflex-*` e apontam para estes playbooks.
+- `../.codex/` — configuração nativa de projeto do Codex e papéis O1–O9 executáveis como subagentes.
 
 ## Princípio central
 

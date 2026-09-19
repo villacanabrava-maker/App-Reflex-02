@@ -112,3 +112,9 @@ No trabalho de repositório, o equivalente mínimo é:
 - CI;
 - deployment;
 - evidência.
+
+## Codex nativo no projeto
+
+O Codex atual suporta subagentes personalizados por projeto através de `.codex/agents/*.toml`. Neste repositório, os papéis `reflex_orchestrator`, `reflex_architecture`, `reflex_supabase`, `reflex_frontend`, `reflex_cognitive`, `reflex_qa`, `reflex_platform`, `reflex_research` e `reflex_continuity` correspondem aos perfis O1–O9.
+
+A configuração `.codex/config.toml` usa aprovação `on-request`, sandbox `workspace-write`, login shell desativado e limite de concorrência. O arquivo só deve ser carregado em repositório confiável. Modelos não são fixados nos papéis para permitir herança da melhor configuração disponível na sessão.
