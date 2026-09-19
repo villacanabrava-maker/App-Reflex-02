@@ -31,6 +31,9 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Validar Reflex Agent OS V3
+        run: npm run agents:validate
+
       - name: Checar tipos TypeScript
         run: npx tsc --noEmit
 

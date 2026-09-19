@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "check:all": "tsc --noEmit && vitest run"
+    "check:all": "tsc --noEmit && vitest run",
+    "agents:validate": "node scripts/agents/validate-registry.mjs && node scripts/agents/validate-skills.mjs && node scripts/agents/validate-schemas.mjs && node scripts/agents/validate-task-packet.mjs && node scripts/agents/check-adapter-drift.mjs && node scripts/agents/check-doc-drift.mjs && node scripts/agents/verify-secrets.mjs"
   },
   "dependencies": {
     "@napi-rs/canvas": "0.1.80",
