@@ -8,15 +8,15 @@
 
 - GitHub: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, 30 migrations aplicadas live, migrations 0031 a 0034 prontas no repositório (`READY-BUT-NOT-APPLIED`), RLS ativo em todos os schemas e buckets privados em 50MB.
+- Supabase: `App Reflex 02` (Project ref: `xenapowdtfhdwcfthfrn`) — 100% reconciliado, **36 migrations aplicadas live**, registradas em `public._migrations`, RLS ativo em todos os schemas e buckets privados em 50MB.
 - Decisão de Segurança: `SECURITY-EXCEPTION-DEV-001` (RISK ACCEPTED BY USER — DEVELOPMENT/TEST ONLY). A rotação da credencial foi adiada compulsoriamente para o **Production Security Gate** antes de qualquer publicação/produção.
 - Hospedagem / Vercel: **ADIADO — NÃO CONFIGURAR NEM PUBLICAR** nesta etapa por decisão do usuário.
 - Domínio de produção: AINDA NÃO DEFINIDO.
 - Stack: Next.js 15, React 19, TypeScript, Tailwind, Supabase/PostgreSQL 17, OpenAI e GitHub Actions (CI sem deploy).
 - Regra de reconciliação: o HEAD de `main` deve estar verde no GitHub Actions (npm ci, tsc, lint, test, build).
 - Governança Multiagente: Equipe consolidada com 9 agentes especializados (A1 Arquitetura, A2 Design, A3 Frontend, A4 Backend/Supabase, A5 IA/Conhecimento, A6 Plataforma/CI, A7 Qualidade/AppSec, A8 Pesquisa/Evolução, A9 Continuidade/Evidência).
-- Último Marco Concluído: MIS-0009 — Wave 3: Gate de Integridade do Event Ledger + Taxonomia SKOS, Ontologia Formal e Ancoragem Conceitual (Gate 0 concluído com revogação de event forgery, eliminação de actor_type de cliente, state machine no PostgreSQL, paridade TS/DB, anti-cross-tenant, sem fail-open; Migration 0033 de hardening; Migration 0034 com skos_conceitos, skos_relacoes e claim_conceitos; MotorTaxonomicoSKOS com anti-inflação e aliases; CBR-05 executável com 100% de precisão; suíte com 110 testes passando 100% verde; relatórios WAVE_3_TAXONOMIA_SKOS_RESULT.md e AG-0009.md).
-- Próxima Missão: MIS-0010 — Wave 4: Working Memory & Retrieval Híbrido Multi-Sinal.
+- Último Marco Concluído: **MIS-0010 — Wave 4: Retrieval Híbrido Multi-Sinal, Working Memory e Dossiê Contextual Epistêmico V3.1** (Gate 0 concluído com revogação de mutação direta para taxonomia, RPCs de curadoria humana via `auth.uid()`, `search_key` vs `identity_key`, remoção do default mágico 0.85; Migrations 0031 a 0036 aplicadas live no Supabase DEV/TEST; Query Intent Router com 9 classes cognitivas; Motor de Retrieval V3.1 com 5 rotas comparativas e abstenção honesta; Montador de Dossiê Contextual com sanitização anti-prompt-injection, 9 compartimentos e snapshot SHA-256; Eliminação de hidden retrieval no Redator e Planejador; 127 testes passando 100% verde; relatórios WAVE_4_RETRIEVAL_WORKING_MEMORY_RESULT.md e AG-0010.md).
+- Próxima Missão: **MIS-0011 — Wave 5: Auditor Cognitivo Pós-Geração e Abstenção Honesta**.
 
 *Nota Histórica*: O código base descende do App 01 (Rflex01, repo `villacanabrava-maker/reflex-01`, Supabase `cqavdefyelarhyjqmahi`). Essas referências anteriores são puramente históricas e não operam nesta base.
 
@@ -92,8 +92,15 @@ Migrations aplicadas:
 - `0025_taxonomia_isolamento_rls`;
 - `0026_motor_taxonomia_automatica`;
 - `0027_grants_propostas_atualizacao` (corrige permissão backend da fila de aprendizado autoral);
-- `0028_dimensoes_canonicas_readonly` (protege o catálogo das 18 dimensões como leitura autenticada e escrita administrativa).
-- `0029_limite_upload_biblioteca_50mb` (alinha o bucket `originais-biblioteca` ao limite de 50 MB desta fase).
+- `0028_dimensoes_canonicas_readonly` (protege o catálogo das 18 dimensões como leitura autenticada e escrita administrativa);
+- `0029_limite_upload_biblioteca_50mb` (alinha o bucket `originais-biblioteca` ao limite de 50 MB desta fase);
+- `0030_sinteses_cognitivas_hierarquicas` (estruturação de sínteses de seções e documentos);
+- `0031_claims_ledger` (tabelas fundacionais de claims e proveniência com enums epistemológicos);
+- `0032_episodic_event_ledger` (ledger de eventos de memória append-only e timeline epistêmica);
+- `0033_event_ledger_integrity_gate` (state machine de transições no PostgreSQL, revogação de mutação direta, bloqueio de cross-tenant);
+- `0034_taxonomia_skos_conceitos` (ontologia formal SKOS, relações semânticas e ancoragem de claims);
+- `0035_taxonomia_trust_hardening` (Gate 0 da Wave 4: revogação de escrita direta, RPCs de curadoria humana `curar_conceito_skos_humano` e `curar_vinculo_claim_conceito_humano`, separação `identity_key`/`search_key`, remoção do default 0.85);
+- `0036_retrieval_v3_1_e_dossie` (RPC `buscar_multi_sinal_v3_1` com RRF e tabela `reflexoes.dossies_snapshots` com RLS).
 
 ### Cérebro Autoral
 

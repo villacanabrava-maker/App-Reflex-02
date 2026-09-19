@@ -461,7 +461,8 @@ export const SKOSConceptSchema = z.object({
   id: z.string().uuid().optional(),
   usuario_id: z.string().uuid(),
   pref_label: z.string().min(2, "pref_label deve ter ao menos 2 caracteres"),
-  pref_label_normalizado: z.string().min(2),
+  pref_label_normalizado: z.string().min(2), // identity_key canônica em NFC
+  search_key: z.string().min(1), // chave para busca tolerante sem diacríticos
   alt_labels: z.array(z.string()).default([]),
   idioma: z.string().default("pt-BR"),
   definicao: z.string().nullable().optional(),
@@ -492,12 +493,94 @@ export const ClaimConceptLinkSchema = z.object({
   claim_id: z.string().uuid(),
   conceito_id: z.string().uuid(),
   tipo_vinculo: ClaimConceptLinkTypeEnum.default("DISCUSSES_CONCEPT"),
-  confianca: z.number().min(0.0).max(1.0).default(0.85),
+  confianca: z.number().min(0.0).max(1.0).nullable().optional(), // Sem default mágico 0.85
   origem: z.enum(["IA_SUGGESTION", "HUMAN_CURATED"]).default("IA_SUGGESTION"),
   status: z.enum(["proposed", "confirmed", "rejected"]).default("proposed"),
   criado_em: z.string().optional(),
 }).strict();
 export type ClaimConceptLink = z.infer<typeof ClaimConceptLinkSchema>;
+
+// ============================================================================
+// 3.3 SCHEMAS DO RETRIEVAL MULTI-SINAL E DOSSIÊ CONTEXTUAL (WAVE 4)
+// ============================================================================
+
+export const QueryIntentEnum = z.enum([
+  "FACTUAL_LOCAL",
+  "CONCEPTUAL",
+  "RELATIONAL",
+  "TEMPORAL_EVOLUTION",
+  "PROCEDURAL",
+  "GLOBAL_CORPUS",
+  "CONTRADICTION",
+  "AUTHORIAL",
+  "INTENT_UNCERTAIN"
+]);
+export type QueryIntent = z.infer<typeof QueryIntentEnum>;
+
+export const AllowedUsePolicyEnum = z.enum([
+  "CAN_SUPPORT_AUTHORIAL_CLAIM",
+  "CAN_SUPPORT_EXTERNAL_CLAIM",
+  "CANNOT_SUPPORT_AUTHORIAL_CLAIM",
+  "CAN_BE_CITED_DIRECTLY",
+  "CAN_GUIDE_STYLE",
+  "CAN_SUGGEST_STRUCTURE",
+  "CANNOT_SUPPORT_FACT",
+  "CAN_INSPIRE_QUESTION",
+  "CANNOT_BE_STATED_AS_MEMORY",
+  "HISTORICAL_ONLY",
+  "COUNTEREVIDENCE_ONLY"
+]);
+export type AllowedUsePolicy = z.infer<typeof AllowedUsePolicyEnum>;
+
+export const DossierCompartmentEnum = z.enum([
+  "task",
+  "direct_evidence",
+  "episodic_memory",
+  "semantic_memory",
+  "procedural_memory",
+  "concept_relations",
+  "counterevidence",
+  "hypotheses",
+  "uncertainties"
+]);
+export type DossierCompartment = z.infer<typeof DossierCompartmentEnum>;
+
+export const DossierItemSchema = z.object({
+  dossier_item_id: z.string().min(1),
+  compartment: DossierCompartmentEnum,
+  memory_type: z.string(),
+  epistemic_status: EpistemicStatusEnum,
+  source_ids: z.array(z.string()),
+  retrieval_route: z.string(),
+  individual_scores: z.record(z.string(), z.number()).default({}),
+  final_rank: z.number().int().min(1),
+  authorial_scope: z.enum(["autoral", "externo", "indeterminado"]),
+  allowed_use: z.array(AllowedUsePolicyEnum),
+  temporal_fit: z.number().min(0).max(1).optional(),
+  provenance: z.record(z.string(), z.unknown()).default({}),
+  content: z.string(),
+  token_cost: z.number().int().min(0),
+  counterevidence_flag: z.boolean().default(false),
+  explanation: z.string().optional(),
+}).strict();
+export type DossierItem = z.infer<typeof DossierItemSchema>;
+
+export const DossierV31Schema = z.object({
+  id: z.string().uuid(),
+  query: z.string(),
+  intent: QueryIntentEnum,
+  target_token_budget: z.number().int().min(500),
+  actual_tokens_total: z.number().int().min(0),
+  compartments: z.record(
+    DossierCompartmentEnum,
+    z.array(DossierItemSchema)
+  ),
+  abstained: z.boolean().default(false),
+  abstention_reason: z.string().optional(),
+  snapshot_hash: z.string().length(64),
+  criado_em: z.string(),
+}).strict();
+export type DossierV31 = z.infer<typeof DossierV31Schema>;
 
 /**
  * 4.1 Schema de Extração Bruta (RawExtraction) gerada pela LLM

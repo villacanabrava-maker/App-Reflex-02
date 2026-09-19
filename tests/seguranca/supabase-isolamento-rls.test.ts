@@ -49,7 +49,7 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     }
   });
 
-  it("as migrations 0026 a 0034 existem no repositório e cobrem RLS, isolamento, storage, event ledger hardening e SKOS", () => {
+  it("as migrations 0026 a 0036 existem no repositório e cobrem RLS, isolamento, storage, event ledger hardening, SKOS e retrieval V3.1", () => {
     const migrationsDir = path.join(process.cwd(), "supabase", "migrations");
     const m26 = fs.readFileSync(path.join(migrationsDir, "0026_motor_taxonomia_automatica.sql"), "utf-8");
     const m27 = fs.readFileSync(path.join(migrationsDir, "0027_grants_propostas_atualizacao.sql"), "utf-8");
@@ -116,6 +116,22 @@ describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 
     expect(m34).toContain("fk_claim_conceito_claim_tenant");
     expect(m34).toContain("fk_claim_conceito_conceito_tenant");
     expect(m34).toContain("uq_skos_conceito_label_tenant");
+
+    // 0035 (Wave 4 - Gate 0 Taxonomy Trust Hardening)
+    const m35 = fs.readFileSync(path.join(migrationsDir, "0035_taxonomia_trust_hardening.sql"), "utf-8");
+    expect(m35).toContain("search_key TEXT");
+    expect(m35).toContain("DROP POLICY IF EXISTS \"skos_conceitos_insert_owner\"");
+    expect(m35).toContain("curar_conceito_skos_humano");
+    expect(m35).toContain("propor_conceito_skos_sistema");
+    expect(m35).toContain("fk_skos_conceitos_merged_into_tenant");
+
+    // 0036 (Wave 4 - Retrieval Multi-Sinal V3.1 e Snapshots de Dossiê)
+    const m36 = fs.readFileSync(path.join(migrationsDir, "0036_retrieval_v3_1_e_dossie.sql"), "utf-8");
+    expect(m36).toContain("reflexoes.dossies_snapshots ENABLE ROW LEVEL SECURITY");
+    expect(m36).toContain("buscar_multi_sinal_v3_1");
+    expect(m36).toContain("p_rrf_k NUMERIC DEFAULT 60.0");
+    expect(m36).toContain("candidatos_taxonomia");
+    expect(m36).toContain("score_rrf");
   });
 
   it("todas as tabelas do schema sistema possuem RLS habilitado no banco ativo", { timeout: 15000 }, async () => {

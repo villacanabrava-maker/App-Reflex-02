@@ -219,7 +219,9 @@ describe("Golden Dataset V3 Runner — Avaliação Epistêmica das 12 Famílias 
         definicao: "Teoria e metodologia de interpretação e compreensão de textos filosóficos.",
       });
 
-      expect(conceito.pref_label_normalizado).toBe("hermeneutica filosofica");
+      // Validação da Identidade Canônica (NFC com acento) e Busca Tolerante (search_key sem acento)
+      expect(conceito.pref_label_normalizado).toBe("hermenêutica filosófica");
+      expect(conceito.search_key).toBe("hermeneutica filosofica");
       expect(conceito.recorrencia_contagem).toBe(1);
 
       // 3. Teste de Anti-Inflação: Propor variação idêntica/normalizada incrementa recorrência

@@ -570,3 +570,103 @@ describe("Auditoria Zero-Trust (A7) — Taxonomia SKOS, Ontologia e Anti-Cross-T
   });
 });
 
+describe("Auditoria Zero-Trust (A7) — Gate 0: Taxonomy Trust Hardening (Wave 4)", () => {
+  const userA = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+  const userB = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+
+  test("Gate 0.1 — Identidade Canônica vs Busca Tolerante: termos com diacríticos não colapsam em identity_key", () => {
+    const idTrafico = MotorTaxonomicoSKOS.gerarIdentityKey("tráfico");
+    const idTrafego = MotorTaxonomicoSKOS.gerarIdentityKey("trafego");
+    const idSemAcento = MotorTaxonomicoSKOS.gerarIdentityKey("trafico");
+
+    // identity_key DEVE preservar o acento canônico
+    expect(idTrafico).toBe("tráfico");
+    expect(idTrafego).toBe("trafego");
+    expect(idSemAcento).toBe("trafico");
+    expect(idTrafico).not.toBe(idSemAcento);
+
+    // search_key faz accent-folding para tolerância na busca
+    const searchTrafico = MotorTaxonomicoSKOS.gerarSearchKey("tráfico");
+    const searchSemAcento = MotorTaxonomicoSKOS.gerarSearchKey("trafico");
+    expect(searchTrafico).toBe("trafico");
+    expect(searchSemAcento).toBe("trafico");
+  });
+
+  test("Gate 0.2 — Segregação Sistêmica: sugestões de IA sempre entram como proposed e IA_SUGGESTION", () => {
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    const c = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: userA,
+      pref_label: "Hermenêutica Dialética",
+    });
+
+    expect(c.status).toBe("proposed");
+    expect(c.metadados.origem).toBe("IA_SUGGESTION");
+    expect(c.search_key).toBe("hermeneutica dialetica");
+    expect(c.pref_label_normalizado).toBe("hermenêutica dialética");
+  });
+
+  test("Gate 0.3 — Curadoria Humana Explícita: apenas curadoria humana promove para active com registro de auditoria", () => {
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    const c = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: userA,
+      pref_label: "Epistemologia Genética",
+    });
+    expect(c.status).toBe("proposed");
+
+    const curado = MotorTaxonomicoSKOS.curarConceitoHumano({
+      usuario_id: userA,
+      conceito_id: c.id!,
+      acao: "confirm",
+    });
+
+    expect(curado.status).toBe("active");
+    expect(curado.metadados.curadoria).toBeDefined();
+    expect((curado.metadados.curadoria as any).curador).toBe("HUMAN");
+  });
+
+  test("Gate 0.4 — Integridade de Mesclagem Anti-Cross-Tenant: mesclagem com conceito de outro usuário é bloqueada", () => {
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    const cUserA = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: userA,
+      pref_label: "Conceito A",
+    });
+
+    const cUserB = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: userB,
+      pref_label: "Conceito B",
+    });
+
+    expect(() =>
+      MotorTaxonomicoSKOS.curarConceitoHumano({
+        usuario_id: userA,
+        conceito_id: cUserA.id!,
+        acao: "merge",
+        merged_into_id: cUserB.id!, // Tentativa cross-tenant!
+      })
+    ).toThrow("não pertence ao mesmo tenant");
+  });
+
+  test("Gate 0.5 — Eliminação de Confiança Mágica (0.85): vínculo sem score calibrado não fabrica certeza", () => {
+    MotorTaxonomicoSKOS.resetStoreLocal();
+
+    const c = MotorTaxonomicoSKOS.proporConceito({
+      usuario_id: userA,
+      pref_label: "Ética Nicomaqueia",
+    });
+
+    const vinculoSemScore = MotorTaxonomicoSKOS.vincularClaimConceito({
+      usuario_id: userA,
+      claim_id: "77777777-7777-7777-7777-777777777777",
+      conceito_id: c.id!,
+    });
+
+    // Não deve conter 0.85 arbitrário!
+    expect(vinculoSemScore.confianca).toBeNull();
+    expect(vinculoSemScore.origem).toBe("IA_SUGGESTION");
+    expect(vinculoSemScore.status).toBe("proposed");
+  });
+});
+

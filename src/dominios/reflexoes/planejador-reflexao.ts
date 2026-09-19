@@ -87,8 +87,19 @@ export async function gerarPlanoReflexao({
 
   const fontesIds = fragmentosDossie.map((f) => f.id);
 
+  // NO CAMINHO V3.1: PROIBIDO CONSULTAR BANCO SILENCIOSAMENTE SEM DOSSIÊ
+  const isV31DossierAtivo =
+    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "shadow" ||
+    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "on";
+
+  if (isV31DossierAtivo && !dossie) {
+    throw new Error(
+      "Caminho V3.1: Proibido hidden retrieval no planejador. O planejador deve receber um Dossiê Contextual V3.1 congelado em vez de consultar o banco silenciosamente."
+    );
+  }
+
   // 3. Preservar os conceitos capturados no mesmo snapshot do dossiê.
-  // Entradas antigas sem dossiê continuam podendo consultar a taxonomia atual.
+  // Entradas antigas sem dossiê continuam podendo consultar a taxonomia atual (modo legado apenas).
   let conceitosDossie = dossie?.conceitos_chave || [];
   if (!dossie) {
     const { data: conceitosAtuais } = await admin
@@ -108,7 +119,7 @@ export async function gerarPlanoReflexao({
     .join("\n");
 
   // 4. Preservar as regras sugeridas no mesmo snapshot do dossiê.
-  // Entradas antigas sem dossiê continuam podendo consultar as regras atuais.
+  // Entradas antigas sem dossiê continuam podendo consultar as regras atuais (modo legado apenas).
   let regrasDossie = dossie?.regras_sugeridas || [];
   if (!dossie) {
     const { data: regrasAtuais } = await admin

@@ -125,23 +125,28 @@ Para garantir integridade, cada Wave é concebida como uma missão autônoma (`M
 
 ---
 
-## 8. Wave 3: Retrieval Híbrido Multi-Sinal & Ontologia SKOS (MIS-0009)
-- **Objetivo:** Unificar busca vetorial densa (`pgvector` com índice HNSW), busca léxica lematizada em português e ontologia formal SKOS.
+## 8. Wave 3: Integridade do Event Ledger + Taxonomia SKOS, Ontologia Formal e Ancoragem Conceitual (MIS-0009)
+- **Status:** **CONCLUÍDO** (Laudo de Gate PASS, migrations 0033 e 0034)
+- **Objetivo:** Estabelecer a ontologia conceitual formal SKOS no schema `taxonomia`, viabilizar relações taxonômicas padronizadas (`broader`, `narrower`, `related`) e ancoragem de claims atômicos (`claim_conceitos`).
 - **Entregas Técnicas:**
-  - Migration Supabase `0033_retrieval_hibrido_skos.sql`;
-  - Função RPC `buscar_contexto_hibrido_v3` com Reciprocal Rank Fusion (RRF);
-  - Estruturação de relações taxonômicas (`broader`, `narrower`, `related`);
-  - Benchmark de precisão de recuperação sob orçamentos fixos de tokens.
+  - Migrations Supabase `0033_taxonomia_skos_conceitos.sql` e `0034_ancoragem_claims_skos.sql`;
+  - Motor de Taxonomia SKOS com validação Zod e normalização de conceitos;
+  - Tabelas `taxonomia.conceitos_skos`, `taxonomia.conceitos_relacoes` e `cerebro_autoral.claim_conceitos` com RLS multi-tenant;
+  - Suíte de integridade taxonômica e anti-ciclos.
 
 ---
 
-## 9. Wave 4: Dossiê Contextual Segregado & Working Memory (MIS-0010)
-- **Objetivo:** Implementar o montador da memória de trabalho com compartimentalização estrita e orçamentação matemática de contexto.
+## 9. Wave 4: Retrieval Híbrido Multi-Sinal, Working Memory e Dossiê Contextual Epistêmico (MIS-0010)
+- **Status:** **CONCLUÍDO** (Laudos PASS de Gates 0, Retrieval e Working Memory, migrations 0035 e 0036)
+- **Objetivo:** Unificar busca densa (`pgvector` HNSW), léxica (FTS PT-BR) e ontológica SKOS via Reciprocal Rank Fusion (RRF), montar Dossiê Contextual segregado em 9 compartimentos estanques com políticas de `Allowed Use`, eliminação de hidden retrieval e orçamentação matemática de contexto.
 - **Entregas Técnicas:**
-  - Módulo `src/dominios/cerebro/dossie-contextual.ts`;
-  - Distribuição estrita de tokens (40% Autoral, 30% Externo, 20% Taxonomia, 10% Sistema);
-  - Injeção de metadados de proveniência e tags de `Allowed Use`;
-  - Proteção contra injeção indireta de prompt via obras externas.
+  - Migrations Supabase `0035_taxonomia_trust_hardening.sql` (Gate 0, RPCs de curadoria humana via `auth.uid()`, `search_key` vs `identity_key`) e `0036_retrieval_v3_1_e_dossie.sql` (RPC `buscar_multi_sinal_v3_1` com RRF e tabela `reflexoes.dossies_snapshots`);
+  - Aplicação e alinhamento live das migrations 0031 a 0036 no Supabase de desenvolvimento/teste;
+  - Query Intent Router com 9 classes cognitivas tipadas;
+  - Motor de Retrieval V3.1 com 5 rotas comparativas (A, B0, B1, C, D) e abstenção honesta;
+  - Montador de Dossiê Contextual com sanitização anti-prompt-injection, 9 compartimentos e snapshot SHA-256;
+  - Eliminação de retrieval oculto e fallbacks silenciosos em Redator e Planejador via feature flags canônicas;
+  - Benchmark A/B e auditoria Zero-Trust aprovados (127 testes passando 100% verde).
 
 ---
 
@@ -272,14 +277,14 @@ O cronograma de modernização cognitiva inicia-se imediatamente após a homolog
 
 | Sequência | Missão | Escopo Principal | Estado |
 | :---: | :---: | :--- | :---: |
-| **1** | **MIS-0006** | Fechamento Conclusivo da Pesquisa, Design Freeze e Plano Mestre Executável | **EM HOMOLOGAÇÃO** |
-| **2** | **MIS-0007** | **Wave 1:** Claims Ledger, Extrator de Claims, NLI Entailment e Golden Dataset Runner | `PRÓXIMO PASSO` |
-| **3** | **MIS-0008** | **Wave 2:** Episodic Event Ledger & Timeline dos 10 Estados Epistemológicos | `PLANEJADO` |
-| **4** | **MIS-0009** | **Wave 3:** Retrieval Híbrido Multi-Sinal & Taxonomia SKOS | `PLANEJADO` |
-| **5** | **MIS-0010** | **Wave 4:** Dossiê Contextual Segregado & Working Memory com Allowed Use | `PLANEJADO` |
-| **6** | **MIS-0011** | **Wave 5:** Auditor Cognitivo Pós-Geração & Motor de Abstenção Honesta | `PLANEJADO` |
+| **1** | **MIS-0006** | Fechamento Conclusivo da Pesquisa, Design Freeze e Plano Mestre Executável | **CONCLUÍDO** |
+| **2** | **MIS-0007** | **Wave 1:** Claims Ledger, Extrator de Claims, NLI Entailment e Golden Dataset Runner | **CONCLUÍDO** |
+| **3** | **MIS-0008** | **Wave 2:** Episodic Event Ledger & Timeline dos 10 Estados Epistemológicos | **CONCLUÍDO** |
+| **4** | **MIS-0009** | **Wave 3:** Integridade do Event Ledger + Taxonomia SKOS, Ontologia Formal e Ancoragem Conceitual | **CONCLUÍDO** |
+| **5** | **MIS-0010** | **Wave 4:** Retrieval Híbrido Multi-Sinal, Working Memory e Dossiê Contextual Epistêmico | **CONCLUÍDO** |
+| **6** | **MIS-0011** | **Wave 5:** Auditor Cognitivo Pós-Geração & Motor de Abstenção Honesta | `PRÓXIMO PASSO` |
 | **7** | **MIS-0012** | **Wave 6:** Consolidação Autoral Noturna & Aprendizado por Edição | `PLANEJADO` |
 
 ---
 
-*Fim do Plano Mestre. Nenhuma implementação de código de produção da Wave 1 é executada nesta missão.*
+*Fim do Plano Mestre. Todas as implementações de código de produção das Waves 1 a 4 foram devidamente homologadas com 100% dos testes aprovados e migrations aplicadas no Supabase DEV/TEST.*

@@ -71,7 +71,19 @@ export async function redigirReflexao({
     fragmentos = (frags as any) || [];
   }
 
+  // NO CAMINHO V3.1: PROIBIDO O FALLBACK DE 8 FRAGMENTOS SILENCIOSOS
+  const isV31DossierAtivo =
+    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "shadow" ||
+    process.env.FEATURE_COGNITIVE_V31_DOSSIER === "on";
+
   if (fragmentos.length === 0) {
+    if (isV31DossierAtivo) {
+      throw new Error(
+        "Caminho V3.1: Proibido hidden retrieval / fallback silencioso de fragmentos aleatórios quando fontes_mobilizadas está vazio."
+      );
+    }
+
+    // Modo Legado Preservado (apenas quando V3.1 está off)
     const { data: fragsRecentes } = await admin
       .from("v_fragmentos_detalhados")
       .select("id, conteudo, obra_titulo")
