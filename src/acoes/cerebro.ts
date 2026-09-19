@@ -95,25 +95,60 @@ export async function obterResumoCerebro(): Promise<ResumoCerebro> {
   const usuarioId = await obterUsuarioAtualId();
   const admin = criarClienteAdmin();
 
-  const { data, error } = await admin
-    .from("v_cerebro_resumo")
-    .select("*")
-    .eq("usuario_id", usuarioId)
-    .maybeSingle();
+  const [
+    { data, error },
+    { data: fragmentosAutorais, count: totalFragmentosAutorais },
+    { count: totalFontesMemoria },
+  ] = await Promise.all([
+    admin
+      .from("v_cerebro_resumo")
+      .select("*")
+      .eq("usuario_id", usuarioId)
+      .maybeSingle(),
+    admin
+      .from("v_fragmentos_detalhados")
+      .select("obra_id", { count: "exact" })
+      .eq("usuario_id", usuarioId)
+      .eq("obra_natureza", "autoral")
+      .eq("participa_cerebro", true),
+    admin
+      .schema("cerebro_autoral")
+      .from("memory_events")
+      .select("id", { count: "exact", head: true })
+      .eq("usuario_id", usuarioId)
+      .eq("event_type", "SOURCE_INGESTED")
+      .eq("aggregate_type", "source"),
+  ]);
 
-  if (error || !data) {
-    return {
-      usuario_id: usuarioId,
-      total_caracteristicas: 0,
-      total_regras: 0,
-      total_anti_regras: 0,
-      total_nucleo_autoral: 0,
-      total_influencias_externas: 0,
-      confianca_media_geral: 0,
-    };
-  }
+  const obrasAutorais = new Set(
+    (fragmentosAutorais || [])
+      .map((fragmento) => fragmento.obra_id as string | null)
+      .filter((id): id is string => Boolean(id))
+  ).size;
 
-  return data as ResumoCerebro;
+  const base = error || !data
+    ? {
+        usuario_id: usuarioId,
+        total_caracteristicas: 0,
+        total_regras: 0,
+        total_anti_regras: 0,
+        total_nucleo_autoral: 0,
+        total_influencias_externas: 0,
+        confianca_media_geral: 0,
+      }
+    : (data as Omit<
+        ResumoCerebro,
+        | "total_obras_autorais_processadas"
+        | "total_fragmentos_autorais"
+        | "total_fontes_autorais_memoria"
+      >);
+
+  return {
+    ...base,
+    total_obras_autorais_processadas: obrasAutorais,
+    total_fragmentos_autorais: totalFragmentosAutorais || 0,
+    total_fontes_autorais_memoria: totalFontesMemoria || 0,
+  };
 }
 
 /**
