@@ -32,13 +32,22 @@ export function PainelCerebroModerno({
 }: Props) {
   const [abaAtiva, setAbaAtiva] = useState<AbaCerebro>("visao_geral");
 
-  const possuiAnalise =
+  const possuiAnaliseDerivada =
     caracteristicas.length > 0 || regras.length > 0 || resumo.total_caracteristicas > 0;
+  const possuiCorpusAutoral =
+    resumo.total_obras_autorais_processadas > 0 || resumo.total_fragmentos_autorais > 0;
 
   const caracteristicasPrincipais = caracteristicas.slice(0, 6);
   const regrasPrincipais = regras.slice(0, 6);
 
   const metricas = [
+    {
+      rotulo: "Corpus autoral",
+      valor: resumo.total_obras_autorais_processadas,
+      detalhe: `${resumo.total_fragmentos_autorais} fragmentos disponíveis ao Cérebro`,
+      icone: BookOpen,
+      classe: "bg-cyan-50 text-cyan-700",
+    },
     {
       rotulo: "Características",
       valor: resumo.total_caracteristicas,
@@ -136,17 +145,17 @@ export function PainelCerebroModerno({
             ))}
           </div>
 
-          {!possuiAnalise ? (
+          {!possuiCorpusAutoral ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
               <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                 <Brain className="h-6 w-6" />
               </div>
               <h2 className="font-serif text-lg font-bold text-slate-900">
-                Ainda não há análise autoral suficiente
+                Ainda não há corpus autoral processado
               </h2>
               <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-slate-500">
-                Processe materiais autorais na Biblioteca e depois use as dimensões do Cérebro
-                para mapear características sustentadas por evidências do seu próprio acervo.
+                Marque uma obra como autoral e processe-a na Biblioteca. Depois da publicação,
+                seus fragmentos passam a integrar o corpus primário disponível ao Cérebro.
               </p>
               <Link
                 href="/biblioteca"
@@ -155,6 +164,26 @@ export function PainelCerebroModerno({
                 <BookOpen className="h-4 w-4" />
                 Ir para a Biblioteca
               </Link>
+            </div>
+          ) : !possuiAnaliseDerivada ? (
+            <div className="rounded-3xl border border-emerald-200 bg-emerald-50/60 p-8 text-center shadow-sm">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
+                <Brain className="h-6 w-6" />
+              </div>
+              <h2 className="font-serif text-lg font-bold text-slate-900">
+                Corpus autoral sincronizado com o Cérebro
+              </h2>
+              <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
+                {resumo.total_obras_autorais_processadas} obra autoral e{" "}
+                {resumo.total_fragmentos_autorais} fragmentos já estão disponíveis como fonte
+                primária. Características, regras e anti-regras continuam em zero até serem
+                derivadas com evidências e confirmadas pelo autor; o sistema não promove
+                inferências automaticamente.
+              </p>
+              <div className="mx-auto mt-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700">
+                <ShieldCheck className="h-4 w-4" />
+                Fonte autoral preservada sem atribuições inventadas
+              </div>
             </div>
           ) : (
             <>
