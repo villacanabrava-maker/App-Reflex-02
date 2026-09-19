@@ -25,7 +25,7 @@ export default async function DashboardLayout({
               <PenaIcone className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-bold leading-tight text-slate-900">Rflex01</span>
+              <span className="text-sm font-bold leading-tight text-slate-900">Reflex 02</span>
               <span className="text-xs text-slate-500">Memória e inteligência autoral</span>
             </div>
           </Link>
