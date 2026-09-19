@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Recomendado pelo pdf-parse para Next.js/Vercel: mantém o runtime nativo
-  // e os arquivos do worker fora do bundle interno do Next.
-  serverExternalPackages: ["pdf-parse", "@napi-rs/canvas"],
+  // O parser PDF roda somente no backend e deve permanecer fora do bundle
+  // interno do Next.js para preservar seu runtime Node nativo.
+  serverExternalPackages: ["pdf-parse"],
 };
 
 export default nextConfig;

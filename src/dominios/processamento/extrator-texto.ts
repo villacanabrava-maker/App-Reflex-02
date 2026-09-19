@@ -1,4 +1,5 @@
 import zlib from "zlib";
+import { createRequire } from "node:module";
 
 export interface ResultadoExtracaoTexto {
   textoCompleto: string;
@@ -124,42 +125,34 @@ export async function extrairTextoDeBuffer(
   const ehDocx = nome.endsWith(".docx") || mime.includes("wordprocessingml") || (ehZipReal && !ehPdfReal);
 
   if (ehPdfReal) {
-    // Importação tardia: rotas como Home/Biblioteca não devem carregar
-    // o runtime nativo do PDF quando nenhum PDF está sendo processado.
-    const workerModule = await import("pdf-parse/worker");
-    const { PDFParse } = await import("pdf-parse");
-
-    // Em Next.js/Vercel o worker precisa ser configurado explicitamente.
-    // Além disso, não passamos Buffer (subclasse Node) ao worker: usamos
-    // Uint8Array simples para evitar DataCloneError/structuredClone em runtimes
-    // serverless.
-    PDFParse.setWorker(workerModule.getData());
-    const dadosPdf = new Uint8Array(
-      buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
-    );
-    const parser = new PDFParse({
-      data: dadosPdf,
-      CanvasFactory: workerModule.CanvasFactory,
-    });
-
+    // O pdf-parse 2.x usa um worker/fake-worker baseado em postMessage que pode
+    // lançar DataCloneError em runtimes serverless. Para extração textual no
+    // backend usamos a API estável 1.x, que roda no mesmo processo e não depende
+    // de structuredClone/transferList.
     try {
-      const [dadosTexto, dadosInfo] = await Promise.all([
-        parser.getText(),
-        parser.getInfo(),
-      ]);
+      const requireNode = createRequire(import.meta.url);
+      const pdfParse = requireNode("pdf-parse") as (
+        data: Buffer
+      ) => Promise<{
+        text: string;
+        numpages?: number;
+        info?: Record<string, unknown>;
+        metadata?: unknown;
+      }>;
 
-      textoBruto = dadosTexto.text;
-      totalPaginas = dadosInfo.total || 1;
+      const resultadoPdf = await pdfParse(buffer);
+
+      textoBruto = resultadoPdf.text || "";
+      totalPaginas = resultadoPdf.numpages || 1;
       metadados = {
         formato: "pdf",
-        totalPaginas: dadosInfo.total || 1,
+        totalPaginas,
         tamanhoBytes: buffer.length,
+        info: resultadoPdf.info || null,
       };
     } catch (err: any) {
       console.warn("Falha ao analisar PDF binário:", err.message);
       throw new Error(`Não foi possível extrair o texto do PDF: ${err.message}`);
-    } finally {
-      await parser.destroy();
     }
   } else if (ehDocx) {
     try {
