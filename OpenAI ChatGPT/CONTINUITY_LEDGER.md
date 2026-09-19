@@ -57,3 +57,15 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - release commit: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`;
 - CI run `35454339376`: success;
 - Vercel production deployment `dpl_FAGKTxzRLcwv5E62oLyWfCjniyVX`: READY e associado ao mesmo SHA.
+
+## 2026-09-19 — Bootstrap live reconciliado e MIS-0012 iniciada
+- [CONFIRMADO-CODIGO] `main` reconciliada no SHA `0c7f14c41be816ca023d8347984665db60fbc265`; CI do HEAD verde.
+- [CONFIRMADO-RUNTIME] Vercel produção `app-reflex-02.vercel.app` em `READY`, mesmo SHA do baseline, HTTP 200; sem warnings/errors no deployment atual na janela consultada.
+- [CONFIRMADO-RUNTIME] Supabase `xenapowdtfhdwcfthfrn` em `ACTIVE_HEALTHY`, com 38 migrations no ledger; snapshot observado: 1 usuário, 1 obra, 20 seções, 47 fragmentos, 47 vetores, 22 sínteses e 13 propostas de atualização.
+- [CONFIRMADO-RUNTIME] buckets relevantes permanecem privados e limitados a 50 MB.
+- [DRIFT-DOCUMENTAL] `docs/STATUS_PROJETO.md` ainda registrava Vercel adiada, domínio indefinido e 37 migrations; o status foi atualizado na branch da missão para refletir o live verificado.
+- [CONFIRMADO-CODIGO] o aprendizado por edição já gera propostas com diff/evidência real e decisão humana, mas a confirmação de payload `dados_propostos.aprendizado` não materializa hoje a regra/metodologia correspondente; esse é um gap prioritário da Wave 6.
+- [CONFIRMADO-CODIGO/RUNTIME] não há replay/scheduler noturno ativo; `pg_cron`/`pg_net` não estavam habilitados no snapshot verificado.
+- [PLANO] criada a especificação normativa `docs/coordenacao/missoes/MIS-0012/TASK_PACKETS.md` na branch `chatgpt/mis-0012-wave6-spec`.
+- [STOP-CONDITION] nenhuma migration da Wave 6, cron ou mutação de produção foi aplicada nesta abertura de missão.
+
