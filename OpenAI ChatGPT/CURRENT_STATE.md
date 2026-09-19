@@ -1,15 +1,16 @@
 # Estado Operacional Verificado — OpenAI ChatGPT
 
-**Snapshot:** 2026-09-19 11:40 BRT  
+**Snapshot:** 2026-09-19 13:18 BRT  
 **Regra:** este arquivo é um bootstrap, não uma autoridade permanente. Verifique live antes de decisões críticas.
 
 ## GitHub
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD verificado: `d15fdf410e5c0c879196e66e3efba1f5541f7349`
-- Commit: `feat: explicit books chapters and fragments scope for Brain analysis`
-- GitHub Actions no HEAD: run #52, `success`
+- Release OpenAI/Codex v2 reconciliado: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`
+- Commit: `feat: add Codex-native O1–O9 agents and expand OpenAI continuity layer`
+- CI da mudança: run `35454339376`, `success`
+- Regra: obter o HEAD live no início de cada nova sessão; commits de snapshot/documentação podem existir depois deste SHA.
 
 A `main` não possui branch protection ativa no momento do snapshot.
 
@@ -18,8 +19,8 @@ A `main` não possui branch protection ativa no momento do snapshot.
 Produção está **ativa**. Documentos antigos que ainda dizem “Vercel fora de escopo” estão desatualizados em relação ao runtime atual.
 
 - Projeto: `app-reflex-02`
-- Produção READY: `dpl_HuW7bHM6vAYJuyeJV3gDZrW9J9mq`
-- SHA da produção: `d15fdf410e5c0c879196e66e3efba1f5541f7349`
+- Produção READY verificada para a release OpenAI/Codex v2: `dpl_FAGKTxzRLcwv5E62oLyWfCjniyVX`
+- SHA dessa produção: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`
 - Branch: `main`
 - URL canônica: `https://app-reflex-02.vercel.app`
 
@@ -101,3 +102,14 @@ Alguns arquivos históricos ainda declaram:
 - estado pré-deploy.
 
 Trate esses trechos como históricos até reconciliação formal. Código + runtime live prevalecem.
+
+
+## Camada OpenAI / Codex v2
+
+- pasta `OpenAI ChatGPT/` ativa como bootstrap e continuidade;
+- 9 perfis O1–O9 documentais;
+- 9 subagentes nativos de projeto em `.codex/agents/`;
+- `.codex/config.toml` com defaults conservadores;
+- 8 Skills OpenAI registradas em `.agents/skills/openai-reflex-*`;
+- validação anti-segredos em `OpenAI ChatGPT/scripts/validate-context.mjs`;
+- continuidade registra fatos/decisões verificadas, não transcrições integrais nem raciocínio privado.
