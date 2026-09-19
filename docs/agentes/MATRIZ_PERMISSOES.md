@@ -17,8 +17,8 @@ Nenhum agente possui acesso irrestrito a ferramentas ou comandos do sistema oper
 | **A1 (Arquitetura)** | Amplo (Todo o Repo) | `docs/adr/**`, `docs/planos/**` | Restrita | Nenhum | Leitura / Git Status | `pro` / `inherit` |
 | **A2 (Design & UX)** | `src/**`, `docs/**` | `src/estilos/**`, tokens | Web (Figma/W3C) | Nenhum | Build local / Testes A11y | `flash` / `pro` |
 | **A3 (Frontend)** | `src/**`, `package.json` | `src/componentes/**`, `src/app/**` | Nenhuma | Nenhum | `npm run lint`, `npm test` | `flash` / `pro` |
-| **A4 (Backend Supabase)** | `supabase/**`, `src/lib/**` | `supabase/migrations/**`, RPCs | Supabase API | `supabase-rflex` | Migrations locais / Schema tests | `pro` (migrations) |
-| **A5 (IA & Conhecimento)**| `src/lib/**`, `docs/ia/**` | `src/lib/ia/**`, prompts, Zod | Nenhuma | Nenhum | Vitest Evals / Benchmarks | `pro` (arquitetura) |
+| **A4 (Backend Supabase)** | `supabase/**`, `src/infraestrutura/**` | `supabase/migrations/**`, RPCs | Supabase API | `supabase-rflex` | Migrations locais / Schema tests | `pro` (migrations) |
+| **A5 (IA & Conhecimento)**| `src/ia/**`, `src/dominios/**`, `docs/ia/**` | `src/ia/**`, `src/dominios/**`, Zod | Nenhuma | Nenhum | Vitest Evals / Benchmarks | `pro` (arquitetura) |
 | **A6 (Plataforma & SRE)** | `.github/**`, configs | `.github/**`, CI scripts | GitHub API | `github-rflex` | Git, npm ci, npm run build | `flash` / `inherit` |
 | **A7 (QA & AppSec)** | Amplo (Todo o Repo) | `tests/**` (exclusivo) | Nenhuma | Nenhum | `npm test`, audit scripts | `pro` (auditoria) |
 | **A8 (Pesquisa)** | Amplo (Leitura) | `docs/pesquisa-evolucao/**` | Ampla (Web/Docs)| Nenhum | Testes de benchmark isolados | `pro` (síntese) / `flash` |

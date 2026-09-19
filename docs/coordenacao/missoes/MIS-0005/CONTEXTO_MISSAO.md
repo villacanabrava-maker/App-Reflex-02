@@ -14,7 +14,7 @@
 A MIS-0005 nasce formalmente da fusão e reconciliação entre:
 1. **Pesquisa Antigravity MIS-0004:** Neurociência da memória (CLS, Tulving, Baddeley), Postgres Cognitivo Nativo, busca híbrida e orquestração de 9 agentes.
 2. **Pesquisa Aprofundada do Usuário:** Documento *"Arquitetura Cognitiva V3 do App Reflex"*, classificado como `FONTE EXTERNA DE PESQUISA / CANDIDATA À RECONCILIAÇÃO`.
-3. **Estado Real do Código:** Auditoria de `src/lib/cerebro/`, `src/lib/taxonomia/`, `src/lib/processamento/`, `src/lib/reflexoes/` e `src/lib/ia/`.
+3. **Estado Real do Código:** Auditoria de `src/dominios/cerebro/`, `src/dominios/taxonomia/`, `src/dominios/processamento/`, `src/dominios/reflexoes/` e `src/ia/`.
 4. **Literatura Científica Especializada:** Artigos peer-reviewed e preprints de referência (Claimify, LongMemEval, LoCoMo, BEAM, HippoRAG 2, Graphiti, SKOS W3C, Contextual Retrieval).
 5. **Experimentos e Modelagem Própria:** Simulações conceituais de extração de claims, lineage claim-a-claim, firewalls de memória e evals epistêmicos.
 

@@ -21,8 +21,8 @@
 | `src/estilos/**` / Tailwind tokens | **A2 (Design & UX)** | A2 (Design & UX) | A3 (Frontend) | A9 (Evidência) |
 | `supabase/migrations/**` | **A4 (Backend Supabase)** | A1 (Arquitetura) | A7 (QA & AppSec) | A9 (Evidência) |
 | `supabase/seed.sql` / RPCs | **A4 (Backend Supabase)** | A4 (Backend Supabase) | A7 (QA & AppSec) | A9 (Evidência) |
-| `src/lib/ia/**` (Claims, NLI, RAG) | **A5 (IA & Conhecimento)** | A1 (Arquitetura) | A7 (QA & AppSec) | A9 (Evidência) |
-| `src/lib/cerebro/**` / `taxonomia/**` | **A5 (IA & Conhecimento)** | A1 (Arquitetura) | A7 (QA & AppSec) | A9 (Evidência) |
+| `src/ia/**` (Cliente, Orquestrador, Claims) | **A5 (IA & Conhecimento)** | A1 (Arquitetura) | A7 (QA & AppSec) | A9 (Evidência) |
+| `src/dominios/cerebro/**` / `taxonomia/**` | **A5 (IA & Conhecimento)** | A1 (Arquitetura) | A7 (QA & AppSec) | A9 (Evidência) |
 | `.github/workflows/**` (CI/CD) | **A6 (Plataforma & SRE)** | A6 (Plataforma & SRE) | A7 (QA & AppSec) | A9 (Evidência) |
 | `package.json` / `tsconfig.json` | **A6 (Plataforma & SRE)** | A1 (Arquitetura) | A7 (QA & AppSec) | A9 (Evidência) |
 | `tests/seguranca/**` / `tests/e2e/**` | **A7 (QA & AppSec)** | A7 (QA & AppSec) | A1 (Arquitetura) | A9 (Evidência) |

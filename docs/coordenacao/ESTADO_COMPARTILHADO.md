@@ -5,7 +5,8 @@
 **Branch Canônica:** `main`  
 **Repositório Remoto:** `https://github.com/villacanabrava-maker/App-Reflex-02.git`  
 **Status do Pipeline:** Verde (100% dos testes e build passando)  
-**Última Missão Concluída:** AGENT HARNESS V2 (Modernização, Especialização, Teste e Governança dos 9 Agentes)  
+**Última Missão Concluída:** MIS-0006 — Fechamento Conclusivo da Pesquisa, Design Freeze e Plano Mestre Executável da Modernização Cognitiva  
+**Próxima Missão:** MIS-0007 — Wave 1: Fundação de Claims, NLI Entailment e Golden Dataset Runner  
 
 ---
 
@@ -14,8 +15,9 @@
 | Componente | Estado Operacional | Classificação de Evidência | Detalhes & Configurações |
 | :--- | :--- | :--- | :--- |
 | **Repositório Git** | `ATIVO / CANÔNICO` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-CI]` | Sincronizado no GitHub (`villacanabrava-maker/App-Reflex-02`). |
-| **Equipe Multiagente** | `HARNESS V2 OPERACIONAL` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes (A1 a A9) modernizados: A1 como único `mainAgent: true`, A2 a A9 como `subagent: true`, prompts em 15 seções com descrições negativas, Task Packets e Output Contracts tipados. |
-| **Supabase** | `RECONCILIADO / 100% PARIDADE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas, RLS ativo em todos os schemas, bucket `originais-biblioteca` em 50MB. |
+| **Arquitetura Cognitiva** | `DESIGN CONGELADO / V3.1` | `[CONFIRMADO-DOCUMENTO]` | 14 Invariants Congelados (`docs/ia/DESIGN_FREEZE_COGNITIVO_V3_1.md`), Decision Matrix final (`docs/ia/DECISION_MATRIX_FINAL_V3_1.md`), Plano Mestre em 6 Waves (`docs/planos/PLANO_MESTRE_MODERNIZACAO_COGNITIVA_V3_1.md`) e spec Wave 1 (`docs/planos/MIS-0007_WAVE_1_SPEC.md`). |
+| **Equipe Multiagente** | `HARNESS V2 OPERACIONAL` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes (A1 a A9) modernizados: A1 como único `mainAgent: true`, A2 a A9 como `subagent: true`, caminhos reais auditados (`src/ia/`, `src/dominios/**`), prompts em 15 seções, Task Packets e Output Contracts tipados. |
+| **Supabase** | `RECONCILIADO / 100% PARIDADE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas, RLS ativo em todos os schemas (incluindo `sistema.*`), bucket `originais-biblioteca` em 50MB. |
 | **Segurança & AppSec** | `P0 ABERTO — CREDENCIAL REVOGAÇÃO PENDENTE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Saneado no código local e de CI. Aguardando redefinição da senha do banco pelo usuário no console web Supabase. |
 | **Hospedagem / Vercel** | `ADIADO / FORA DE ESCOPO` | `[CONFIRMADO-CODIGO]` | Nenhum deploy, CLI ou webhook Vercel ativo. Proibido por regra de governança. |
 | **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 21 arquivos de testes Vitest (80 testes) cobrindo segurança, isolamento RLS, guardrails, qualificação de agentes e acessibilidade. |
