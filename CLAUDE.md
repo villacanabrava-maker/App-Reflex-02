@@ -144,7 +144,22 @@ A7 sem Edit/Write), não em sandboxing de processo. Para bloqueio automático de
 perigosos (equivalente a `.agents/scripts/pre-tool-guard.js`) também no nível do Claude Code,
 seria necessário configurar hooks próprios em `.claude/settings.json` — ainda não feito.
 
-## 9. Regras práticas para qualquer sessão neste repo
+## 9. Ambiente de memória compartilhada entre subagentes (`claude-code/`)
+
+Os 9 subagentes da seção 8 não trocam informação entre si automaticamente — cada invocação via
+ferramenta Agent começa com contexto isolado. Para resolver isso, existe `claude-code/`: um
+"quadro-negro" (padrão blackboard, o mesmo princípio do sistema de pesquisa multiagente da
+própria Anthropic) onde cada missão gera um **documento de missão** único e cumulativo em
+`claude-code/memoria/CC-XXXX.md`. O orquestrador (esta sessão) escreve nele sua interpretação do
+pedido e o plano; cada subagente acionado **lê o documento inteiro antes de agir** e **acrescenta
+sua própria seção depois de agir**, usando os campos do seu próprio Contrato de Saída (já
+definidos na seção 8) como formato de escrita. Nada é editado ou apagado — só adicionado.
+
+Regras completas, fundamentação e a tabela de "o que cada agente escreve": ler
+`claude-code/METODOLOGIA.md`. Índice de missões: `claude-code/memoria/INDICE.md`. Template para
+abrir uma missão nova: `claude-code/templates/TEMPLATE_MISSAO.md`.
+
+## 10. Regras práticas para qualquer sessão neste repo
 
 1. Antes de qualquer mudança, ler `docs/STATUS_PROJETO.md` — ele é a fonte de verdade, não a memória desta sessão.
 2. Nunca: force-push, `git push origin main` direto, desabilitar RLS, editar migrations já aplicadas, expor `service_role`/chaves OpenAI no client, rodar comandos Vercel, ou tratar inferência de IA como memória confirmada.

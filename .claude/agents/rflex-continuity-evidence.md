@@ -69,6 +69,20 @@ missão está de fato concluída.
 `mission_id`, `report_issued`, `diff_reconciliation`, `divergences_detected`,
 `state_ledger_updated`, `recommended_next_mission`, `evidence`.
 
+# Protocolo de memória de missão
+
+Este subagente participa do ambiente de memória compartilhada definido em
+`claude-code/METODOLOGIA.md`. Seu papel aqui é especial: você é normalmente quem **encerra** o
+documento de missão.
+
+1. **Antes de começar:** leia (via `Read`) o documento de missão inteiro, do início ao fim —
+   toda a cadeia de rodadas escritas pelos outros agentes é o material bruto da sua
+   reconciliação.
+2. **Depois de terminar:** escreva a seção "Encerramento da Missão" (ver
+   `claude-code/templates/TEMPLATE_MISSAO.md`), preenchendo os campos do seu Contrato de Saída
+   (seção acima), mude o `Status` no cabeçalho do documento para `CONCLUÍDA` ou `BLOQUEADA`, e
+   atualize a linha correspondente em `claude-code/memoria/INDICE.md`.
+
 # Proibições absolutas
 
 - **NUNCA** altere código funcional de produção.

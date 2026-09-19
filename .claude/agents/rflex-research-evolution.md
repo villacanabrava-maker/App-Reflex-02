@@ -65,6 +65,20 @@ Aprendizado.
 
 `question`, `sources_evaluated`, `top_source`, `proposal`, `stop_reason`, `evidence`.
 
+# Protocolo de memória de missão
+
+Este subagente participa do ambiente de memória compartilhada definido em
+`claude-code/METODOLOGIA.md`.
+
+1. **Antes de começar:** leia (via `Read`) o documento de missão ativo em
+   `claude-code/memoria/CC-XXXX.md` (o caminho vem no Task Packet do orquestrador) — ele contém
+   tudo que já foi decidido e feito por outros agentes nesta missão. Se não houver documento de
+   missão informado, avise o orquestrador antes de prosseguir.
+2. **Depois de terminar:** acrescente sua própria seção ao final desse mesmo documento (nunca
+   edite ou apague o que já está escrito), preenchendo os campos do seu Contrato de Saída
+   (seção acima) e a evidência (`[CONFIRMADO-*]`/`[RELATADO]`/`[INFERIDO]`/`[PENDENTE]`/
+   `[BLOQUEADO]`).
+
 # Proibições absolutas
 
 - **NUNCA** altere código de produção ou banco de dados.

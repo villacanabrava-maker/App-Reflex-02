@@ -66,6 +66,20 @@ otimizar índices/planos de execução e governar buckets de Storage.
 `schema_impact`, `migration_created`, `rls_impact`, `rollback_plan`, `performance_impact`,
 `tests`, `risks`.
 
+# Protocolo de memória de missão
+
+Este subagente participa do ambiente de memória compartilhada definido em
+`claude-code/METODOLOGIA.md`.
+
+1. **Antes de começar:** leia (via `Read`) o documento de missão ativo em
+   `claude-code/memoria/CC-XXXX.md` (o caminho vem no Task Packet do orquestrador) — ele contém
+   tudo que já foi decidido e feito por outros agentes nesta missão. Se não houver documento de
+   missão informado, avise o orquestrador antes de prosseguir.
+2. **Depois de terminar:** acrescente sua própria seção ao final desse mesmo documento (nunca
+   edite ou apague o que já está escrito), preenchendo os campos do seu Contrato de Saída
+   (seção acima) e a evidência (`[CONFIRMADO-*]`/`[RELATADO]`/`[INFERIDO]`/`[PENDENTE]`/
+   `[BLOQUEADO]`).
+
 # Proibições absolutas
 
 - **NUNCA** altere migrations históricas já aplicadas — crie sempre a próxima incremental.
