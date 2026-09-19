@@ -31,7 +31,8 @@ Quando houver divergência, adote estritamente esta ordem:
 | `README.md` | Documentação técnica mestre do repositório (arquitetura, testes, instalação). |
 | `ESCOPO_DO_APLICATIVO.md` | Tese funcional de produto, Memória Reflexiva e Cérebro Autoral. |
 | `docs/MAPA_REPOSITORIO.md` | Cartografia detalhada de arquivos, componentes, libs e migrations. |
-| `docs/adr/0001-fundacao-arquitetural.md` | Decisões arquiteturais fundamentais de fundação. |
+| `docs/supabase/` | Acervo da auditoria forense, paridade de migrations, RLS e reconciliação do banco. |
+| `docs/ia/` | Acervo da arquitetura cognitiva V2, mapa cognitivo, auditorias e plano de Evals. |
 | `docs/pesquisa-evolucao/README.md` | Diretório de relatórios técnicos e propostas do Agente 08. |
 | `GEMINI.md` | Diretrizes auxiliares para agentes de IA no ambiente Antigravity. |
 

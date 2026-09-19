@@ -162,10 +162,21 @@ export async function extrairTextoDeBuffer(
       };
     } catch (err: any) {
       console.warn("Falha ao extrair docx:", err.message);
-      textoBruto = buffer.toString("utf-8");
+      throw new Error(`Falha ao extrair texto do documento DOCX: ${err.message}`);
     }
   } else {
-    // Arquivos de texto (.txt, .md), JSON ou buffers textuais UTF-8
+    // Validação de segurança: se for binário disfarçado (bytes nulos ou magic bytes ZIP/áudio), rejeitar
+    const primeirosBytes = buffer.subarray(0, 50);
+    const contemBytesNulos = primeirosBytes.includes(0x00);
+    const ehZipOuBinario = buffer.subarray(0, 4).toString("hex") === "504b0304";
+
+    if (contemBytesNulos || ehZipOuBinario) {
+      throw new Error(
+        "Formato de arquivo binário não suportado para extração direta de texto. Utilize PDF, DOCX ou texto puro UTF-8."
+      );
+    }
+
+    // Arquivos de texto genuíno (.txt, .md), JSON ou buffers textuais UTF-8
     textoBruto = buffer.toString("utf-8");
     const palavras = textoBruto.split(/\s+/).filter(Boolean).length;
     totalPaginas = Math.max(1, Math.ceil(palavras / 300));

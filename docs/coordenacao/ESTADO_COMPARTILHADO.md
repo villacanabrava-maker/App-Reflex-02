@@ -4,7 +4,8 @@
 **Responsável pela Reconciliação:** A9 (rflex-continuity-evidence) em conjunto com A1 (rflex-architect)  
 **Branch Canônica:** `main`  
 **Repositório Remoto:** `https://github.com/villacanabrava-maker/App-Reflex-02.git`  
-**Status do Pipeline:** Verde (100% dos testes e build passando)
+**Status do Pipeline:** Verde (100% dos testes e build passando)  
+**Última Missão Concluída:** MIS-0003 (Fundação de Dados + Mapa de Inteligência)  
 
 ---
 
@@ -12,11 +13,11 @@
 
 | Componente | Estado Operacional | Classificação de Evidência | Detalhes & Configurações |
 | :--- | :--- | :--- | :--- |
-| **Repositório Git** | `ATIVO / CANÔNICO` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-CI]` | `origin/main` sincronizado no GitHub (`villacanabrava-maker/App-Reflex-02`). |
-| **Supabase** | `CONECTADO / ISOLADO` | `[CONFIRMADO-EXTERNO]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. Chaves configuradas em `.env.local` (ignorado no git). Banco isolado do App 01. |
+| **Repositório Git** | `ATIVO / CANÔNICO` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-CI]` | Sincronizado no GitHub (`villacanabrava-maker/App-Reflex-02`). |
+| **Supabase** | `RECONCILIADO / 100% PARIDADE` | `[CONFIRMADO-TESTE]` / `[CONFIRMADO-CODIGO]` | Project ref: `xenapowdtfhdwcfthfrn`. 30 migrations aplicadas, RLS ativo em todos os schemas (`sistema`, `cerebro_autoral`, etc.), bucket `originais-biblioteca` ajustado em 50MB. |
 | **Hospedagem / Vercel** | `ADIADO / FORA DE ESCOPO` | `[CONFIRMADO-CODIGO]` | Nenhum deploy, CLI ou webhook Vercel ativo. Proibido por regra de governança. |
 | **Equipe Multiagente** | `OPERACIONAL (9 AGENTES)` | `[CONFIRMADO-CODIGO]` / `[CONFIRMADO-TESTE]` | 9 agentes (A1 a A9) e 21 skills modulares registradas em `.agents/`. |
-| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 19 arquivos de testes Vitest cobrindo segurança, RLS, IA, guardrails e qualificação. |
+| **Suíte de Testes** | `PASSANDO (100%)` | `[CONFIRMADO-TESTE]` | 20 arquivos de testes Vitest cobrindo segurança, RLS, IA, guardrails, isolamento e qualificação. |
 | **Build de Produção** | `CONCLUÍDO COM SUCESSO` | `[CONFIRMADO-TESTE]` | Next.js 15 compilando estaticamente e rotas dinâmicas validadas. |
 
 ---
@@ -37,14 +38,14 @@
 
 ---
 
-## 3. Estado Funcional do Aplicativo (Memória Reflexiva)
+## 3. Estado Funcional e Cognitivo do Aplicativo
 
-- **Biblioteca de Obras:** `CONCLUÍDO` — Cadastro, upload direto TUS para bucket privado, gravação e transcrição de áudio, preservação de integridade (hash, MIME).
-- **Processamento:** `CONCLUÍDO` — Pipeline de transcrição, extração de conceitos e estruturação semântica.
-- **Taxonomia:** `CONCLUÍDO` — Gestão de categorias, conceitos validados e metadados preservados.
-- **Cérebro Autoral:** `CONCLUÍDO` — Separação estrita entre Conteúdo, Método e Expressão; separação entre Núcleo Autoral e Influências Externas.
-- **Reflexões:** `CONCLUÍDO` — Síntese reflexiva assistida com preservação de proveniência de citações.
-- **Auditoria & Segurança:** `CONCLUÍDO` — Políticas de RLS ativas, guardrails em hooks locais, verificação de segredos e testes automatizados.
+- **Biblioteca de Obras:** `RECONCILIADO` — Bucket de originais atualizado para 50MB; extrator de texto protegido contra injeção de lixo binário.
+- **Processamento:** `RECONCILIADO` — Pipeline mapeado; mitigação de falhas em DOCX e rejeição de arquivos corrompidos ativa.
+- **Taxonomia:** `RECONCILIADO & DESBLOQUEADO` — Tabelas `taxonomia.analises` e `taxonomia.conceitos_reflexoes` ativadas via migration 0026; pronta para operar.
+- **Cérebro Autoral:** `AUDITADO / RECONCILIADO` — RLS ativado nas 18 dimensões canônicas (migration 0028); identificada a necessidade de substituir confiança fixa (0.92) na V2.
+- **Reflexões:** `AUDITADO` — Identificado e documentado o ponto de falha de fallback para 8 memórias recentes aleatórias; arquitetura V2 projeta alerta de contexto insuficiente.
+- **Auditoria & Segurança:** `REFORÇADO` — RLS ativado em 100% das tabelas de `sistema.*` (migration 0030); views de aplicação com `security_invoker=true`.
 
 ---
 
@@ -52,4 +53,4 @@
 
 1. `[BLOQUEADO]` **Vercel:** Não realizar tentativas de deploy ou linkage de projeto até aprovação explícita do usuário.
 2. `[BLOQUEADO]` **Mutações Destrutivas no Supabase:** Toda evolução de schema requer migration versionada e revisão de segurança prévia (A4/A7).
-3. `[BLOQUEADO]` **Exposição de Segredos:** Bloqueio ativo por pré-tool guard e hooks de segurança contra comitar `.env` ou expor chaves de serviço.
+3. `[BLOQUEADO]` **Reescrita Cognitiva Ampla:** A implementação da Inteligência V2 deve aguardar a aprovação do ChatGPT e novos prompts específicos por ciclo.

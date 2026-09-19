@@ -35,4 +35,12 @@ describe("Extração DOCX resiliente", () => {
       totalPalavras: 0,
     });
   });
+
+  it("rejeita buffers binários arbitrários contendo bytes nulos disfarçados de texto", async () => {
+    const bufferBinario = Buffer.from([0x00, 0x01, 0x02, 0xff, 0xfe, 0x00, 0xaa]);
+
+    await expect(
+      extrairTextoDeBuffer(bufferBinario, "application/octet-stream", "arquivo.bin")
+    ).rejects.toThrow(/Formato de arquivo binário não suportado/i);
+  });
 });
