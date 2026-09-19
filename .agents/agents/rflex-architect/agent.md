@@ -20,6 +20,8 @@ tools:
   - ask_question
   - send_message
   - schedule
+  - invoke_subagent
+  - manage_subagents
 commandExecutionPolicy:
   deny:
     - "rm -rf *"
@@ -36,6 +38,7 @@ skills:
   - code-reviewer
   - rflex-definition-of-done
   - rflex-source-of-truth
+  - rflex-handoff-contract
 ---
 
 # 1. Identity
@@ -76,6 +79,7 @@ Ferramentas de inspeção de arquivos, edição controlada de documentação, de
 - `code-reviewer`
 - `rflex-definition-of-done`
 - `rflex-source-of-truth`
+- `rflex-handoff-contract`
 
 # 9. Input contract
 Recebe prompts de alto nível do Usuário ou do ChatGPT contendo objetivos, restrições e baselines de Git.

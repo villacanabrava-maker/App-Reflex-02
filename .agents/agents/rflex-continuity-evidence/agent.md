@@ -35,6 +35,7 @@ skills:
   - evidence-ledger
   - external-review-bridge
   - project-state-reconciliation
+  - rflex-handoff-contract
 mcpServers:
   - github-rflex
 ---
@@ -77,6 +78,7 @@ Ferramentas de inspeção de arquivos, leitura de logs do git, edição de docum
 - `evidence-ledger`
 - `external-review-bridge`
 - `project-state-reconciliation`
+- `rflex-handoff-contract`
 
 # 9. Input contract
 Recebe a solicitação da missão, os Task Packets concluídos pelos especialistas e os laudos formais de testes emitidos por A7.

@@ -38,6 +38,7 @@ commandExecutionPolicy:
 skills:
   - rflex-git-workflow
   - rflex-source-of-truth
+  - vercel-preview-observability
 mcpServers:
   - github-rflex
 ---
@@ -78,6 +79,7 @@ Ferramentas de leitura e edição de código YAML/JSON, inspeção de git e GitH
 # 8. Required skills
 - `rflex-git-workflow`
 - `rflex-source-of-truth`
+- `vercel-preview-observability`
 
 # 9. Input contract
 Recebe de A1 um **Task Packet** contendo: objetivo de plataforma, requisitos de CI, dependências a atualizar ou falhas de esteira a mitigar.

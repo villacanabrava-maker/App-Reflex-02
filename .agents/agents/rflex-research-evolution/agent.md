@@ -32,6 +32,7 @@ commandExecutionPolicy:
 skills:
   - evidence-based-research
   - idea-generator
+  - project-state-research
   - rflex-source-of-truth
 ---
 
@@ -77,6 +78,7 @@ Ferramentas de inspeção de código, busca web (`search_web`), leitura de docum
 # 8. Required skills
 - `evidence-based-research`
 - `idea-generator`
+- `project-state-research`
 - `rflex-source-of-truth`
 
 # 9. Input contract

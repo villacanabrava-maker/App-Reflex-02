@@ -32,6 +32,7 @@ commandExecutionPolicy:
     - "npm test tests/taxonomia/*"
 skills:
   - authorial-ai-retrieval
+  - claim-provenance
   - rflex-source-of-truth
 ---
 
@@ -73,6 +74,7 @@ Ferramentas de leitura e edição de código TypeScript, busca de padrões no re
 
 # 8. Required skills
 - `authorial-ai-retrieval`
+- `claim-provenance`
 - `rflex-source-of-truth`
 
 # 9. Input contract

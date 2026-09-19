@@ -1,5 +1,5 @@
-﻿---
-description: Regras invioláveis de segurança, proteção de credenciais e integridade de dados do Rflex01.
+---
+description: Regras invioláveis de segurança, proteção de credenciais e integridade de dados do App Reflex 02.
 ---
 
 # Regras de Fronteira de Segurança (Security Boundaries)
@@ -13,4 +13,4 @@ description: Regras invioláveis de segurança, proteção de credenciais e inte
    - Comandos de alteração estrutural no banco (ALTER TABLE, DROP, CREATE POLICY) devem ser versionados em scripts idempotentes em supabase/migrations/.
 
 3. **Bloqueio de Comandos Destrutivos:**
-   - Proibido uso de git push --force, git reset --hard não aprovado, m -rf indiscriminado e truncagem de tabelas.
+   - Proibido uso de git push --force, git reset --hard não aprovado, rm -rf indiscriminado e truncagem de tabelas.
