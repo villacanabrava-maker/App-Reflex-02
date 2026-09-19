@@ -1,0 +1,62 @@
+{
+  "mission_id": "MIS-0014",
+  "task_id": "TSK-RCMO-CONSTITUTION-V1",
+  "parent_task_id": null,
+  "objective": "Especificar e validar a Constituição Cognitiva V1 / RCMO (Representação Cognitivo-Semântica Multicamadas para Obras), estruturando o fluxo canônico de ponta a ponta: Obra -> Seções/Fragmentos -> Claims -> SKOS/Grafo -> Memória Episódica -> Dossiê Contextual -> Auditoria Pós-Geração -> Aprendizado Supervisionado.",
+  "baseline_sha": "0c7f14c41be816ca023d8347984665db60fbc265",
+  "target_branch": "antigravity/rcmo-constitution-v1",
+  "worktree": null,
+  "owner_role": "R5",
+  "dependencies": ["MIS-REFLEX-AGENT-OS-V3"],
+  "in_scope": [
+    "docs/ia/CONSTITUICAO_COGNITIVA_V1_RCMO.md",
+    "src/dominios/cerebro/rcmo-pipeline.ts",
+    "tests/ia/rcmo-pipeline.test.ts",
+    "docs/agent-system/schemas/rcmo-multicamadas.schema.json"
+  ],
+  "out_of_scope": [
+    "Deploys de produção na Vercel",
+    "Mutações não autorizadas em banco Supabase live",
+    "Alterações destrutivas na pipeline legada de extração de PDF",
+    "Reclassificação de fontes externas como autorais"
+  ],
+  "allowed_tools": [
+    "view_file",
+    "replace_file_content",
+    "write_to_file",
+    "run_command",
+    "find_by_name",
+    "grep_search",
+    "list_dir"
+  ],
+  "write_scope": [
+    "docs/ia/**",
+    "docs/agent-system/**",
+    "src/dominios/cerebro/**",
+    "tests/ia/**"
+  ],
+  "risk_level": "HIGH",
+  "acceptance_criteria": [
+    "Documento de especificação formal da Constituição Cognitiva V1 / RCMO em docs/ia/",
+    "Schema Zod/JSON multicamadas validando linhagem de proveniência de obras até claims",
+    "Memory-Inference Firewall ativo assegurando MILR = 0.0% e AMR = 0.0%",
+    "Integração do Dossiê Contextual com verificação de Allowed Use e hash canônico SHA-256",
+    "100% dos testes da suíte passando sem erros de TypeScript ou linter"
+  ],
+  "required_evidence": [
+    "[CONFIRMADO-CODIGO]",
+    "[CONFIRMADO-TESTE]",
+    "[CONFIRMADO-CI]"
+  ],
+  "expected_artifacts": [
+    "docs/ia/CONSTITUICAO_COGNITIVA_V1_RCMO.md",
+    "tests/ia/rcmo-pipeline.test.ts",
+    "docs/coordenacao/antigravity-para-chatgpt/AG-0014.md"
+  ],
+  "status": "PENDING",
+  "blocked_by": "Aguardando autorização humana soberana e finalização da MIS-0012/0013",
+  "next_handoff": {
+    "target_role": "R6",
+    "purpose": "Auditoria independente Zero-Trust e avaliação de regressão do pipeline cognitivo"
+  }
+}

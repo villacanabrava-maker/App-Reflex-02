@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OutputContractSchemaV3",
+  "description": "Contrato padronizado para entrega e handoff de tarefas no Reflex Agent OS V3",
+  "type": "object",
+  "required": [
+    "mission_id",
+    "task_id",
+    "executor_role",
+    "verdict",
+    "summary_of_changes",
+    "files_changed",
+    "evidence_matrix"
+  ],
+  "properties": {
+    "mission_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "executor_role": {
+      "type": "string",
+      "enum": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"]
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "BLOCKED", "ESCALATED"]
+    },
+    "summary_of_changes": { "type": "string" },
+    "files_changed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "action"],
+        "properties": {
+          "path": { "type": "string" },
+          "action": { "type": "string", "enum": ["CREATE", "MODIFY", "DELETE"] },
+          "rationale": { "type": "string" }
+        }
+      }
+    },
+    "evidence_matrix": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim", "evidence_tag", "proof"],
+        "properties": {
+          "claim": { "type": "string" },
+          "evidence_tag": {
+            "type": "string",
+            "enum": [
+              "[CONFIRMADO-CODIGO]",
+              "[CONFIRMADO-TESTE]",
+              "[CONFIRMADO-CI]",
+              "[CONFIRMADO-RUNTIME]",
+              "[CONFIRMADO-EXTERNO]",
+              "[RELATADO]",
+              "[INFERIDO]",
+              "[PENDENTE]",
+              "[BLOQUEADO]"
+            ]
+          },
+          "proof": { "type": "string" }
+        }
+      }
+    },
+    "unresolved_risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_recommended_step": { "type": "string" }
+  },
+  "additionalProperties": false
+}

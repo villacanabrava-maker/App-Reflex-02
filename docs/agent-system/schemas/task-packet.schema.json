@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TaskPacketSchemaV3",
+  "description": "Contrato padronizado runtime-neutral para despacho e execução de tarefas no Reflex Agent OS V3",
+  "type": "object",
+  "required": [
+    "mission_id",
+    "task_id",
+    "objective",
+    "baseline_sha",
+    "target_branch",
+    "owner_role",
+    "in_scope",
+    "out_of_scope",
+    "write_scope",
+    "acceptance_criteria",
+    "required_evidence",
+    "status"
+  ],
+  "properties": {
+    "mission_id": { "type": "string", "description": "Identificador único da missão (ex: MIS-0013)" },
+    "task_id": { "type": "string", "description": "Identificador da tarefa (ex: TSK-0013-01)" },
+    "parent_task_id": { "type": ["string", "null"], "description": "Identificador da tarefa pai se houver sub-tarefa" },
+    "objective": { "type": "string", "description": "Declaração clara e concisa do objetivo executável" },
+    "baseline_sha": { "type": "string", "pattern": "^[0-9a-f]{7,40}$", "description": "Commit SHA de baseline verificado" },
+    "target_branch": { "type": "string", "description": "Branch de trabalho delimitada" },
+    "worktree": { "type": ["string", "null"], "description": "Caminho do worktree isolado se aplicável" },
+    "owner_role": {
+      "type": "string",
+      "enum": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
+      "description": "Papel canônico responsável pela execução"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Lista de IDs de tarefas que devem estar concluídas antes desta"
+    },
+    "in_scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Arquivos, pastas e tópicos explicitamente dentro do escopo desta tarefa"
+    },
+    "out_of_scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Arquivos, pastas e tópicos estritamente proibidos ou fora de escopo"
+    },
+    "allowed_tools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Lista de ferramentas autorizadas para a tarefa"
+    },
+    "write_scope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Padrões glob de arquivos autorizados para escrita"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+      "default": "MEDIUM"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Critérios objetivos de aceite (Definition of Done)"
+    },
+    "required_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "[CONFIRMADO-CODIGO]",
+          "[CONFIRMADO-TESTE]",
+          "[CONFIRMADO-CI]",
+          "[CONFIRMADO-RUNTIME]",
+          "[CONFIRMADO-EXTERNO]",
+          "[RELATADO]",
+          "[INFERIDO]",
+          "[PENDENTE]",
+          "[BLOQUEADO]"
+        ]
+      },
+      "description": "Classes de evidências requeridas para homologação"
+    },
+    "expected_artifacts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Arquivos, relatórios ou documentação esperada como entrega"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PENDING", "IN_PROGRESS", "BLOCKED", "COMPLETED", "REJECTED"],
+      "default": "PENDING"
+    },
+    "blocked_by": { "type": ["string", "null"], "description": "Motivo do bloqueio caso o status seja BLOCKED" },
+    "next_handoff": {
+      "type": "object",
+      "properties": {
+        "target_role": { "type": "string", "enum": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"] },
+        "purpose": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

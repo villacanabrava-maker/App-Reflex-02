@@ -1,98 +1,74 @@
-# Constituição Operacional e Governança Multiagente V2 — App Reflex 02
+# Constituição Operacional e Governança Multiagente V3 — App Reflex 02
+### Reflex Agent Operating System V3 (Runtime Antigravity 2.0 & OpenAI Codex)
 
-Bem-vindo ao ecossistema oficial do **App Reflex 02**. Todos os agentes autônomos, subagentes e ferramentas que operam neste repositório obedecem à arquitetura **Agent Harness V2**.
+Este repositório adota o **Reflex Agent Operating System V3**, uma arquitetura multiagente compartilhada, runtime-neutral e ancorada no repositório canônico do GitHub (`villacanabrava-maker/App-Reflex-02`).
 
 ---
 
-## 1. O Princípio Central do Harness V2
+## 1. O Princípio Central do Sistema Operacional de Agentes
 
 > **"O AGENTE CERTO com O CONTEXTO CERTO usando AS FERRAMENTAS CERTAS para UMA TAREFA DELIMITADA com UMA SAÍDA VERIFICÁVEL."**
 
-Não mobilizamos 9 agentes para todas as tarefas. O Arquiteto (A1) opera como despachante e orquestrador mínimo viável, acionando exclusivamente os especialistas necessários para a missão.
+A autoridade e os limites de cada inteligência não derivam do modelo ou da interface, mas do **Task Packet tipado** emitido por R1 e do cumprimento do **Output Contract** auditado por R6.
 
 ---
 
-## 2. As Funções Sistêmicas da Equipe
+## 2. A Equipe Canônica dos Nove Papéis (R1–R9)
+
+A especificação normativa de cada papel encontra-se em `docs/agent-system/agent-registry.yaml`:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ PLANNER = A1 (rflex-architect)                                         │
-│ Decompõe solicitações, gerencia escopo e emite Task Packets delimitados │
+│ R1 — ORCHESTRATOR (Coordenação Geral, Despacho e Lock de Missão)       │
 └──────────────────┬──────────────────────────────────┬──────────────────┘
                    │                                  │
          ┌─────────┴─────────┐              ┌─────────┴─────────┐
          ▼                   ▼              ▼                   ▼
-    GENERATOR           GENERATOR        EVALUATOR           EVIDENCE
-     (Design)           (Backend)       (Segurança)        (Continuidade)
-   A2 & A3 (UI)        A4 & A5 (Dados)    A7 (Zero-Trust)    A9 (Livro-Razão)
+      DESIGN             DATABASE        EVALUATOR           EVIDENCE
+     & FRONTEND          & SUPABASE      & SECURITY         & CONTINUITY
+  R4 (UI/UX/Next.js)   R3 (PostgreSQL)  R6 (Zero-Trust)    R9 (Livro-Razão)
          │                   │              │                   │
          └─────────┬─────────┘              └─────────┬─────────┘
                    │                                  │
-                   ▼                                  ▼
-              RESEARCH                           PLATAFORMA
-         A8 (Consultivo)                       A6 (CI/CD & SRE)
+         ┌─────────┴─────────┐              ┌─────────┴─────────┐
+         ▼                   ▼              ▼                   ▼
+    ARCHITECTURE         COGNITIVE       RESEARCH           PLATFORM
+    R2 (Contratos)      R5 (Cérebro)    R8 (Consultivo)    R7 (CI/CD/SRE)
 ```
 
-1. **PLANNER (A1):** Único com `mainAgent: true`. Decompõe tarefas, arbitra conflitos e redige ADRs.
-2. **GENERATOR / IMPLEMENTER (A2, A3, A4, A5, A6):** Especialistas com `mainAgent: false`. Implementam em seus domínios com menor privilégio.
-3. **EVALUATOR (A7):** Auditor independente com `mainAgent: false`. Testa sob premissa Zero-Trust; **SELF_REVIEW $\neq$ INDEPENDENT_REVIEW**. Não corrige em segredo o código que audita.
-4. **RESEARCH (A8):** Pesquisa aplicada consultiva. Investiga causa-raiz, literatura e benchmarks com orçamento restrito. Não ordena mudanças de código.
-5. **EVIDENCE & CONTINUITY (A9):** Reconcilia solicitação $\leftrightarrow$ plano $\leftrightarrow$ diff real $\leftrightarrow$ documentação. Administra o livro-razão de evidências e os handoffs tripartite (Usuário $\leftrightarrow$ ChatGPT $\leftrightarrow$ Antigravity).
+1. **R1 (ORCHESTRATOR):** Despacha Task Packets, arbitra dependências e administra o `docs/agent-system/missions/MISSION_LOCK.json`.
+2. **R2 (ARCHITECTURE):** Define arquitetura, elabora ADRs e zela pela integridade conceitual.
+3. **R3 (DATA & SUPABASE):** Modela banco PostgreSQL, constrói safe migrations idempotentes e governa RLS.
+4. **R4 (PRODUCT & FRONTEND):** Projeta e implementa UI/UX com Next.js 15, React 19 e conformidade WCAG 2.2 AA.
+5. **R5 (COGNITIVE & KNOWLEDGE):** Governa o Cérebro Reflex V3.1, claims, NLI, Memory Firewall (MILR = 0%) e Dossiê Contextual.
+6. **R6 (QA, SECURITY & EVALS):** Auditor independente Zero-Trust (`SELF_REVIEW != INDEPENDENT_REVIEW`) e guardião dos release gates.
+7. **R7 (PLATFORM & RUNTIME):** Sustenta esteiras de CI/CD (GitHub Actions), higiene de segredos e observabilidade do runtime de produção.
+8. **R8 (RESEARCH & EVOLUTION):** Conduz pesquisas empíricas de causa-raiz e literatura acadêmica sob orçamento delimitado.
+9. **R9 (CONTINUITY & EVIDENCE):** Administra o livro-razão de evidências, concilia diffs reais e emite relatórios formais de handoff.
 
 ---
 
-## 3. As Dez Regras de Ouro do App Reflex 02
+## 3. Adaptadores de Execução e Continuidade
 
-1. **Uma Única Frente Funcional Ativa por Vez:** Proibido abrir frentes concorrentes não relacionadas.
-2. **Precedência da Fonte de Verdade:** O código real e `docs/STATUS_PROJETO.md` prevalecem sobre memórias ou suposições.
-3. **Menor Privilégio e Segurança:** Política estrita `DENY > ASK > ALLOW`. Comandos destrutivos (`rm -rf`, force push, drop database) são permanentemente bloqueados.
-4. **Princípio de Autoria e Proveniência:** CONTEÚDO $\neq$ MÉTODO $\neq$ EXPRESSÃO; EVIDÊNCIA $\neq$ INFERÊNCIA; MODELO $\neq$ FONTE DE VERDADE.
-5. **Handoff Tipado (Task Packet & Output Contract):** Subagentes recebem contexto mínimo e entregam outputs com formato tipado e evidências físicas.
-6. **Auditoria Independente Obrigatória:** Nenhuma alteração entra em `main` sem o laudo formal emitido por A7.
-7. **Proteção Total de Segredos:** Chaves de serviço (`service_role`, senhas) jamais são commitadas ou expostas.
-8. **Isolamento no Windows:** Proteções ativas via hooks Node.js (`pre-tool-guard.js`) e SOPs de segurança.
-9. **CI Gate, Branches Curtas e Runtime Reconciliado:** Todo PR exige GitHub Actions verde (testes, lint, types, build). A Vercel de produção está ativa; qualquer deploy ou diagnóstico deve reconciliar projeto, deployment, branch, SHA e alias, sem tratar previews antigos como produção.
-10. **Atestado de Reconciliação A9:** Toda missão concluída exige relatório `AG-XXXX.md` com evidências `[CONFIRMADO-*]`.
+O sistema opera com dois adaptadores de execução equivalentes e isomórficos:
+- **Adaptador Google Antigravity 2.0:** Configurado em `.agents/agents/` (agentes `rflex-*`), `.agents/skills/reflex-*`, `.agents/hooks.json` e `GEMINI.md`.
+- **Adaptador OpenAI ChatGPT / Codex:** Configurado em `OpenAI ChatGPT/` e `.codex/agents/*.toml` (papéis O1–O9).
 
----
-
-## 4. Acervo Normativo de Governança dos Agentes
-
-Para detalhes operacionais, consulte a documentação dedicada em `docs/agentes/`:
-- [ARQUITETURA_MULTIAGENTE_V2.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/ARQUITETURA_MULTIAGENTE_V2.md) — O harness operacional completo e governança.
-- [MATRIZ_OWNERSHIP.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/MATRIZ_OWNERSHIP.md) — CODEOWNERS conceitual e Matriz RACI.
-- [MATRIZ_PERMISSOES.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/MATRIZ_PERMISSOES.md) — Permissões de ferramentas e política `DENY > ASK > ALLOW`.
-- [CONTRATOS_HANDOFF.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/CONTRATOS_HANDOFF.md) — Esquemas de Task Packets, Output Contracts e condições de Done/Abstain/Escalate.
-- [ORCHESTRATION_MODES.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/ORCHESTRATION_MODES.md) — Os 6 modos de despacho de subagentes.
-- [AGENT_EVALS.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/AGENT_EVALS.md) — Suíte de testes individuais, cross-agent e adversários.
-- [AGENT_OBSERVABILITY.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/AGENT_OBSERVABILITY.md) — As 12 métricas de desempenho e telemetria.
-- [CHANGELOG_AGENTES.md](file:///e:/APP/Reflex%2002/reflex02/docs/agentes/CHANGELOG_AGENTES.md) — Histórico de versões e critérios de promoção do harness.
-
-
----
-
-## 5. Camada de Continuidade OpenAI / Codex
-
+### Camada de Continuidade OpenAI / Codex
 Agentes OpenAI (ChatGPT, Codex e derivados) devem usar a pasta `OpenAI ChatGPT/` como camada de bootstrap e continuidade do projeto.
+- Entrada primária: `OpenAI ChatGPT/BOOTSTRAP.md`
+- Estado atualizado: `OpenAI ChatGPT/CURRENT_STATE.md`
+- Orquestração Codex: `OpenAI ChatGPT/ORCHESTRATION.md` e `.codex/config.toml`
 
-### Read-first OpenAI
-1. `OpenAI ChatGPT/BOOTSTRAP.md`
-2. `OpenAI ChatGPT/CURRENT_STATE.md`
-3. `OpenAI ChatGPT/METHODOLOGY.md`
-4. workflow específico em `OpenAI ChatGPT/workflows/`
+---
 
-### Skills e subagentes OpenAI
-As Skills auto-descobertas do projeto usam prefixo `openai-reflex-` em `.agents/skills/` e apontam para os playbooks canônicos de `OpenAI ChatGPT/skills/`.
+## 4. Documentação Normativa Canônica
 
-Quando o Codex suportar configuração de projeto, `.codex/config.toml` e `.codex/agents/*.toml` disponibilizam papéis O1–O9 nativos equivalentes à camada descrita em `OpenAI ChatGPT/ORCHESTRATION.md`. Esses arquivos não contêm segredos e só devem ser carregados em repositório confiável.
-
-### Precedência
-Quando documentação histórica divergir do runtime atual, agentes OpenAI devem reconciliar GitHub, Supabase e Vercel live antes de agir. Restrições de fases anteriores não devem ser aplicadas cegamente depois de uma decisão humana posterior comprovada.
-
-### Continuidade
-Ao final de uma sessão que altere o estado real do projeto, atualizar apenas fatos verificados em:
-- `OpenAI ChatGPT/CURRENT_STATE.md`
-- `OpenAI ChatGPT/CONTINUITY_LEDGER.md`
-- `OpenAI ChatGPT/DECISIONS.md` quando houver nova decisão humana
-
-Nunca persistir segredos, tokens, senhas, cookies ou chain-of-thought.
+Para consultar os contratos formais e manuais do sistema:
+- `docs/agent-system/CONSTITUTION.md` — A Constituição multiagente e regras invariantes.
+- `docs/agent-system/SOURCE_OF_TRUTH.md` — Hierarquia formal de autoridade e resolução de conflitos.
+- `docs/agent-system/CURRENT_STATE.md` — Estado material da infraestrutura e suíte de testes.
+- `docs/agent-system/agent-registry.yaml` — Registro formal dos papéis R1–R9.
+- `docs/agent-system/permissions.yaml` — Matriz de menor privilégio `DENY > ASK > ALLOW`.
+- `docs/agent-system/orchestration-modes.yaml` — Os modos canônicos de orquestração.
+- `docs/agent-system/schemas/` — Schemas JSON de validação de Task Packets, Output Contracts e Mission Lock.

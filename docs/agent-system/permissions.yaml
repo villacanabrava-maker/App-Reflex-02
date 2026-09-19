@@ -1,0 +1,46 @@
+version: "3.0"
+description: "Matriz Runtime-Neutral de Permissões e Segurança do Reflex Agent OS V3"
+
+hierarchy:
+  - "DENY"
+  - "ASK"
+  - "ALLOW"
+
+policies:
+  DENY:
+    description: "Comandos e operações terminantemente bloqueados pelo sistema sem exceção."
+    rules:
+      - pattern: "rm\\s+-rf\\s+[/\\\\]"
+        reason: "Comandos de exclusão recursiva de sistema são permanentemente bloqueados."
+      - pattern: "drop\\s+database|drop\\s+schema"
+        reason: "Comandos de destruição de banco de dados são permanentemente bloqueados."
+      - pattern: "git\\s+push.*(--force|-f\\b)"
+        reason: "Force push é estritamente proibido em qualquer branch."
+      - pattern: "DISABLE\\s+ROW\\s+LEVEL\\s+SECURITY"
+        reason: "Desativação de Row Level Security (RLS) é proibida."
+      - pattern: "vercel\\s+deploy|vercel\\s+--prod"
+        reason: "Deploy não supervisionado por CLI é permanentemente bloqueado."
+      - pattern: "truncate\\s+table"
+        reason: "Truncagem em massa de tabelas relacionais é proibida."
+
+  ASK:
+    description: "Operações sensíveis que exigem confirmação explícita do usuário."
+    rules:
+      - pattern: "supabase\\s+db\\s+push\\s+--linked"
+        reason: "Mutações de schema em banco de dados conectado exigem autorização humana prévia."
+      - pattern: "git\\s+push.*origin\\s+main"
+        reason: "Push direto na branch main requer confirmação ou branch de release aprovada."
+      - pattern: "npm\\s+install\\s+[^-]"
+        reason: "Adição de novas dependências requer justificativa arquitetural prévia."
+
+  ALLOW:
+    description: "Operações livremente permitidas para inspeção e garantia de qualidade."
+    rules:
+      - pattern: "git\\s+status|git\\s+log|git\\s+diff"
+        reason: "Inspeção e observabilidade de repositório."
+      - pattern: "npm\\s+test|vitest"
+        reason: "Execução de testes locais de verificação e auditoria."
+      - pattern: "npx\\s+tsc\\s+--noEmit|npm\\s+run\\s+lint"
+        reason: "Verificação estática de tipos e análise de lint."
+      - pattern: "npm\\s+run\\s+build"
+        reason: "Validação estática de compilação de produção."

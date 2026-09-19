@@ -1,48 +1,49 @@
-# App Reflex 02 — Sistema Multiagente de Engenharia & Governança (Antigravity 2.0)
+# App Reflex 02 — Reflex Agent Operating System V3 (Runtime Antigravity 2.0)
 
-Este repositório está configurado com a infraestrutura de **9 Agentes Especialistas**, **Skills Modulares**, **Políticas de Menor Privilégio** e **Hooks de Segurança Determinísticos** para o **Google Antigravity 2.0**.
-
----
-
-## 👥 A Equipe dos 9 Agentes
-
-| Agente | Arquivo | Responsabilidade Principal |
-| :--- | :--- | :--- |
-| **A1: rflex-architect** | `.agents/agents/rflex-architect/agent.md` | Arquitetura de Software, Domínio & Coordenação |
-| **A2: rflex-product-design** | `.agents/agents/rflex-product-design/agent.md` | Design System, Usabilidade & Acessibilidade WCAG 2.2 AA |
-| **A3: rflex-frontend** | `.agents/agents/rflex-frontend/agent.md` | Next.js 15, React 19, Tailwind CSS & Performance UI |
-| **A4: rflex-backend-supabase** | `.agents/agents/rflex-backend-supabase/agent.md` | PostgreSQL, RLS, Storage TUS, RPCs & Safe Migrations |
-| **A5: rflex-ai-knowledge** | `.agents/agents/rflex-ai-knowledge/agent.md` | Structured Outputs (Zod), Hybrid Search & RAG Autoral |
-| **A6: rflex-platform** | `.agents/agents/rflex-platform/agent.md` | CI/CD, GitHub Actions, Ambiente Git & SRE |
-| **A7: rflex-qa-security** | `.agents/agents/rflex-qa-security/agent.md` | Auditoria Independente, AppSec & Testes de Regressão |
-| **A8: rflex-research-evolution** | `.agents/agents/rflex-research-evolution/agent.md` | Pesquisa Aplicada, Inovação & Evolução Contínua |
-| **A9: rflex-continuity-evidence** | `.agents/agents/rflex-continuity-evidence/agent.md` | Continuidade, Evidência & Intercâmbio ChatGPT ↔ Antigravity |
+Este repositório implementa o adaptador oficial do **Reflex Agent Operating System V3** para o **Google Antigravity 2.0**, operando em paridade isomórfica com o **OpenAI Codex** sob a Constituição e o Registry Canônico definidos em `docs/agent-system/`.
 
 ---
 
-## 🧠 Biblioteca de Skills (.agents/skills/)
+## 👥 Os Nove Papéis Canônicos (R1–R9)
 
-- `rflex-source-of-truth`: Governança e consulta obrigatória a `docs/STATUS_PROJETO.md`.
-- `rflex-handoff-contract`: SOP estruturado para passagem de tarefas entre especialistas.
-- `rflex-definition-of-done`: Checklist inegociável de critérios de aceite (DoD).
-- `rflex-git-workflow`: Fluxo de branches curtas e convenções de commit.
-- `architecture-audit`: Análise de impacto e documentação de ADRs.
-- `design-system-rflex`: Tokens, anatomia de componentes e WCAG 2.2 AA.
-- `next15-react19-engineering`: Server/Client Components e tipagem estrita.
-- `supabase-safe-migrations`: Migrations idempotentes, RLS e índices.
-- `authorial-ai-retrieval`: Zod schemas, busca híbrida e proveniência.
-- `vercel-preview-observability`: *[Adiado/Não aplicável nesta etapa]* Metodologia futura de preview.
-- `independent-qa-security`: Testes adversários e emissão de laudo de auditoria.
-- `evidence-based-research`: Investigação técnica ancorada em fatos, fontes oficiais e hipóteses refutáveis.
-- `project-state-research`: Mapeamento de cobertura, identificação de gaps e preservação de boas soluções.
-- `project-state-reconciliation`: Reconciliação entre intenção humana, planos, diffs reais e commits.
-- `evidence-ledger`: Livro-razão e taxonomia canônica de evidências técnicas.
-- `external-review-bridge`: Protocolo de handoff assíncrono entre ChatGPT e Antigravity.
-- `code-reviewer`, `design-master`, `idea-generator`, `qa-tester`: Skills analíticas complementares de revisão.
+| Papel | Agente Antigravity | Função Canônica | Modelo | mainAgent | subagent |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| **R1** | `rflex-orchestrator` | Orquestrador Geral, Despacho e Lock de Missão | `inherit` | **`true`** | `true` |
+| **R2** | `rflex-architecture` | Arquiteto de Sistemas, ADRs e Domínios | `inherit` | `false` | `true` |
+| **R3** | `rflex-data-supabase` | Engenheiro de Dados, PostgreSQL e Supabase | `inherit` | `false` | `true` |
+| **R4** | `rflex-product-frontend` | Produto, Frontend Next.js 15 e Design System | `inherit` | `false` | `true` |
+| **R5** | `rflex-cognitive-knowledge`| Engenheiro Cognitivo, IA, Claims e Dossiê V3.1 | `inherit` | `false` | `true` |
+| **R6** | `rflex-qa-security` | Auditor Independente Zero-Trust e AppSec | `inherit` | `false` | `true` |
+| **R7** | `rflex-platform-runtime` | Plataforma, CI/CD e Observabilidade Vercel | `inherit` | `false` | `true` |
+| **R8** | `rflex-research-evolution`| Pesquisa Empírica Baseada em Evidências | `inherit` | `false` | `true` |
+| **R9** | `rflex-continuity-evidence`| Continuidade, Livro-Razão e Handoff Tripartite | `inherit` | `false` | `true` |
+
+> [!NOTE]
+> **Especializações Delegáveis:**
+> O papel R4 (`rflex-product-frontend`) pode despachar subagentes de especialização para tarefas pontuais de design (`rflex-product-design`) ou de componentes Next.js (`rflex-frontend`). O papel R1 (`rflex-orchestrator`) coordena o fluxo operacional enquanto R2 (`rflex-architecture`) delibera sobre decisões estruturais e ADRs.
 
 ---
 
-## 🛡️ Segurança & Hooks (.agents/hooks.json)
+## 🧠 Biblioteca de Shared Skills (`.agents/skills/`)
+
+Núcleo compartilhado `reflex-*` (compatível com Antigravity e OpenAI/Codex):
+- `reflex-bootstrap-reconcile`: Reconciliação live obrigatória antes de qualquer ação.
+- `reflex-task-routing`: Roteamento e despacho de Task Packets por R1.
+- `reflex-handoff`: Protocolo e contrato estruturado de transferência entre especialistas.
+- `reflex-git-safe-worktree`: Governança de branch curta, worktree e prevenção de conflitos.
+- `reflex-supabase-safe-change`: Safe migrations idempotentes, RLS e PostgREST schema profiles.
+- `reflex-cognitive-integrity`: Claims, Memory-Inference Firewall, Allowed Use e Zod schemas.
+- `reflex-rcmo`: Protocolo de Representação Cognitivo-Semântica Multicamadas para obras.
+- `reflex-ui-runtime-verify`: Inspeção de acessibilidade WCAG 2.2 AA e verificação de fluxo.
+- `reflex-independent-qa`: Auditoria Zero-Trust independente (R6).
+- `reflex-release-verify`: Checklist de release gate e deploy readiness.
+- `reflex-research`: Pesquisa baseada em evidências com orçamento delimitado (R8).
+- `reflex-continuity-close`: Fechamento, livro-razão de evidências e handoff formal (R9).
+
+---
+
+## 🛡️ Segurança & Hooks (`.agents/hooks.json`)
 
 - **PreToolUse:** Impede comandos destrutivos de sistema e banco, force push e chamadas não autorizadas de Vercel.
+- **PostToolUse:** Registra telemetria de execução de ferramentas sem expor dados sensíveis.
 - **Stop:** Garante validação estruturada de critérios de aceitação e integridade antes do encerramento da sessão.

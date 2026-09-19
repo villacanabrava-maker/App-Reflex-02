@@ -1,0 +1,33 @@
+version: "3.0"
+description: "Modos Canônicos de Orquestração do Reflex Agent OS V3"
+
+modes:
+  SOLO:
+    id: "SOLO"
+    description: "R1 atua diretamente para diagnósticos rápidos, leitura de documentação ou respostas simples."
+    when_to_use: "Consultas investigatórias pontuais sem alteração de código."
+    chain: ["R1"]
+
+  SPECIALIST:
+    id: "SPECIALIST"
+    description: "R1 despacha um Task Packet delimitado para um único especialista."
+    when_to_use: "Ajuste delimitado a um único domínio (ex: correção de acessibilidade em R4, ajuste de índice SQL em R3)."
+    chain: ["R1", "TARGET_SPECIALIST", "R6_OPTIONAL", "R1"]
+
+  MULTI_DOMAIN_SEQUENTIAL:
+    id: "MULTI_DOMAIN_SEQUENTIAL"
+    description: "Pipeline estruturado em cadeia passando por múltiplos domínios com auditoria e fechamento obrigatórios."
+    when_to_use: "Funcionalidades que envolvem múltiplos componentes (ex: banco + IA + frontend)."
+    chain: ["R1", "R2", "R3", "R5", "R4", "R6", "R9"]
+
+  ADVISORY_RESEARCH:
+    id: "ADVISORY_RESEARCH"
+    description: "R1 aciona R8 para investigação aprofundada de causa-raiz ou estado da arte sob orçamento restrito."
+    when_to_use: "Dúvidas conceituais complexas, falhas intermitentes ou seleção de novos algoritmos."
+    chain: ["R1", "R8", "R1"]
+
+  DUAL_HANDOFF:
+    id: "DUAL_HANDOFF"
+    description: "Triangulação cooperativa entre ChatGPT (O1-O9) e Antigravity (R1-R9)."
+    when_to_use: "Missões estratégicas onde o ChatGPT formula arquitetura e o Antigravity implementa localmente."
+    chain: ["CHATGPT_EMISSOR", "R9_RECEPCAO", "R1_DESPACHO", "SPECIALISTS", "R6_AUDITORIA", "R9_HANDOFF_RETORNO"]
