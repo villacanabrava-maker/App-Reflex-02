@@ -14,7 +14,10 @@ describe("Cérebro - seleção de corpus e análise segura", () => {
   it("analisa somente o corpus autoral ativo", () => {
     const source = readFileSync(join(process.cwd(), "src/acoes/cerebro.ts"), "utf8");
     expect(source).toContain('.eq("participa_cerebro", true)');
-    expect(source).toContain('.in("obra_id", idsObrasAtivas)');
+    expect(source).toContain("escopo: EscopoAnaliseCerebro");
+    expect(source).toContain('item.tipo === "obra"');
+    expect(source).toContain('item.tipo === "secao"');
+    expect(source).toContain('item.tipo === "fragmento"');
     expect(source).toContain("proporAnaliseDimensaoComIA");
   });
 
