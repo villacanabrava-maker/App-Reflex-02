@@ -104,7 +104,7 @@ export default function PaginaLogin() {
           </div>
           <div>
             <span className="font-serif font-bold text-lg text-white leading-tight block">
-              Rflex01
+              Reflex 02
             </span>
             <span className="text-[11px] text-slate-400 font-sans block">
               Seu acervo. Seu pensamento. Novas reflexões.
@@ -125,7 +125,7 @@ export default function PaginaLogin() {
 
         {/* Rodapé da Arte */}
         <div className="text-xs text-slate-400 font-sans z-10">
-          Rflex01 &bull; Memória e inteligência autoral
+          Reflex 02 &bull; Memória e inteligência autoral
         </div>
 
         {/* Efeito Glow Abstrato de Fundo */}
@@ -144,7 +144,7 @@ export default function PaginaLogin() {
             </div>
             <div>
               <span className="font-serif font-bold text-lg text-slate-900 leading-tight block">
-                Rflex01
+                Reflex 02
               </span>
               <span className="text-[11px] text-slate-500 font-sans block">
                 Seu acervo. Seu pensamento. Novas reflexões.
@@ -154,10 +154,10 @@ export default function PaginaLogin() {
 
           <div>
             <h1 className="font-serif text-2xl sm:text-3xl font-bold text-slate-900 leading-tight">
-              Acesse o Rflex01
+              Acesse o Reflex 02
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Entre com sua conta ou crie uma nova conta com e-mail e senha.
+              Entre com sua conta ou, se este for o primeiro acesso, crie a conta inicial do autor.
             </p>
           </div>
 
@@ -318,7 +318,7 @@ export default function PaginaLogin() {
           </form>
 
           <div className="p-3 bg-slate-100/80 rounded-xl text-[11px] text-slate-500 leading-relaxed border border-slate-200/60">
-            Sua sessão é mantida de forma segura pelo sistema de autenticação do Rflex01.
+            O primeiro cadastro cria a conta principal do autor. Depois disso, novos cadastros ficam bloqueados e o acesso é feito por login.
           </div>
         </div>
       </section>

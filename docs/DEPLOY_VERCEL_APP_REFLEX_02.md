@@ -66,7 +66,25 @@ Novas migrations devem ser:
 
 Não reutilizar projetos Vercel históricos ligados a `reflex-01`, `MEMORIA-REFLEXIMA-` ou outros repositórios.
 
-## 7. Validação pós-deploy
+## 7. Atalho operacional no Windows / Antigravity
+
+O repositório inclui `scripts/deploy-vercel.ps1`. Ele cria/vincula o projeto `app-reflex-02`, tenta conectar o GitHub, configura todas as variáveis necessárias para Production/Preview/Development com as flags cognitivas em `off` e executa o deploy.
+
+Na raiz do repositório:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\deploy-vercel.ps1
+```
+
+O script pede Vercel token, `SUPABASE_SECRET_KEY` e `OPENAI_API_KEY` como entrada segura e não grava esses valores no Git.
+
+## 8. Bootstrap da conta do autor
+
+O ambiente limpo deve iniciar com **zero usuários** no Supabase Auth. Na primeira abertura de `/login`, use **Criar Conta** para cadastrar o novo e-mail e senha do autor.
+
+O backend permite esse cadastro somente enquanto não existir nenhum usuário. Depois que a primeira conta é criada, novos cadastros ficam bloqueados e o acesso passa a ser somente por **Entrar**.
+
+## 9. Validação pós-deploy
 
 Depois do primeiro Preview/Production candidate:
 

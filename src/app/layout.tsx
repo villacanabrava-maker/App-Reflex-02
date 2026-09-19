@@ -16,8 +16,8 @@ const merriweather = Merriweather({
 });
 
 export const metadata: Metadata = {
-  title: "Rflex01 — Memória Reflexiva",
-  description: "Rflex01 — plataforma pessoal de inteligência autoral baseada no Cérebro Autoral.",
+  title: "Reflex 02 — Memória e Inteligência Autoral",
+  description: "Reflex 02 — plataforma pessoal de memória, inteligência e reflexão autoral.",
 };
 
 export default function RootLayout({
