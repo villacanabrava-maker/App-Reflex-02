@@ -22,7 +22,9 @@ export class RepositorioDossieContextual {
     const admin = criarClienteAdmin();
 
     // 2. Chamar RPC com SECURITY DEFINER
-    const { data: snapshotId, error } = await admin.rpc(
+    const { data: snapshotId, error } = await admin
+      .schema("reflexoes")
+      .rpc(
       "persistir_dossie_snapshot",
       {
         p_id: dossie.id,
