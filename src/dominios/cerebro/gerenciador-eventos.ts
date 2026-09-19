@@ -17,7 +17,7 @@ import { FirewallViolationError } from "./firewall-memoria";
 export interface RegistrarEventoInput {
   usuario_id: string;
   event_type: EventType;
-  aggregate_type: "claim" | "source" | "reflection";
+  aggregate_type: "claim" | "source" | "reflection" | "learning_proposal";
   aggregate_id: string;
   actor_type: ActorType;
   actor_id: string;
