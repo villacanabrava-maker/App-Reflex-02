@@ -3,15 +3,22 @@ import postgres from "postgres";
 import fs from "node:fs";
 import path from "node:path";
 
-const ref = "xenapowdtfhdwcfthfrn";
-const password = "Villa667Villa";
-const directConn = `postgres://postgres:${password}@db.${ref}.supabase.co:5432/postgres?sslmode=require`;
+// Conexão direta opcional para validação live somente via variável de ambiente segura local (nunca versionada)
+const directConn =
+  process.env.SUPABASE_DB_URL ||
+  process.env.TEST_DATABASE_URL ||
+  "";
 
 describe("Auditoria Forense de RLS, Grants e Isolamento do Supabase (App Reflex 02)", () => {
   let sql: ReturnType<typeof postgres> | null = null;
   let bancoAlcancavel = false;
 
   beforeAll(async () => {
+    if (!directConn) {
+      bancoAlcancavel = false;
+      return;
+    }
+
     try {
       sql = postgres(directConn, { idle_timeout: 10, connect_timeout: 4 });
       await sql`SELECT 1;`;
