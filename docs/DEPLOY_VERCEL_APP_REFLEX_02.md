@@ -66,7 +66,19 @@ Novas migrations devem ser:
 
 Não reutilizar projetos Vercel históricos ligados a `reflex-01`, `MEMORIA-REFLEXIMA-` ou outros repositórios.
 
-## 7. Validação pós-deploy
+## 7. Atalho operacional no Windows / Antigravity
+
+O repositório inclui `scripts/deploy-vercel.ps1`. Ele cria/vincula o projeto `app-reflex-02`, tenta conectar o GitHub, configura todas as variáveis necessárias para Production/Preview/Development com as flags cognitivas em `off` e executa o deploy.
+
+Na raiz do repositório:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\deploy-vercel.ps1
+```
+
+O script pede Vercel token, `SUPABASE_SECRET_KEY` e `OPENAI_API_KEY` como entrada segura e não grava esses valores no Git.
+
+## 8. Validação pós-deploy
 
 Depois do primeiro Preview/Production candidate:
 
