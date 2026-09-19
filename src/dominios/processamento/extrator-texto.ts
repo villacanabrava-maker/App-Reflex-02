@@ -126,11 +126,21 @@ export async function extrairTextoDeBuffer(
   if (ehPdfReal) {
     // Importação tardia: rotas como Home/Biblioteca não devem carregar
     // o runtime nativo do PDF quando nenhum PDF está sendo processado.
-    const [{ PDFParse }, { CanvasFactory }] = await Promise.all([
-      import("pdf-parse"),
-      import("pdf-parse/worker"),
-    ]);
-    const parser = new PDFParse({ data: buffer, CanvasFactory });
+    const workerModule = await import("pdf-parse/worker");
+    const { PDFParse } = await import("pdf-parse");
+
+    // Em Next.js/Vercel o worker precisa ser configurado explicitamente.
+    // Além disso, não passamos Buffer (subclasse Node) ao worker: usamos
+    // Uint8Array simples para evitar DataCloneError/structuredClone em runtimes
+    // serverless.
+    PDFParse.setWorker(workerModule.getData());
+    const dadosPdf = new Uint8Array(
+      buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
+    );
+    const parser = new PDFParse({
+      data: dadosPdf,
+      CanvasFactory: workerModule.CanvasFactory,
+    });
 
     try {
       const [dadosTexto, dadosInfo] = await Promise.all([
