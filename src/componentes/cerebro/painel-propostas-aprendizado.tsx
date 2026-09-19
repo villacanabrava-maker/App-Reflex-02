@@ -148,6 +148,30 @@ export function PainelPropostasAprendizado({ propostas }: Props) {
             const aprendizado = proposta.dados_propostos.aprendizado || {};
             const dimensao = proposta.dados_propostos.dimensao || {};
             const origem = proposta.dados_propostos.origem || {};
+            const corpus = (proposta.dados_propostos.corpus || {}) as {
+              obras?: Array<{ id: string; titulo: string }>;
+              secoes?: Array<{ id: string; titulo?: string; obra_id?: string }>;
+              fragmentos_selecionados?: Array<{
+                id: string;
+                secao_id?: string;
+                secao_titulo?: string;
+                obra_id?: string;
+                obra_titulo?: string;
+                ordem?: number;
+              }>;
+              total_fragmentos?: number;
+            };
+            const caracteristicaCorpus = (proposta.dados_propostos.caracteristica || {}) as {
+              evidencias?: Array<{
+                fragmento_id: string;
+                trecho_citado: string;
+                explicacao: string;
+                forca_evidencia: number;
+              }>;
+            };
+            const evidenciasCorpus = Array.isArray(caracteristicaCorpus.evidencias)
+              ? caracteristicaCorpus.evidencias
+              : [];
             const evidencias = Array.isArray(
               proposta.dados_propostos.evidencias_edicao
             )
@@ -202,6 +226,75 @@ export function PainelPropostasAprendizado({ propostas }: Props) {
                     </strong>
                   </div>
                 </div>
+
+                {Array.isArray(corpus.obras) && corpus.obras.length > 0 && (
+                  <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
+                    <span className="text-xs font-bold uppercase tracking-wide text-blue-700">
+                      Fonte da análise
+                    </span>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {corpus.obras.map((obra) => (
+                        <span
+                          key={obra.id}
+                          className="rounded-full border border-blue-200 bg-white px-2.5 py-1 text-xs font-semibold text-blue-800"
+                        >
+                          {obra.titulo}
+                        </span>
+                      ))}
+                    </div>
+                    {Array.isArray(corpus.secoes) && corpus.secoes.length > 0 && (
+                      <p className="mt-2 text-xs leading-5 text-slate-600">
+                        Capítulos/seções usados:{" "}
+                        {corpus.secoes
+                          .map((secao) => secao.titulo)
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
+                    )}
+                    {corpus.total_fragmentos ? (
+                      <p className="mt-1 text-xs text-slate-500">
+                        {corpus.total_fragmentos} fragmentos fizeram parte do escopo autorizado.
+                      </p>
+                    ) : null}
+                  </div>
+                )}
+
+                {evidenciasCorpus.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <h4 className="text-sm font-bold text-slate-900">
+                      Evidências extraídas do conteúdo ({evidenciasCorpus.length})
+                    </h4>
+                    {evidenciasCorpus.map((evidencia, indice) => {
+                      const origemFragmento = corpus.fragmentos_selecionados?.find(
+                        (fragmento) => fragmento.id === evidencia.fragmento_id
+                      );
+                      return (
+                        <div
+                          key={`${proposta.id}-corpus-${evidencia.fragmento_id}-${indice}`}
+                          className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4"
+                        >
+                          <div className="flex flex-wrap gap-2 text-[11px] font-semibold text-slate-500">
+                            {origemFragmento?.obra_titulo && (
+                              <span>{origemFragmento.obra_titulo}</span>
+                            )}
+                            {origemFragmento?.secao_titulo && (
+                              <span>• {origemFragmento.secao_titulo}</span>
+                            )}
+                            {origemFragmento?.ordem != null && (
+                              <span>• Fragmento {origemFragmento.ordem}</span>
+                            )}
+                          </div>
+                          <blockquote className="mt-2 border-l-2 border-blue-300 pl-3 font-serif text-sm leading-6 text-slate-800">
+                            “{evidencia.trecho_citado}”
+                          </blockquote>
+                          <p className="mt-2 text-xs leading-5 text-slate-600">
+                            {evidencia.explicacao}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {aprendizado.enunciado_regra && (
                   <div className="mt-4 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">

@@ -3,7 +3,7 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { obterClienteOpenAI } from "@/ia/cliente";
 import { criarClienteAdmin } from "@/infraestrutura/supabase/cliente-admin";
 
-const analiseDimensaoSchema = z.object({
+export const analiseDimensaoSchema = z.object({
   caracteristicas: z.array(
     z.object({
       titulo: z.string().describe("Título preciso da característica metodológica"),
@@ -20,7 +20,7 @@ const analiseDimensaoSchema = z.object({
         z.object({
           fragmento_id: z.string().describe("ID exato do fragmento textual analisado"),
           trecho_citado: z.string().describe("Citação literal exata contida no fragmento"),
-          explicacao: z.string().describe("Como este trecho comprova a característica"),
+          explicacao: z.string().describe("Como este trecho sustenta a característica candidata"),
           forca_evidencia: z.number().min(0).max(1).describe("Peso comprobatório de 0 a 1"),
         })
       ),
@@ -28,36 +28,30 @@ const analiseDimensaoSchema = z.object({
   ),
 });
 
+export type AnaliseDimensaoEstruturada = z.infer<typeof analiseDimensaoSchema>;
+
 export interface ParametrosAnaliseDimensao {
   dimensaoId: string;
   dimensaoCodigo: string;
   dimensaoNome: string;
   dimensaoDescricao: string;
   usuarioId: string;
-  fragmentos: { id: string; conteudo: string; obra_titulo: string }[];
+  fragmentos: { id: string; conteudo: string; obra_titulo: string; obra_id?: string }[];
 }
 
-/**
- * Analisa fragmentos autorais através do modelo gpt-4o com Structured Outputs
- * para extrair características metodológicas, fórmulas de pensamento, regras e evidências.
- */
-export async function analisarDimensaoComIA({
-  dimensaoId,
+async function executarAnaliseEstruturada({
   dimensaoCodigo,
   dimensaoNome,
   dimensaoDescricao,
-  usuarioId,
   fragmentos,
-}: ParametrosAnaliseDimensao) {
+}: ParametrosAnaliseDimensao): Promise<AnaliseDimensaoEstruturada> {
   if (fragmentos.length === 0) {
     throw new Error("Nenhum fragmento fornecido para análise da dimensão.");
   }
 
   const openai = obterClienteOpenAI();
-  const admin = criarClienteAdmin();
 
   const fragmentosFormatados = fragmentos
-    .slice(0, 10)
     .map(
       (f) => `[FRAGMENTO_ID: ${f.id}] (Obra: ${f.obra_titulo})\n${f.conteudo}\n---`
     )
@@ -65,17 +59,19 @@ export async function analisarDimensaoComIA({
 
   const promptSistema = `
 Você é o Analista Metodológico Central do Cérebro Autoral.
-Sua missão NÃO é elogiar o texto nem descrever estilo literário de forma genérica ("escreve com paixão", "usa belas palavras").
-Sua missão é mapear a ARQUITETURA DE PENSAMENTO E EXPRESSÃO DO AUTOR para a seguinte dimensão canônica:
+Sua função é produzir CANDIDATOS de análise, nunca confirmar automaticamente uma crença, preferência ou regra do autor.
 
 Dimensão: "${dimensaoNome}" (${dimensaoCodigo})
 Escopo Canônico: "${dimensaoDescricao}"
 
-Diretrizes Obrigatórias:
-1. Identifique características específicas e distintivas (fórmulas conceituais, movimentos argumentativos).
-2. Extraia regras PRESCRITIVAS (o que o autor busca sistematicamente fazer) e PROSCRITIVAS / ANTI-REGRAS (o que o autor rejeita, evita ou nunca faz).
-3. Cada característica DEVE conter evidências literais exatas extraídas dos fragmentos fornecidos, referenciando o respectivo [FRAGMENTO_ID].
-4. Se o fragmento não trouxer evidências fortes para esta dimensão, produza apenas características estritamente comprováveis.
+Regras obrigatórias:
+1. Trabalhe SOMENTE com os fragmentos explicitamente selecionados pelo usuário para esta análise. Não suponha contexto fora desse escopo.
+2. Identifique características específicas e distintivas apenas quando houver sustentação textual.
+3. Extraia regras PRESCRITIVAS e PROSCRITIVAS / ANTI-REGRAS apenas como propostas candidatas.
+4. Cada característica deve conter evidências literais exatas e o [FRAGMENTO_ID] correspondente.
+5. Não atribua ao autor uma crença, intenção ou preferência que não esteja sustentada pelos trechos.
+6. Se a evidência for insuficiente, omita a característica em vez de completar lacunas.
+7. O resultado será submetido à confirmação humana antes de entrar no perfil ativo do Cérebro.
 `.trim();
 
   const response = await openai.beta.chat.completions.parse({
@@ -84,26 +80,48 @@ Diretrizes Obrigatórias:
       { role: "system", content: promptSistema },
       {
         role: "user",
-        content: `Analise os seguintes fragmentos do autor e extraia as características e regras para a dimensão "${dimensaoNome}":\n\n${fragmentosFormatados}`,
+        content: `Analise exclusivamente os fragmentos abaixo e gere candidatos para a dimensão "${dimensaoNome}":\n\n${fragmentosFormatados}`,
       },
     ],
-    response_format: zodResponseFormat(analiseDimensaoSchema, "analise_dimensao"),
-    temperature: 0.2, // Baixa temperatura para fidelidade epistemológica
+    response_format: zodResponseFormat(analiseDimensaoSchema, "analise_dimensao_candidata"),
+    temperature: 0.15,
   });
 
   const parsed = response.choices[0].message.parsed;
-
-  if (!parsed || !parsed.caracteristicas) {
+  if (!parsed) {
     throw new Error("Falha ao analisar a dimensão: resposta estruturada vazia.");
   }
 
-  // Persistir características, regras e evidências atomicamente
+  return parsed;
+}
+
+/**
+ * Caminho V3.1 seguro: retorna candidatos sustentados por evidência.
+ * Nenhuma característica, regra ou crença é promovida automaticamente.
+ */
+export async function proporAnaliseDimensaoComIA(
+  parametros: ParametrosAnaliseDimensao
+): Promise<AnaliseDimensaoEstruturada> {
+  return executarAnaliseEstruturada(parametros);
+}
+
+/**
+ * Caminho legado mantido apenas para compatibilidade histórica.
+ * A Server Action principal não utiliza mais esta função.
+ */
+export async function analisarDimensaoComIA(parametros: ParametrosAnaliseDimensao) {
+  const {
+    dimensaoId,
+    usuarioId,
+  } = parametros;
+  const parsed = await executarAnaliseEstruturada(parametros);
+  const admin = criarClienteAdmin();
+
   let totalCaracteristicasCriadas = 0;
   let totalRegrasCriadas = 0;
   let totalEvidenciasCriadas = 0;
 
   for (const carac of parsed.caracteristicas) {
-    // 1. Inserir Característica
     const { data: novaCarac, error: errCarac } = await admin
       .schema("cerebro_autoral")
       .from("caracteristicas")
@@ -114,7 +132,14 @@ Diretrizes Obrigatórias:
         descricao: carac.descricao,
         formula_metodologica: carac.formula_metodologica,
         origem: "nucleo_autoral",
-        confianca_calculada: 0.92,
+        confianca_calculada:
+          carac.evidencias.length > 0
+            ? Math.min(
+                0.99,
+                carac.evidencias.reduce((soma, evidencia) => soma + evidencia.forca_evidencia, 0) /
+                  carac.evidencias.length
+              )
+            : 0,
         total_evidencias: carac.evidencias.length,
         total_contraevidencias: 0,
         total_obras_distintas: 1,
@@ -124,15 +149,14 @@ Diretrizes Obrigatórias:
       .single();
 
     if (errCarac || !novaCarac) {
-      console.error("Erro ao persistir característica:", errCarac);
+      console.error("Erro ao persistir característica legada:", errCarac);
       continue;
     }
 
     totalCaracteristicasCriadas++;
 
-    // 2. Inserir Regras vinculadas
     for (const regra of carac.regras) {
-      await admin
+      const { error } = await admin
         .schema("cerebro_autoral")
         .from("regras")
         .insert({
@@ -145,13 +169,11 @@ Diretrizes Obrigatórias:
           peso: 1.0,
           ativa: true,
         });
-
-      totalRegrasCriadas++;
+      if (!error) totalRegrasCriadas++;
     }
 
-    // 3. Inserir Evidências comprovatórias vinculadas
     for (const evid of carac.evidencias) {
-      await admin
+      const { error } = await admin
         .schema("processamento")
         .from("evidencias")
         .insert({
@@ -163,8 +185,7 @@ Diretrizes Obrigatórias:
           forca_evidencia: evid.forca_evidencia,
           estado_revisao: "confirmada",
         });
-
-      totalEvidenciasCriadas++;
+      if (!error) totalEvidenciasCriadas++;
     }
   }
 

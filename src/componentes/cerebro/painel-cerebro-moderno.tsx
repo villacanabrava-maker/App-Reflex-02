@@ -9,9 +9,11 @@ import type {
   PropostaAtualizacaoCerebro,
   RegraCerebro,
   ResumoCerebro,
+  ObraCorpusCerebro,
 } from "@/tipos/cerebro";
 import { AcordeaoDimensoes } from "./acordeao-dimensoes";
 import { PainelPropostasAprendizado } from "./painel-propostas-aprendizado";
+import { SeletorCorpusAutoral } from "./seletor-corpus-autoral";
 
 interface Props {
   resumo: ResumoCerebro;
@@ -19,6 +21,7 @@ interface Props {
   caracteristicas: CaracteristicaCerebro[];
   regras: RegraCerebro[];
   propostas: PropostaAtualizacaoCerebro[];
+  corpusAutoral: ObraCorpusCerebro[];
 }
 
 type AbaCerebro = "visao_geral" | "dimensoes" | "regras" | "aprendizados";
@@ -29,6 +32,7 @@ export function PainelCerebroModerno({
   caracteristicas,
   regras,
   propostas,
+  corpusAutoral,
 }: Props) {
   const [abaAtiva, setAbaAtiva] = useState<AbaCerebro>("visao_geral");
 
@@ -130,7 +134,8 @@ export function PainelCerebroModerno({
 
       {abaAtiva === "visao_geral" && (
         <div className="space-y-5">
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <SeletorCorpusAutoral obras={corpusAutoral} />
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
             {metricas.map(({ rotulo, valor, detalhe, icone: Icone, classe }) => (
               <div key={rotulo} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <div className="mb-3 flex items-center justify-between">
@@ -320,6 +325,7 @@ export function PainelCerebroModerno({
             dimensoes={dimensoes}
             caracteristicas={caracteristicas}
             regras={regras}
+            corpusAutoral={corpusAutoral}
           />
         </div>
       )}
