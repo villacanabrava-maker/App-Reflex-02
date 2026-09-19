@@ -251,20 +251,14 @@ export async function definirParticipacaoObraCerebro({
 }
 
 /**
- * Dispara a análise cognitiva com OpenAI gpt-4o para extrair características
- * e regras metodológicas de uma dimensão a partir dos fragmentos autorais.
+ * Analisa a dimensão usando somente o corpus autoral selecionado pelo usuário.
+ * O resultado entra como PROPOSTA pendente; nada é promovido automaticamente
+ * ao perfil ativo do Cérebro.
  */
 export async function acionarAnaliseDimensao(dimensaoId: string) {
-  if (!isFlagAtiva("FEATURE_LEGACY_BRAIN_ANALYZER")) {
-    throw new Error(
-      "Análise legada do Cérebro desativada por segurança epistemológica. Use o fluxo de propostas e confirmação humana."
-    );
-  }
-
   const usuarioId = await obterUsuarioAtualId();
   const admin = criarClienteAdmin();
 
-  // 1. Obter metadados da dimensão
   const { data: dimensao, error: errDim } = await admin
     .schema("cerebro_autoral")
     .from("dimensoes")
@@ -276,38 +270,151 @@ export async function acionarAnaliseDimensao(dimensaoId: string) {
     throw new Error("Dimensão não encontrada.");
   }
 
-  // 2. Buscar fragmentos autorais ativos para subsidiar a análise
-  const { data: fragmentos, error: errFrags } = await admin
-    .from("v_fragmentos_detalhados")
-    .select("id, conteudo, obra_titulo")
+  const { data: obrasAtivas, error: erroObras } = await admin
+    .schema("biblioteca")
+    .from("obras")
+    .select("id, titulo")
     .eq("usuario_id", usuarioId)
-    .eq("obra_natureza", "autoral")
-    .limit(15);
+    .eq("natureza", "autoral")
+    .eq("participa_cerebro", true);
 
-  if (errFrags || !fragmentos || fragmentos.length === 0) {
+  if (erroObras) {
+    throw new Error(`Falha ao carregar o corpus autoral ativo: ${erroObras.message}`);
+  }
+
+  if (!obrasAtivas || obrasAtivas.length === 0) {
     throw new Error(
-      "Nenhum fragmento autoral processado encontrado. Processe obras autorais na Biblioteca antes de analisar o Cérebro."
+      "Nenhuma obra autoral está ativa no Cérebro. Selecione ao menos uma obra na seção Corpus Autoral."
     );
   }
 
-  // 3. Executar o motor cognitivo de extração com OpenAI gpt-4o
-  const resultado = await analisarDimensaoComIA({
+  const idsObrasAtivas = obrasAtivas.map((obra) => obra.id);
+  const { data: fragmentosBrutos, error: errFrags } = await admin
+    .from("v_fragmentos_detalhados")
+    .select("id, conteudo, obra_id, obra_titulo, ordem")
+    .eq("usuario_id", usuarioId)
+    .eq("obra_natureza", "autoral")
+    .eq("participa_cerebro", true)
+    .in("obra_id", idsObrasAtivas)
+    .order("ordem", { ascending: true })
+    .limit(180);
+
+  if (errFrags || !fragmentosBrutos || fragmentosBrutos.length === 0) {
+    throw new Error(
+      "As obras selecionadas ainda não possuem fragmentos autorais processados disponíveis para análise."
+    );
+  }
+
+  // Amostragem balanceada: evita que uma obra longa domine o perfil quando
+  // várias obras estiverem ativas simultaneamente.
+  const porObra = new Map<string, typeof fragmentosBrutos>();
+  for (const fragmento of fragmentosBrutos) {
+    const grupo = porObra.get(fragmento.obra_id) || [];
+    grupo.push(fragmento);
+    porObra.set(fragmento.obra_id, grupo);
+  }
+
+  const fragmentosSelecionados = Array.from(porObra.values())
+    .flatMap((grupo) => grupo.slice(0, 8))
+    .slice(0, 24);
+
+  const analise = await proporAnaliseDimensaoComIA({
     dimensaoId: dimensao.id,
     dimensaoCodigo: dimensao.codigo,
     dimensaoNome: dimensao.nome,
     dimensaoDescricao: dimensao.descricao,
     usuarioId,
-    fragmentos: fragmentos as any,
+    fragmentos: fragmentosSelecionados.map((fragmento) => ({
+      id: fragmento.id,
+      conteudo: fragmento.conteudo,
+      obra_titulo: fragmento.obra_titulo,
+      obra_id: fragmento.obra_id,
+    })),
   });
+
+  if (analise.caracteristicas.length === 0) {
+    return {
+      sucesso: true,
+      totalCaracteristicas: 0,
+      totalRegras: 0,
+      totalEvidencias: 0,
+      totalPropostas: 0,
+      mensagem:
+        "Não foram encontradas evidências suficientemente fortes nesta dimensão para o corpus selecionado.",
+    };
+  }
+
+  let totalPropostas = 0;
+  let totalRegras = 0;
+  let totalEvidencias = 0;
+
+  for (const caracteristica of analise.caracteristicas) {
+    const forcas = caracteristica.evidencias.map((evidencia) => evidencia.forca_evidencia);
+    const confianca =
+      forcas.length > 0
+        ? Math.min(0.99, forcas.reduce((soma, valor) => soma + valor, 0) / forcas.length)
+        : 0;
+
+    const { error } = await admin
+      .schema("cerebro_autoral")
+      .from("propostas_atualizacao")
+      .insert({
+        usuario_id: usuarioId,
+        tipo_proposta: "nova_caracteristica",
+        estado_decisao: "pendente",
+        dados_propostos: {
+          origem: {
+            tipo: "analise_dimensao_corpus_autoral",
+            entrada_id: dimensao.id,
+          },
+          dimensao: {
+            id: dimensao.id,
+            codigo: dimensao.codigo,
+            nome: dimensao.nome,
+          },
+          corpus: {
+            obras: obrasAtivas.map((obra) => ({ id: obra.id, titulo: obra.titulo })),
+            total_fragmentos_amostrados: fragmentosSelecionados.length,
+          },
+          aprendizado: {
+            titulo: caracteristica.titulo,
+            descricao: caracteristica.descricao,
+          },
+          caracteristica: {
+            titulo: caracteristica.titulo,
+            descricao: caracteristica.descricao,
+            formula_metodologica: caracteristica.formula_metodologica,
+            regras: caracteristica.regras,
+            evidencias: caracteristica.evidencias,
+          },
+        },
+        justificativa_ia:
+          "Característica candidata extraída exclusivamente do corpus autoral ativo, com evidências literais. Requer confirmação humana antes de integrar o perfil ativo.",
+        confianca_calculada: Number(confianca.toFixed(2)),
+      });
+
+    if (error) {
+      throw new Error(`Falha ao registrar proposta de análise: ${error.message}`);
+    }
+
+    totalPropostas++;
+    totalRegras += caracteristica.regras.length;
+    totalEvidencias += caracteristica.evidencias.length;
+  }
 
   try {
     revalidatePath("/cerebro");
-    revalidatePath("/");
-  } catch {
-    // Ignorado fora do ciclo de requisição HTTP
-  }
+  } catch {}
 
-  return resultado;
+  return {
+    sucesso: true,
+    totalCaracteristicas: analise.caracteristicas.length,
+    totalRegras,
+    totalEvidencias,
+    totalPropostas,
+    mensagem:
+      "Análise concluída. As características candidatas foram enviadas para Aprendizados e aguardam sua confirmação.",
+  };
 }
 
 /**
