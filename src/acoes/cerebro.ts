@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { criarClienteAdmin } from "@/infraestrutura/supabase/cliente-admin";
 import { obterUsuarioAtualId } from "@/infraestrutura/auth/usuario-atual";
 import { analisarDimensaoComIA } from "@/dominios/cerebro/analisador-dimensoes";
+import { isFlagAtiva } from "@/config/feature-flags";
 import type {
   DimensaoCerebro,
   CaracteristicaCerebro,
@@ -120,6 +121,12 @@ export async function obterResumoCerebro(): Promise<ResumoCerebro> {
  * e regras metodológicas de uma dimensão a partir dos fragmentos autorais.
  */
 export async function acionarAnaliseDimensao(dimensaoId: string) {
+  if (!isFlagAtiva("FEATURE_LEGACY_BRAIN_ANALYZER")) {
+    throw new Error(
+      "Análise legada do Cérebro desativada por segurança epistemológica. Use o fluxo de propostas e confirmação humana."
+    );
+  }
+
   const usuarioId = await obterUsuarioAtualId();
   const admin = criarClienteAdmin();
 
