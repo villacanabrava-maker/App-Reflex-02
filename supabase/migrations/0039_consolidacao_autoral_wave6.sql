@@ -79,7 +79,7 @@ BEGIN
       ADD CONSTRAINT fk_proposta_materializacao_evento_tenant
       FOREIGN KEY (evento_id, usuario_id)
       REFERENCES cerebro_autoral.memory_events(id, usuario_id)
-      ON DELETE SET NULL;
+      ON DELETE RESTRICT;
   END IF;
 END $$;
 
