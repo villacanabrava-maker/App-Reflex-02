@@ -67,3 +67,14 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [PENDENTE] auditoria R6, CI final e reconciliação R9.
 - [BLOQUEADO] nenhuma migration live, deploy manual ou reforma cognitiva está autorizada por esta missão.
 
+## 2026-09-20 — Consolidação tri-runtime cloud
+- [DECISÃO-HUMANA] operar Claude Code prioritariamente em cloud/web conectado ao GitHub.
+- [DECISÃO-HUMANA] manter Antigravity local com seis agentes físicos; R1–R9 continuam funções canônicas.
+- [CONFIRMADO-EXTERNO] Claude Code Routines suportam schedule, API e eventos GitHub e rodam em infraestrutura cloud; são research preview.
+- [CONFIRMADO-EXTERNO] Codex Cloud suporta trabalho cloud ligado ao GitHub e revisão automática/manual de PRs; Agents API suporta sessões assíncronas, MCP e webhooks.
+- [CONFIRMADO-EXTERNO] Supabase oferece MCP project-scoped/read-only, Cron, Database Webhooks, Queues e Edge Functions; foi classificado como infraestrutura/event bus, não quarto motor.
+- [CONFIRMADO-CODIGO] commit `e755b21075f913b8f37e25c20c81dc4b417adb17` adicionou Claude Cloud ao Agent OS V3 sem tocar em `src/**` ou `supabase/**`.
+- [CONFIRMADO-CI] run `35488842913` passou validators, TypeScript, lint, testes e build.
+- [PENDENTE] setup humano da conta Claude Code web/Routines e Codex Cloud.
+- [PENDENTE] smoke test local dos seis agentes Antigravity e auditoria R6 independente.
+
