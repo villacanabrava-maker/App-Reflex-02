@@ -5,6 +5,7 @@ const schemas = [
   "docs/agent-system/schemas/agent-output.schema.json",
   "docs/agent-system/schemas/evidence.schema.json",
   "docs/agent-system/schemas/mission.schema.json",
+  "docs/agent-system/schemas/handoff-event.schema.json",
 ];
 
 for (const path of schemas) {

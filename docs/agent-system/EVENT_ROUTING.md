@@ -59,11 +59,15 @@ Não colocar secrets, conteúdo sensível desnecessário ou instruções não co
 - Codex review em PR;
 - Antigravity por handoff local.
 
-### Fase B — depois dos smoke tests
-- GitHub `workflow_run` / `repository_dispatch`;
-- chamada à Routine API Claude;
-- Codex Action ou Agents API;
-- idempotência e observabilidade central.
+### Fase B — control plane versionado; ativação por credenciais
+- workflow `reflex-agent-handoff.yml` recebe workflow_dispatch, repository_dispatch e comentários [REFLEX-HANDOFF];
+- OpenAI executa via Codex GitHub Action em sandbox read-only;
+- Claude executa via Routine API quando URL/token forem configurados;
+- Antigravity interrompe a cadeia em human gate local;
+- WhatsApp é notificação opcional para esse human gate;
+- hop/max_hops limita a cadeia a no máximo quatro transições.
+
+Detalhes: `docs/agent-system/AUTONOMOUS_HANDOFF.md`.
 
 ### Fase C — eventos do produto
 - Supabase Database Webhooks / Queues;
