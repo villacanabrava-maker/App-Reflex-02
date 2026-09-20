@@ -62,13 +62,13 @@ Não anexar inicialmente um conector Vercel com ferramentas de escrita a Routine
 
 ## 5. Antigravity local
 
-Manter a topologia física de seis agentes que o usuário escolheu.
+Preservar a topologia física que o runtime Antigravity realmente descobrir e o usuário aprovar; a contagem não é uma regra constitucional.
 
-A exigência é cobertura dos papéis R1-R9, não nove processos. Antes de alterar o adapter:
+A exigência é cobertura completa dos papéis R1-R9, não uma contagem fixa de processos. Antes de alterar o adapter:
 - atualizar workspace a partir da base canônica;
 - executar `agy --version` e `agy --help`;
 - validar Skills/MCP/permissões;
-- mapear os seis agentes físicos aos nove papéis;
+- mapear os agentes físicos realmente descobertos aos nove papéis;
 - fazer smoke test read-only;
 - registrar Evidence no GitHub.
 
