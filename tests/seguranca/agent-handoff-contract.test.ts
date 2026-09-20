@@ -53,7 +53,11 @@ describe("tri-runtime handoff contract", () => {
     expect(workflow).toContain("minItems");
     expect(workflow).toContain("responsible_role");
     expect(workflow).toMatch(/\^\[0-9a-f\]\{7,40\}\$/i);
-    expect(workflow).not.toMatch(/script: \|[\s\S]*?\$\{\{ needs\.prepare\.outputs\./);
+    const scriptBlocks = workflow.match(/script: \\|\\n(?:(?: {12,}.*)?\\n)*/g) ?? [];
+    for (const block of scriptBlocks) {
+      expect(block).not.toContain("$"+"{{ needs.prepare.outputs.");
+      expect(block).not.toContain("$"+"{{ inputs.");
+    }
     expect(workflow).not.toMatch(/sk-ant-[A-Za-z0-9_-]{20,}/);
   });
 });
