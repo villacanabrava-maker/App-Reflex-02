@@ -24,6 +24,7 @@
       "type": "string"
     },
     "agent_role": {
+      "type": "string",
       "pattern": "^R[1-9]$"
     },
     "summary": {
@@ -52,6 +53,7 @@
     },
     "evidence": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "$ref": "evidence.schema.json"
       }

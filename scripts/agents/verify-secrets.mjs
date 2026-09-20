@@ -2,11 +2,12 @@ import { readText, walkFiles, fail } from "./lib.mjs";
 
 const roots = ["docs/agent-system", ".codex", "OpenAI ChatGPT", ".claude", ".agents"];
 const rootFiles = ["AGENTS.md", "CLAUDE.md", "GEMINI.md"];
-const extensions = [".md",".json",".yaml",".toml",".mjs",".js",".ts",".yml"];
+const binaryExtensions = /\.(?:png|jpe?g|gif|webp|ico|pdf|zip|gz|tgz|tar|woff2?|ttf|otf|eot|mp3|mp4|mov|avi|wasm)$/i;
 const files = [...new Set([
-  ...roots.flatMap((dir) => walkFiles(dir, extensions)),
+  ...roots.flatMap((dir) => walkFiles(dir)).filter((path) => !binaryExtensions.test(path)),
   ...rootFiles,
 ])];
+
 const patterns = [
   /sk-proj-[A-Za-z0-9_-]{24,}/g,
   /sb_secret_[A-Za-z0-9_-]{16,}/g,

@@ -1,6 +1,6 @@
 # Current State — Reflex Agent OS V3
 
-**Snapshot verificado:** 2026-09-20 00:30 BRT  
+**Snapshot verificado:** 2026-09-20 02:46 BRT  
 **Natureza:** bootstrap operacional; verificar live antes de decisões críticas.
 
 ## GitHub
@@ -66,8 +66,7 @@ Esses achados são diagnóstico, não autorização de correção automática.
 ## Drift documental confirmado
 
 - `docs/STATUS_PROJETO.md` ainda declarava 37 migrations e Vercel adiada.
-- `GEMINI.md` ainda declarava Vercel adiada.
-- `.agents/README.md` ainda classificava observabilidade Vercel como futura.
+- Drift histórico de Vercel em `GEMINI.md` e `.agents/README.md` foi corrigido na branch Agent OS V3.
 - `OpenAI ChatGPT/CURRENT_STATE.md` registrava 13 propostas; live possui 23.
 
 ## Missão corrente
@@ -80,7 +79,8 @@ Esses achados são diagnóstico, não autorização de correção automática.
 - [DECISÃO-HUMANA] Claude Code será operado prioritariamente na nuvem ligado ao GitHub.
 - [DECISÃO] Antigravity permanece local; R1–R9 são funções canônicas e a contagem física de agentes é estado do adapter, não invariante constitucional.
 - [CONFIRMADO-CODIGO] branch `chatgpt/reflex-agent-os-v3` prepara um terceiro adapter Claude sem alterar `src/**` ou migrations.
-- [PENDENTE] conexão do GitHub à conta Claude Code web/Routines.
-- [PENDENTE] conexão/configuração do Codex Cloud/revisão automática, se habilitada pelo usuário.
+- [RELATADO] Claude Code Web está conectado e ativo no repositório; Routines/API ainda dependem de configuração de conta e least privilege.
+- [CONFIRMADO-RUNTIME] Codex GitHub Review está habilitado no repositório e revisou o PR #15 em múltiplos heads.
 - [RELATADO] auditoria Antigravity de 20/09/2026 smoke-testou nove definições locais; isso não altera R1–R9 como funções canônicas.
+- [CONFIRMADO-CI] run `35491921248` passou validators, TypeScript, lint, testes e build no head `43df55c` antes do último hardening residual.
 - [BLOQUEADO] automação de escrita em produção continua fora de escopo.

@@ -52,7 +52,7 @@ Os papéis são definidos em `agent-registry.yaml`:
 - R8 Research & Evolution
 - R9 Continuity & Evidence
 
-Adapters podem usar um ou vários agentes físicos para cobrir um papel, mas devem preservar ownership e limites. R1–R9 são funções canônicas, não uma exigência de nove processos em cada runtime. O Antigravity local pode, por decisão humana, operar seis agentes físicos cobrindo os nove papéis.
+Adapters podem usar um ou vários agentes físicos para cobrir um papel, mas devem preservar ownership e limites. R1–R9 são funções canônicas, não uma exigência de contagem física específica em cada runtime. A topologia física observada pertence ao adapter/runtime e não redefine a Constituição.
 
 ## 4. Invariantes
 

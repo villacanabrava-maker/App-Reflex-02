@@ -18,9 +18,13 @@ describe("Agent OS V3 hardening", () => {
 
   it("exige Evidence formal dentro de Agent Output", () => {
     const schema = json("docs/agent-system/schemas/agent-output.schema.json");
+    expect(schema.properties.agent_role.type).toBe("string");
+    expect(schema.properties.evidence.minItems).toBe(1);
     expect(schema.properties.evidence.items.$ref).toBe("evidence.schema.json");
     const evidence = json("docs/agent-system/schemas/evidence.schema.json");
     expect(evidence.properties.responsible_role.type).toBe("string");
+    const taskPacket = json("docs/agent-system/schemas/task-packet.schema.json");
+    expect(taskPacket.properties.owner_role.type).toBe("string");
   });
 
   it("amplia secret scan para credenciais nativas dos três runtimes", () => {
@@ -28,6 +32,15 @@ describe("Agent OS V3 hardening", () => {
     expect(scan).toContain("sk-ant-");
     expect(scan).toContain("AIza");
     expect(scan).toContain("PRIVATE KEY");
+    expect(scan).toContain("walkFiles(dir)");
+    expect(scan).not.toContain("walkFiles(dir, extensions)");
+  });
+
+  it("mantém observabilidade Vercel ativa e mutação sob gate humano", () => {
+    const skill = read(".agents/skills/vercel-preview-observability/SKILL.md");
+    expect(skill).toContain("Vercel está ativa");
+    expect(skill).toContain("gate humano");
+    expect(skill).not.toContain("ETAPA ADIADA");
   });
 
   it("bloqueia comandos SQL destrutivos no guardrail Antigravity", () => {

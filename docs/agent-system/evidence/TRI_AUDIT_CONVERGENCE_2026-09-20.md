@@ -29,3 +29,13 @@ Esses três resíduos foram corrigidos no commit `80fa717a`.
 
 ## Estado
 O PR #15 permanece REVIEW. Merge depende de CI verde do novo head e revisão independente final das correções.
+
+## Review final Codex do commit 43df55c
+
+O review final encontrou quatro resíduos:
+- secret scan ainda excluía arquivos sem extensão/PEM pela lista de sufixos;
+- Skill Antigravity de Vercel ainda declarava a integração adiada;
+- Agent Output aceitava `evidence: []`;
+- `agent_role` e `owner_role` não declaravam `type: string`.
+
+Todos foram corrigidos nesta rodada. O novo head exige novo CI e último review independente antes de encerrar a missão.
