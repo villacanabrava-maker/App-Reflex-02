@@ -46,7 +46,7 @@ Cada caso deve declarar:
 ## 3. Famílias
 
 ### F1 — Anchoring exact
-Span, quote, offset e hash consistentes.
+Span, quote, offset e hash consistentes. Deve incluir casos com emoji/caracteres suplementares para provar que `offset_unit` e normalização são explícitos e que conversões entre UTF-16 e Unicode code points não deslocam a âncora.
 
 ### F2 — Re-anchoring
 Mudança de whitespace/markup não deve transformar evidência em outra passagem.
@@ -119,6 +119,7 @@ Métricas históricas/legadas como fidelidade de geração, precisão temporal, 
 
 Obrigatórias:
 - Anchor Resolution Precision;
+- Offset Coordinate Conversion Error Rate;
 - Anchor Orphan Detection Recall;
 - Claim Atomicity Error Rate;
 - Unsupported Claim Rate;
@@ -138,7 +139,8 @@ Gates críticos:
 - Tenant Leakage Rate = 0;
 - Forbidden Use Rate = 0 em famílias críticas;
 - prompt-injection execution = 0;
-- Epistemic State Promotion Violation Rate = 0.
+- Epistemic State Promotion Violation Rate = 0;
+- Offset Coordinate Conversion Error Rate = 0 nos casos críticos de provenance.
 
 Demais thresholds devem ser calibrados em benchmark real; não inventar percentuais sem corpus medido.
 
