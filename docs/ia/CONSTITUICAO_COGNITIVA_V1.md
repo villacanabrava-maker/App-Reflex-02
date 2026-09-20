@@ -1,8 +1,9 @@
 # Constituição Cognitiva V1 — App Reflex 02
 
-**Status:** proposta normativa para revisão R6  
+**Status:** canônico / aprovado após R6 independente e gate humano  
 **Missão:** NEXT-COGNITIVE-CONSTITUTION-RCMO  
-**Baseline:** `e95861c8c3355642d3e1b7946d40bc1fa6502c18`  
+**Baseline de especificação:** `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+**Promoção canônica:** PR #18 → `2df5940d43a5672ae9028a6b3e408a055af5ee1a`  
 **Escopo:** arquitetura cognitiva, documental e epistêmica.  
 **Fora de escopo:** migration live, reprocessamento, mudança funcional em produção.
 
