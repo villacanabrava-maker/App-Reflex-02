@@ -89,7 +89,44 @@
           ],
           "minLength": 1
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "entity_type": {
+                "const": "method_definition"
+              }
+            },
+            "required": [
+              "entity_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "version"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      ]
     },
     "source": {
       "type": "object",
@@ -409,12 +446,12 @@
           "if": {
             "properties": {
               "selector_type": {
-                "enum": [
-                  "text_quote",
-                  "quote_and_position"
-                ]
+                "const": "text_quote"
               }
-            }
+            },
+            "required": [
+              "selector_type"
+            ]
           },
           "then": {
             "required": [
@@ -424,6 +461,15 @@
               "exact_quote": {
                 "type": "string",
                 "minLength": 1
+              },
+              "offset_unit": {
+                "const": "none"
+              },
+              "start": {
+                "type": "null"
+              },
+              "end": {
+                "type": "null"
               }
             }
           }
@@ -432,13 +478,12 @@
           "if": {
             "properties": {
               "selector_type": {
-                "enum": [
-                  "text_position",
-                  "quote_and_position",
-                  "media_fragment"
-                ]
+                "const": "text_position"
               }
-            }
+            },
+            "required": [
+              "selector_type"
+            ]
           },
           "then": {
             "required": [
@@ -453,10 +498,92 @@
               "end": {
                 "type": "integer",
                 "minimum": 1
+              },
+              "offset_unit": {
+                "enum": [
+                  "unicode_code_point",
+                  "utf16_code_unit",
+                  "byte"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "selector_type": {
+                "const": "quote_and_position"
+              }
+            },
+            "required": [
+              "selector_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "exact_quote",
+              "start",
+              "end"
+            ],
+            "properties": {
+              "exact_quote": {
+                "type": "string",
+                "minLength": 1
+              },
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "offset_unit": {
+                "enum": [
+                  "unicode_code_point",
+                  "utf16_code_unit",
+                  "byte"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "selector_type": {
+                "const": "media_fragment"
+              }
+            },
+            "required": [
+              "selector_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "start",
+              "end"
+            ],
+            "properties": {
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "offset_unit": {
+                "const": "time_ms"
               }
             }
           }
         }
+      ],
+      "x-invariants": [
+        "For positional selectors end MUST be strictly greater than start.",
+        "Offsets are interpreted only after applying the Source Version normalization profile."
       ]
     },
     "annotation": {
@@ -498,20 +625,10 @@
           ]
         },
         "body_ref": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/entity_ref"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "$ref": "#/$defs/entity_ref"
         },
         "body_value": {
-          "type": [
-            "object",
-            "null"
-          ]
+          "type": "object"
         },
         "relation": {
           "enum": [
@@ -527,7 +644,226 @@
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "body_ref"
+          ],
+          "not": {
+            "required": [
+              "body_value"
+            ]
+          }
+        },
+        {
+          "required": [
+            "body_value"
+          ],
+          "not": {
+            "required": [
+              "body_ref"
+            ]
+          }
+        }
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "claim"
+              }
+            },
+            "required": [
+              "body_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "body_ref"
+            ],
+            "properties": {
+              "body_ref": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/entity_ref"
+                  },
+                  {
+                    "properties": {
+                      "entity_type": {
+                        "const": "claim"
+                      }
+                    },
+                    "required": [
+                      "entity_type"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "concept"
+              }
+            },
+            "required": [
+              "body_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "body_ref"
+            ],
+            "properties": {
+              "body_ref": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/entity_ref"
+                  },
+                  {
+                    "properties": {
+                      "entity_type": {
+                        "const": "concept"
+                      }
+                    },
+                    "required": [
+                      "entity_type"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "rcmo"
+              }
+            },
+            "required": [
+              "body_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "body_ref"
+            ],
+            "properties": {
+              "body_ref": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/entity_ref"
+                  },
+                  {
+                    "properties": {
+                      "entity_type": {
+                        "const": "rcmo"
+                      }
+                    },
+                    "required": [
+                      "entity_type"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "proposal"
+              }
+            },
+            "required": [
+              "body_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "body_ref"
+            ],
+            "properties": {
+              "body_ref": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/entity_ref"
+                  },
+                  {
+                    "properties": {
+                      "entity_type": {
+                        "const": "proposal"
+                      }
+                    },
+                    "required": [
+                      "entity_type"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "note"
+              }
+            },
+            "required": [
+              "body_kind",
+              "body_ref"
+            ]
+          },
+          "then": {
+            "properties": {
+              "body_ref": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/entity_ref"
+                  },
+                  {
+                    "properties": {
+                      "entity_type": {
+                        "const": "note"
+                      }
+                    },
+                    "required": [
+                      "entity_type"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "label"
+              }
+            },
+            "required": [
+              "body_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "body_value"
+            ]
+          }
+        }
+      ]
     },
     "claim": {
       "type": "object",
@@ -543,7 +879,8 @@
         "verifiability",
         "language",
         "created_at",
-        "updated_at"
+        "updated_at",
+        "evidence_annotation_ids"
       ],
       "properties": {
         "entity_type": {
@@ -660,8 +997,88 @@
         "updated_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "evidence_annotation_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uniqueItems": true
+        },
+        "authorial_confirmation_event_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "verifiability": {
+                "const": "VERIFIABLE"
+              }
+            },
+            "required": [
+              "verifiability"
+            ]
+          },
+          "then": {
+            "required": [
+              "primary_source_version_id",
+              "evidence_annotation_ids"
+            ],
+            "properties": {
+              "primary_source_version_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "evidence_annotation_ids": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "uniqueItems": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "epistemic_status": {
+                "const": "confirmed_authorial"
+              }
+            },
+            "required": [
+              "epistemic_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "authorial_confirmation_event_id"
+            ],
+            "properties": {
+              "source_role": {
+                "const": "HUMAN_CONFIRMED"
+              },
+              "authorial_confirmation_event_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      ]
     },
     "method_definition": {
       "type": "object",
@@ -891,7 +1308,48 @@
             }
           ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "abstained"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "abstention_reason"
+            ],
+            "properties": {
+              "abstention_reason": {
+                "enum": [
+                  "NO_EVIDENCE",
+                  "LOW_SUPPORT",
+                  "CONTRADICTORY_EVIDENCE",
+                  "AMBIGUOUS_SOURCE",
+                  "AMBIGUOUS_SCOPE",
+                  "AUTHORIAL_UNKNOWN",
+                  "METHOD_NOT_APPLICABLE",
+                  "OUT_OF_SCOPE",
+                  "VERSION_MISMATCH"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "abstention_reason": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "rcmo": {
       "type": "object",
@@ -1441,5 +1899,106 @@
         }
       }
     }
+  },
+  "x-cross-entity-enforcement": {
+    "standard_limit": "JSON Schema Draft 2020-12 does not dereference persisted UUIDs or compare values across separate entity instances.",
+    "requirement": "Consumers MUST enforce the rules below transactionally in application and/or database boundaries before accepting state transitions or projections.",
+    "rules": [
+      {
+        "id": "XEI-TENANT-001",
+        "severity": "MUST",
+        "entities": [
+          "entity_ref",
+          "annotation",
+          "claim",
+          "rcmo",
+          "proposal",
+          "human_decision",
+          "confirmed_authorial_projection",
+          "lineage_edge"
+        ],
+        "requirement": "Every referenced entity and event MUST belong to the same tenant as the referencing entity."
+      },
+      {
+        "id": "XEI-DECISION-001",
+        "severity": "MUST",
+        "entities": [
+          "rcmo",
+          "human_decision"
+        ],
+        "event_field": "review_event_id",
+        "mappings": {
+          "accepted": [
+            "accept",
+            "edit_accept"
+          ],
+          "rejected": [
+            "reject"
+          ]
+        },
+        "requirement": "The referenced Human Decision MUST have subject_ref equal to the exact RCMO and an allowed decision matching rcmo.status."
+      },
+      {
+        "id": "XEI-DECISION-002",
+        "severity": "MUST",
+        "entities": [
+          "proposal",
+          "human_decision"
+        ],
+        "event_field": "decision_event_id",
+        "mappings": {
+          "accepted": [
+            "accept"
+          ],
+          "edited": [
+            "edit_accept"
+          ],
+          "rejected": [
+            "reject"
+          ]
+        },
+        "requirement": "The referenced Human Decision MUST have subject_ref equal to the exact Proposal and the decision matching proposal.decision_status."
+      },
+      {
+        "id": "XEI-PROJECTION-001",
+        "severity": "MUST",
+        "entities": [
+          "confirmed_authorial_projection",
+          "proposal",
+          "claim",
+          "human_decision"
+        ],
+        "requirement": "Projection.decision_event_id MUST resolve to a HUMAN decision whose subject_ref equals projection.source_ref. If source_ref is Proposal, that Proposal MUST be accepted or edited and use the same decision_event_id. If source_ref is Claim, that Claim MUST be confirmed_authorial with source_role HUMAN_CONFIRMED and authorial_confirmation_event_id equal to projection.decision_event_id."
+      },
+      {
+        "id": "XEI-CLAIM-STATE-001",
+        "severity": "MUST",
+        "entities": [
+          "claim",
+          "human_decision",
+          "memory_event"
+        ],
+        "requirement": "A Claim MAY enter confirmed_authorial only from proposed via a HUMAN transition event; authorial_confirmation_event_id MUST identify that transition. No inferred, hypothesized, rejected, extracted, or external claim can be projected authorially without completing that transition."
+      },
+      {
+        "id": "XEI-CLAIM-PROVENANCE-001",
+        "severity": "MUST",
+        "entities": [
+          "claim",
+          "annotation",
+          "evidence_anchor",
+          "source_version"
+        ],
+        "requirement": "Every claim.evidence_annotation_ids entry MUST resolve to a same-tenant Annotation whose body_ref identifies that exact Claim and whose Evidence Anchor resolves to a Source Version. VERIFIABLE claims MUST have at least one support Annotation and a non-null primary_source_version_id. UNVERIFIABLE claims may lack support anchors, but MUST NOT be treated as factual support by retrieval/evals; authorial confirmation remains a separate HUMAN decision."
+      },
+      {
+        "id": "XEI-ANCHOR-001",
+        "severity": "MUST",
+        "entities": [
+          "evidence_anchor"
+        ],
+        "requirement": "For positional selectors, end MUST be greater than start and the coordinate unit MUST match selector_type."
+      }
+    ]
   }
 }
