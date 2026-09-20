@@ -4,7 +4,7 @@
   "parent_task_id": null,
   "created_at": "2026-09-20T08:46:00-03:00",
   "objective": "Pesquisar hardening de continuidade, supply-chain de automação, handoff cloud e conformance de Evidence Anchors após a integração da Constituição Cognitiva V1, sem iniciar implementação.",
-  "baseline_sha": "2df5940d43a5672ae9028a6b3e408a055af5ee1a",
+  "baseline_sha": "9845a1e0d6fb9ea783b0b60c2cfd6fc61d1213ea",
   "target_branch": "research/post-constitution-hardening",
   "worktree": null,
   "owner_role": "R8",
@@ -53,7 +53,7 @@
     "relatório R8 de hardening pós-Constituição",
     "recomendações priorizadas para R1/R7/R9"
   ],
-  "status": "PROPOSED",
+  "status": "DONE",
   "blocked_by": [],
   "next_handoff": "R8 research when explicitly activated; proposals require separate implementation task packets"
 }
