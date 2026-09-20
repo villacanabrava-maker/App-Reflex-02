@@ -22,6 +22,11 @@ for (const role of roles) {
     const [, name] = adapter.split(":");
     readText(`.agents/agents/${name}/agent.md`);
   }
+
+  assert(role.claude?.runtime === "claude_cloud", `${role.id}: runtime Claude divergente.`);
+  const claude = readText(role.claude.file);
+  assert(claude.includes(`Canonical role: ${role.id}`), `${role.id}: marker Claude ausente.`);
+  assert(claude.includes(`name: ${role.claude.name}`), `${role.id}: nome Claude divergente.`);
 }
 
 const r6 = roles.find((r) => r.id === "R6");

@@ -35,3 +35,23 @@ Esta sessão ChatGPT não executa o runtime local Antigravity. Portanto:
 - discovery, tool names, hooks e smoke tests A1–A9 permanecem gate do Antigravity.
 
 A próxima sessão Antigravity deve validar seus adapters contra o runtime realmente instalado e propor somente ajustes comprovados.
+
+
+## Claude Code Cloud
+
+**Estado:** adapter versionado nesta branch; ativação da conta/cloud ainda depende de ação humana.
+
+Incluído:
+- `CLAUDE.md` fino;
+- nove subagentes Claude como projeções R1–R9;
+- onze Skills-proxy;
+- runtime registry tri-runtime;
+- política cloud-first e guia de Routines.
+
+Decisão de segurança:
+- o grande stack de hooks locais do protótipo ZIP não é promovido integralmente;
+- Routines não supervisionadas devem manter branch `claude/*`;
+- Supabase deve ser project-scoped + read-only;
+- Vercel com escrita não é conector unattended padrão.
+
+O smoke test definitivo exige conectar o repositório à conta Claude Code web e executar uma sessão/routine real.

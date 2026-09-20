@@ -9,16 +9,19 @@ Antes de trabalho não trivial, leia:
 2. `docs/agent-system/SOURCE_OF_TRUTH.md`
 3. `docs/agent-system/CURRENT_STATE.md`
 4. `docs/agent-system/agent-registry.yaml`
-5. `OpenAI ChatGPT/BOOTSTRAP.md` quando o runtime for ChatGPT/Codex
-6. `docs/STATUS_PROJETO.md` como documentação de produto, reconciliando drift com live
+5. `docs/agent-system/runtime-registry.yaml`
+6. `OpenAI ChatGPT/BOOTSTRAP.md` quando o runtime for OpenAI
+7. `CLAUDE.md` quando o runtime for Claude Code
+8. `docs/STATUS_PROJETO.md` como documentação de produto, reconciliando drift com live
 
 ## Papéis
 
 Os papéis canônicos são R1–R9 e existem normativamente em `docs/agent-system/agent-registry.yaml`.
 
-- ChatGPT/Codex usa O1–O9 e `.codex/agents/*.toml` como adapters.
-- Antigravity usa A1–A9 em `.agents/agents/` como adapter.
-- Um adapter pode dividir ou combinar papéis, mas não redefinir a arquitetura.
+- OpenAI usa ChatGPT/Codex/Agents API e O1–O9/`.codex/agents/*.toml` como adapter.
+- Claude Code Cloud usa `CLAUDE.md`, `.claude/agents/` e `.claude/skills/` como adapter.
+- Antigravity local usa `.agents/` como adapter; a quantidade de agentes físicos pode diferir de nove.
+- Um adapter pode dividir ou combinar R1–R9, mas não redefinir a arquitetura.
 
 ## Fonte de verdade
 
@@ -34,10 +37,12 @@ Precedência obrigatória:
 
 ## Regras operacionais
 
-- R1 escolhe o menor conjunto útil de especialistas; fan-out cego é proibido.
+- R1 escolhe o menor conjunto útil de especialistas e também o menor conjunto útil de runtimes; fan-out cego é proibido.
 - Uma frente funcional principal por vez.
 - Branch curta por missão de escrita.
 - Escrita concorrente somente com ownership não sobreposto e isolamento por branch/worktree.
+- GitHub é o plano de controle durável entre runtimes; interfaces de chat não são barramento canônico.
+- Routines/agentes cloud não recebem conectores de escrita em produção por padrão.
 - `SELF_REVIEW != INDEPENDENT_REVIEW`; R6/O6/A7 não aprova silenciosamente código que implementou.
 - Nenhuma alteração entra em `main` sem CI e os gates definidos para o risco.
 - Nunca expor segredos, tokens, senhas, cookies, private keys ou service-role credentials.

@@ -1,6 +1,6 @@
 # Current State — Reflex Agent OS V3
 
-**Snapshot verificado:** 2026-09-19 19:22 BRT  
+**Snapshot verificado:** 2026-09-20 00:30 BRT  
 **Natureza:** bootstrap operacional; verificar live antes de decisões críticas.
 
 ## GitHub
@@ -73,3 +73,14 @@ Esses achados são diagnóstico, não autorização de correção automática.
 ## Missão corrente
 
 `OPS-2026-09-19-AGENT-OS-V3`: consolidar a camada runtime-neutral e alinhar adapters sem reformar o Cérebro do produto.
+
+
+## Consolidação tri-runtime
+
+- [DECISÃO-HUMANA] Claude Code será operado prioritariamente na nuvem ligado ao GitHub.
+- [DECISÃO-HUMANA] Antigravity permanece local e pode operar seis agentes físicos; R1–R9 são funções, não contagem obrigatória de processos.
+- [CONFIRMADO-CODIGO] branch `chatgpt/reflex-agent-os-v3` prepara um terceiro adapter Claude sem alterar `src/**` ou migrations.
+- [PENDENTE] conexão do GitHub à conta Claude Code web/Routines.
+- [PENDENTE] conexão/configuração do Codex Cloud/revisão automática, se habilitada pelo usuário.
+- [PENDENTE] smoke test dos seis agentes físicos do Antigravity contra o registry canônico.
+- [BLOQUEADO] automação de escrita em produção continua fora de escopo.

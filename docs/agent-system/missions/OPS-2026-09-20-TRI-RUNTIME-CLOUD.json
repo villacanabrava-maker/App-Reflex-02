@@ -1,0 +1,20 @@
+{
+  "mission_id": "OPS-2026-09-20-TRI-RUNTIME-CLOUD",
+  "title": "Tri-Runtime Cloud Consolidation",
+  "created_at": "2026-09-20T00:30:00-03:00",
+  "baseline_sha": "44c3302a7d5fb62afb5fd86b6ad6e18024dcbf3e",
+  "branch": "chatgpt/reflex-agent-os-v3",
+  "objective": "Consolidar OpenAI Cloud, Claude Code Cloud e Antigravity local em uma única arquitetura R1-R9 com GitHub como plano de controle.",
+  "status": "REVIEW",
+  "task_packets": [
+    "docs/agent-system/missions/TRI-RUNTIME-CLOUD-TASK.json"
+  ],
+  "human_gates": [
+    "Connect GitHub repository to Claude Code web and authorize Routines.",
+    "Configure Claude unattended connectors with project-scoped read-only Supabase only.",
+    "Connect repository to Codex Cloud and enable review settings if desired.",
+    "Map and smoke-test the six physical Antigravity agents against R1-R9.",
+    "Independent R6 review before merge to main.",
+    "Human decision before merge."
+  ]
+}

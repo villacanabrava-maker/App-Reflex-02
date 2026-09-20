@@ -2,7 +2,7 @@
 
 **Status:** canônico e runtime-neutral  
 **Escopo:** engenharia do App Reflex 02  
-**Executores:** ChatGPT/Codex, Google Antigravity e futuros adapters compatíveis
+**Executores:** OpenAI (ChatGPT/Codex/Agents API), Claude Code Cloud, Google Antigravity local e futuros adapters compatíveis
 
 ## 1. Princípio
 
@@ -17,8 +17,9 @@ Constituição V3
 ├── Source of Truth
 ├── Current State
 └── Orchestration Modes
-    ├── OpenAI/Codex adapter
-    └── Antigravity adapter
+    ├── OpenAI adapter
+    ├── Claude Code Cloud adapter
+    └── Antigravity local adapter
 ```
 
 Nenhum adapter pode redefinir sozinho papel, evidência, permissão ou estado do projeto.
@@ -51,7 +52,7 @@ Os papéis são definidos em `agent-registry.yaml`:
 - R8 Research & Evolution
 - R9 Continuity & Evidence
 
-Adapters podem usar um ou vários agentes físicos para cobrir um papel, mas devem preservar ownership e limites.
+Adapters podem usar um ou vários agentes físicos para cobrir um papel, mas devem preservar ownership e limites. R1–R9 são funções canônicas, não uma exigência de nove processos em cada runtime. O Antigravity local pode, por decisão humana, operar seis agentes físicos cobrindo os nove papéis.
 
 ## 4. Invariantes
 
@@ -77,7 +78,7 @@ Os schemas ficam em `docs/agent-system/schemas/`.
 
 ## 6. Orquestração
 
-R1 escolhe o menor conjunto útil de papéis. Fan-out cego é proibido.
+R1 escolhe o menor conjunto útil de papéis **e runtimes**. Fan-out cego é proibido. GitHub, Task Packets, PRs e Evidence são o protocolo durável de coordenação; um agente não depende de automatizar a interface gráfica de outro agente.
 
 Modos canônicos:
 - SOLO
@@ -116,14 +117,22 @@ Não persistir chain-of-thought.
 - `OpenAI ChatGPT/`
 - Skills compatíveis em `.agents/skills/`
 
-### Antigravity
+### Claude Code Cloud
+- `CLAUDE.md`
+- `.claude/agents/*.md`
+- `.claude/skills/*/SKILL.md`
+- Claude Code on the web / cloud sessions
+- Routines para triggers de schedule, API e eventos GitHub quando habilitadas pelo usuário
+
+### Antigravity local
 - `GEMINI.md`
 - `.agents/agents/`
 - `.agents/skills/`
 - `.agents/rules/`
 - `.agents/hooks.json`
+- `agy`/Antigravity 2.0 como superfície local
 
-O registry canônico governa ambos.
+O registry canônico governa os três adapters. Nenhum deles é autoridade acima dos demais. “Supervisor” é um modo de execução de R1/R9, não um R10.
 
 ## 10. Definition of Done sistêmica
 

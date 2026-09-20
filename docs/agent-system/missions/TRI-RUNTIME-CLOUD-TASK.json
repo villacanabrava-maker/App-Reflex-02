@@ -1,0 +1,71 @@
+{
+  "mission_id": "OPS-2026-09-20-TRI-RUNTIME-CLOUD",
+  "task_id": "TRI-RUNTIME-CLOUD-01",
+  "parent_task_id": null,
+  "created_at": "2026-09-20T00:30:00-03:00",
+  "objective": "Consolidar OpenAI Cloud, Claude Code Cloud e Antigravity local como adapters pares do Reflex Agent OS V3, com GitHub como plano de controle.",
+  "baseline_sha": "44c3302a7d5fb62afb5fd86b6ad6e18024dcbf3e",
+  "target_branch": "chatgpt/reflex-agent-os-v3",
+  "worktree": null,
+  "owner_role": "R1",
+  "dependencies": [
+    "OPS-2026-09-19-AGENT-OS-V3"
+  ],
+  "in_scope": [
+    "docs/agent-system/**",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".claude/**",
+    "scripts/agents/**",
+    "package.json"
+  ],
+  "out_of_scope": [
+    "src/**",
+    "supabase/migrations/**",
+    "produção Vercel",
+    "mutações Supabase live",
+    "merge em main"
+  ],
+  "allowed_tools": [
+    "GitHub read/write on mission branch",
+    "web research",
+    "CI",
+    "read-only runtime inspection"
+  ],
+  "write_scope": [
+    "governance",
+    "adapter Claude Cloud",
+    "validators"
+  ],
+  "risk_level": "MEDIUM",
+  "acceptance_criteria": [
+    "Claude Cloud aparece no registry R1-R9 sem criar R10.",
+    "Runtime registry define OpenAI, Claude Cloud e Antigravity local como pares.",
+    "Antigravity pode manter seis agentes físicos sem alterar R1-R9.",
+    "Unattended cloud connectors seguem least privilege.",
+    "CI valida os três adapters."
+  ],
+  "required_evidence": [
+    "diff GitHub",
+    "agents:validate",
+    "typecheck",
+    "lint",
+    "tests",
+    "build",
+    "CI"
+  ],
+  "expected_artifacts": [
+    "CLAUDE.md",
+    ".claude/agents/**",
+    ".claude/skills/**",
+    "runtime-registry.yaml",
+    "cloud activation guide"
+  ],
+  "status": "REVIEW",
+  "blocked_by": [
+    "human account setup for Claude Code web/Routines",
+    "human account setup for Codex Cloud review",
+    "independent R6 review"
+  ],
+  "next_handoff": "R6 independent review, then R9 reconciliation"
+}

@@ -18,6 +18,12 @@
           "A1:rflex-architect"
         ],
         "coverage": "coordination"
+      },
+      "claude": {
+        "name": "reflex-orchestrator",
+        "file": ".claude/agents/reflex-orchestrator.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -36,6 +42,12 @@
           "A1:rflex-architect"
         ],
         "coverage": "architecture"
+      },
+      "claude": {
+        "name": "reflex-architecture",
+        "file": ".claude/agents/reflex-architecture.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -54,6 +66,12 @@
           "A4:rflex-backend-supabase"
         ],
         "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-supabase",
+        "file": ".claude/agents/reflex-supabase.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -73,6 +91,12 @@
           "A3:rflex-frontend"
         ],
         "coverage": "split-design-implementation"
+      },
+      "claude": {
+        "name": "reflex-frontend",
+        "file": ".claude/agents/reflex-frontend.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -91,6 +115,12 @@
           "A5:rflex-ai-knowledge"
         ],
         "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-cognitive",
+        "file": ".claude/agents/reflex-cognitive.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -110,6 +140,12 @@
           "A7:rflex-qa-security"
         ],
         "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-qa",
+        "file": ".claude/agents/reflex-qa.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -128,6 +164,12 @@
           "A6:rflex-platform"
         ],
         "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-platform",
+        "file": ".claude/agents/reflex-platform.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -146,6 +188,12 @@
           "A8:rflex-research-evolution"
         ],
         "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-research",
+        "file": ".claude/agents/reflex-research.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     },
     {
@@ -164,6 +212,12 @@
           "A9:rflex-continuity-evidence"
         ],
         "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-continuity",
+        "file": ".claude/agents/reflex-continuity.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
       }
     }
   ]
