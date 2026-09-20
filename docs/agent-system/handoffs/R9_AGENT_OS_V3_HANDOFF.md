@@ -1,10 +1,10 @@
 # R9 Handoff — Reflex Agent Operating System V3
 
-**Mission:** `OPS-2026-09-19-AGENT-OS-V3`  
+**Mission:** `OPS-2026-09-19-AGENT-OS-V3` / `OPS-2026-09-20-TRI-RUNTIME-CLOUD`  
 **Baseline:** `0c7f14c41be816ca023d8347984665db60fbc265`  
-**Branch:** `chatgpt/reflex-agent-os-v3`  
-**PR:** #15 (draft)  
-**Estado:** `REVIEW` — não concluído para merge
+**Branch:** `chatgpt/reflex-agent-os-v3` (mesclada)  
+**PR:** #15 — **MERGED** em 2026-09-20 08:06 BRT, commit `e95861c8c3355642d3e1b7946d40bc1fa6502c18`  
+**Estado:** `DONE` — reconciliado por Claude Code Cloud (R9) pós-merge
 
 ## Diagnóstico antes
 
@@ -38,11 +38,22 @@ Vercel: produção `READY`, branch `main`, SHA do baseline.
 ### [CONFIRMADO-TESTE]
 Agent OS validators, typecheck, lint e testes foram executados em CI; o primeiro run detectou um teste legado e a causa foi corrigida sem restaurar a duplicação antiga.
 
-### [PENDENTE]
-- CI do HEAD final da branch após este handoff;
-- smoke tests no runtime Antigravity real;
-- auditoria R6/A7 em contexto independente;
-- decisão humana de merge.
+### [CONFIRMADO-CI]
+Run `35498636333` no HEAD final de `main` (`e95861c`) — PASS.
+
+### [CONFIRMADO-RUNTIME]
+Vercel produção reconciliada: deployment `dpl_HeEpSbasPKtHFAHewQRcWJozPMBv`, `READY`, SHA `e95861c`, branch `main` — verificado via MCP Vercel após o merge.
+
+### Itens que estavam [PENDENTE] neste handoff e seu desfecho
+- CI do HEAD final da branch: **fechado** (run `35498636333`, PASS).
+- smoke tests no runtime Antigravity real: **fechado** (Antigravity 2.0 executou R6 independente e smoke-testou definições locais antes do merge).
+- auditoria R6/A7 em contexto independente: **fechado** (Claude Code Cloud, Codex GitHub Review e Antigravity 2.0 convergiram — ver `evidence/TRI_AUDIT_CONVERGENCE_2026-09-20.md`).
+- decisão humana de merge: **fechado** (`villacanabrava-maker` mesclou a PR #15 em 2026-09-20 08:06 BRT).
+
+### [PENDENTE] (novo, pós-merge)
+- pinagem por hash de commit das GitHub Actions em `reflex-agent-handoff.yml`;
+- vínculo criptográfico de sessão completo para handoffs `claude[bot]` (mitigação parcial já aplicada);
+- configuração de conta para Routines Claude (URL/token) e Codex Cloud programático, quando desejado.
 
 ## Divergências deliberadamente não “corrigidas”
 
@@ -53,6 +64,6 @@ Agent OS validators, typecheck, lint e testes foram executados em CI; o primeiro
 
 ## Próxima missão
 
-Após merge e auditoria independente: `NEXT-COGNITIVE-CONSTITUTION-RCMO`.
+Merge e auditoria independente concluídos. Próxima missão proposta (status `PROPOSED`, não iniciada): `NEXT-COGNITIVE-CONSTITUTION-RCMO` (`docs/agent-system/missions/NEXT-RCMO-TASK-PACKET.json`).
 
-Até lá, o estado correto é **REVIEW**, não DONE.
+O estado correto desta missão agora é **DONE**.
