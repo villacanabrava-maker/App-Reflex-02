@@ -106,3 +106,12 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [CONFIRMADO-RUNTIME] advisors Supabase: 5 RLS sem policy, 2 SECURITY DEFINER autenticadas, 36 FKs sem covering index, 10 auth-RLS initplan e 46 índices sem uso observado; sem correção automática nesta missão.
 - [PENDENTE] revisão independente R6 do novo head após hardening conceitual.
 - [BLOQUEADO] sem migration live, `src/**`, reprocessamento, cron/replay ou promoção automática de autoria nesta missão.
+
+
+## 2026-09-20 — Primeiro R6 do PR #18 e fechamento de findings
+- [CONFIRMADO-EXTERNO] Codex R6 revisou o head `cbc5bad3e86b2006d9d1ca6f9c87f0f8a14a4ced` e abriu 4 findings P1.
+- [CONFIRMADO-CODIGO] finding de independência: TP-RCMO-09 passou a ter R5+R7 como implementadores e R6 somente como reviewer independente.
+- [CONFIRMADO-CODIGO] finding de compatibilidade: Golden Dataset V4 foi declarado estritamente aditivo; V3 + V4 permanecem obrigatórios até substituição formal aprovada.
+- [CONFIRMADO-CODIGO] finding de waivers: MILR, AMR, tenant leakage, forbidden use, prompt injection e promoção epistêmica indevida são gates críticos não renunciáveis.
+- [CONFIRMADO-CODIGO] finding de autoria: C10 passou a exigir decisão humana explícita e auditável para toda promoção a memória autoral confirmada, sem exceção por domínio/método.
+- [PENDENTE] novo CI, preview e nova revisão R6 do head pós-correções.
