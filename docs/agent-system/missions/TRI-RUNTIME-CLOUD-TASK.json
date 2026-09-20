@@ -41,7 +41,7 @@
   "acceptance_criteria": [
     "Claude Cloud aparece no registry R1-R9 sem criar R10.",
     "Runtime registry define OpenAI, Claude Cloud e Antigravity local como pares.",
-    "Antigravity pode manter seis agentes físicos sem alterar R1-R9.",
+    "Antigravity cobre R1-R9 independentemente da contagem física de agentes descoberta no runtime.",
     "Unattended cloud connectors seguem least privilege.",
     "CI valida os três adapters."
   ],

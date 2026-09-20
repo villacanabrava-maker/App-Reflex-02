@@ -8,7 +8,7 @@
 1. GitHub será o plano de controle durável da engenharia.
 2. Claude Code será priorizado em cloud/web, não como supervisor local permanente.
 3. OpenAI continuará com ChatGPT/Codex e poderá evoluir para Agents API.
-4. Antigravity continuará local, com seis agentes físicos conforme a configuração que está funcionando para o usuário.
+4. Antigravity continuará local; a contagem física de agentes é detalhe operacional do adapter e não altera os papéis canônicos R1-R9.
 5. R1-R9 permanecem as únicas funções canônicas.
 6. Supabase poderá ser usado como event bus/scheduler para eventos do produto, não como autoridade de agentes.
 7. O protótipo Claude local do ZIP será fonte de padrões, não importado integralmente.

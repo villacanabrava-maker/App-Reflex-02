@@ -62,6 +62,7 @@
       ]
     },
     "responsible_role": {
+      "type": "string",
       "pattern": "^R[1-9]$"
     }
   }

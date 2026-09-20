@@ -12,6 +12,9 @@ const patterns = [
   /sb_secret_[A-Za-z0-9_-]{16,}/g,
   /vcp_[A-Za-z0-9_-]{20,}/g,
   /ghp_[A-Za-z0-9]{30,}/g,
+  /sk-ant-[A-Za-z0-9_-]{20,}/g,
+  /AIza[0-9A-Za-z_-]{30,}/g,
+  /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/g,
 ];
 
 const hits = [];

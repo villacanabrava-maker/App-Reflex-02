@@ -58,7 +58,7 @@ process.stdin.on('end', () => {
       }
 
       // Proibir comandos destrutivos de sistema e banco
-      if (/rm\s+-rf\s+[/\\]|drop\s+database|drop\s+schema|truncate\s+table|disable\s+row\s+level\s+security/i.test(cmd)) {
+      if (/rm\s+-rf\s+[/\\]|drop\s+database|drop\s+schema|\btruncate\b|disable\s+row\s+level\s+security/i.test(cmd)) {
         console.log(JSON.stringify({
           decision: 'deny',
           reason: 'SEGURANCA: Comandos destrutivos de sistema ou banco de dados sao permanentemente bloqueados.'

@@ -9,9 +9,9 @@ model: inherit
 **Canonical role: R8.** Este arquivo é um adapter Claude e não redefine o registry.
 
 ## Read-first
-- `../../docs/agent-system/CONSTITUTION.md`
-- `../../docs/agent-system/agent-registry.yaml`
-- `../../docs/agent-system/runtime-registry.yaml`
+- `docs/agent-system/CONSTITUTION.md`
+- `docs/agent-system/agent-registry.yaml`
+- `docs/agent-system/runtime-registry.yaml`
 - Task Packet da missão ativa
 
 ## Foco
