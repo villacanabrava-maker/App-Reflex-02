@@ -52,6 +52,22 @@
 - conceitos SKOS: 0
 - relações SKOS: 0
 
+## Advisors live observados em 2026-09-20
+
+Security:
+- 5 tabelas com RLS ativo e sem policy direta;
+- 2 RPCs `SECURITY DEFINER` executáveis por `authenticated`;
+- leaked-password protection desabilitada;
+- opções MFA insuficientes.
+
+Performance:
+- 36 foreign keys sem covering index;
+- 10 policies com `auth.*` reavaliado por linha;
+- 46 índices sem uso observado no corpus atual;
+- Auth DB connection strategy configurada por número absoluto.
+
+Esses achados são diagnóstico. Esta missão não autoriza migrations corretivas automáticas.
+
 ## Estado do Agent OS V3
 
 - [CONFIRMADO-CODIGO] R1–R9 e adapters OpenAI/Claude/Antigravity estão integrados em `main`.
