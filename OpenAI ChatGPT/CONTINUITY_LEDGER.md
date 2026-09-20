@@ -78,3 +78,10 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [PENDENTE] setup humano da conta Claude Code web/Routines e Codex Cloud.
 - [PENDENTE] smoke test local dos seis agentes Antigravity e auditoria R6 independente.
 
+## 2026-09-20 — Convergência Claude + Codex + Antigravity
+- [CONFIRMADO-EXTERNO] Codex review do commit `ffca46f` encontrou secret scan, Skills Claude, branch ownership e Evidence schema.
+- [RELATADO] Claude Cloud e Antigravity 2.0 emitiram `PASS WITH CONDITIONS` convergente nesses pontos.
+- [DECISÃO-ARQUITETURAL] somente cobertura R1-R9 é canônica; contagem física do Antigravity é estado do adapter/runtime.
+- [PENDENTE-HUMANO] proposta Antigravity de acionar R8 obrigatoriamente após toda tarefa não foi promovida sem confirmação humana explícita.
+- [CONFIRMADO-CODIGO] hardening incorpora findings convergentes e bloqueios Antigravity de TRUNCATE/DISABLE RLS.
+

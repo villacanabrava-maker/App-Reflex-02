@@ -53,7 +53,7 @@
     "evidence": {
       "type": "array",
       "items": {
-        "type": "object"
+        "$ref": "evidence.schema.json"
       }
     },
     "assumptions": {

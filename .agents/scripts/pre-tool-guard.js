@@ -27,11 +27,11 @@ process.stdin.on('end', () => {
     if (name === 'run_command') {
       const cmd = (args.CommandLine || '').trim();
 
-      // Bloquear comandos Vercel nesta etapa
-      if (/\bvercel\b/i.test(cmd)) {
+      // Bloquear deploy Vercel; observação read-only permanece permitida.
+      if (/\bvercel\s+(deploy|--prod)\b/i.test(cmd)) {
         console.log(JSON.stringify({
           decision: 'deny',
-          reason: 'SEGURANCA: O Vercel esta expressamente desativado nesta etapa por decisao do usuario.'
+          reason: 'GATE DE PRODUCAO: Deploys Vercel via CLI exigem gate humano.'
         }));
         return;
       }
@@ -58,7 +58,7 @@ process.stdin.on('end', () => {
       }
 
       // Proibir comandos destrutivos de sistema e banco
-      if (/rm\s+-rf\s+[/\\]|drop\s+database|drop\s+schema/i.test(cmd)) {
+      if (/rm\s+-rf\s+[/\\]|drop\s+database|drop\s+schema|truncate\s+table|disable\s+row\s+level\s+security/i.test(cmd)) {
         console.log(JSON.stringify({
           decision: 'deny',
           reason: 'SEGURANCA: Comandos destrutivos de sistema ou banco de dados sao permanentemente bloqueados.'

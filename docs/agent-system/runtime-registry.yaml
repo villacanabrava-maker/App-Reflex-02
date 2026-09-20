@@ -42,7 +42,7 @@
         "GitHub Action",
         "Agents API webhooks"
       ],
-      "branch_policy": "mission branch or PR branch; no direct main without human gate",
+      "branch_policy": "agent-owned writes only to chatgpt/* branches; review may read any branch; no direct main without human gate",
       "canonical_adapter": [
         "AGENTS.md",
         ".codex/",
@@ -70,7 +70,7 @@
         "GitHub pull_request",
         "GitHub release"
       ],
-      "branch_policy": "default unattended writes only to claude/* branches",
+      "branch_policy": "agent-owned unattended writes only to claude/* branches; review may read any branch; no direct main without human gate",
       "recommended_unattended_connectors": [
         "github",
         "supabase_project_read_only"
@@ -105,9 +105,8 @@
         "human dispatch",
         "local CLI/SDK automation when explicitly configured"
       ],
-      "physical_agents_current_strategy": 6,
-      "physical_topology_note": "Human-selected local topology; R1-R9 remain canonical functions and may be combined across physical agents.",
-      "branch_policy": "mission branch/worktree; no concurrent writes to another runtime ownership scope",
+      "physical_topology_note": "Physical agent count is runtime-local state, not a constitutional invariant. Only complete R1-R9 coverage is canonical.",
+      "branch_policy": "agent-owned writes only to antigravity/* branches; review may read any branch; no direct main and no concurrent cross-runtime writes without explicit handoff",
       "canonical_adapter": [
         "GEMINI.md",
         ".agents/"

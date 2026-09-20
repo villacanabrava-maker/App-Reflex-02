@@ -6,13 +6,17 @@ const ids = (runtimes.runtimes ?? []).map((r) => r.id);
 assert(JSON.stringify(ids) === JSON.stringify(["openai_cloud","claude_cloud","antigravity_local"]), "Runtime registry deve conter os três runtimes canônicos.");
 assert(runtimes.control_plane === "github", "GitHub deve ser o control plane.");
 
+const openai = runtimes.runtimes.find((r) => r.id === "openai_cloud");
 const claude = runtimes.runtimes.find((r) => r.id === "claude_cloud");
-assert(claude.branch_policy.includes("claude/*"), "Claude Cloud deve preservar branch claude/*.");
+const ag = runtimes.runtimes.find((r) => r.id === "antigravity_local");
+
+assert(openai.branch_policy.includes("chatgpt/*"), "OpenAI deve preservar ownership em chatgpt/*.");
+assert(claude.branch_policy.includes("claude/*"), "Claude Cloud deve preservar ownership em claude/*.");
+assert(ag.branch_policy.includes("antigravity/*"), "Antigravity deve preservar ownership em antigravity/*.");
 assert(!claude.recommended_unattended_connectors.includes("vercel_write"), "Vercel write não pode ser connector unattended recomendado.");
 assert(claude.prohibited_unattended_connectors.includes("supabase_write"), "Supabase write deve ser proibido unattended.");
-
-const ag = runtimes.runtimes.find((r) => r.id === "antigravity_local");
-assert(ag.physical_agents_current_strategy === 6, "Estratégia Antigravity atual deve registrar seis agentes físicos.");
+assert(!Object.hasOwn(ag, "physical_agents_current_strategy"), "Contagem física de agentes Antigravity não deve ser invariante constitucional.");
+assert(ag.physical_topology_note.includes("R1-R9"), "Antigravity deve declarar R1-R9 como cobertura canônica.");
 
 const claudeMd = readText("CLAUDE.md");
 assert(claudeMd.includes("docs/agent-system/CONSTITUTION.md"), "CLAUDE.md não aponta para a Constituição.");
