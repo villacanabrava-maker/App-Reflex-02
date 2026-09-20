@@ -70,6 +70,7 @@
 
 **Acceptance**
 - exact quote + positions + contexto + hash;
+- convenção explícita de offset/normalização e conversão testada UTF-16 ↔ Unicode code points;
 - resolução/orphan detection;
 - suporte e contraevidência;
 - multi-tenant;
