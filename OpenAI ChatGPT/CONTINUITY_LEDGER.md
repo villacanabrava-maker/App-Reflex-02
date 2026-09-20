@@ -85,3 +85,21 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [PENDENTE-HUMANO] proposta Antigravity de acionar R8 obrigatoriamente após toda tarefa não foi promovida sem confirmação humana explícita.
 - [CONFIRMADO-CODIGO] hardening incorpora findings convergentes e bloqueios Antigravity de TRUNCATE/DISABLE RLS.
 
+
+
+## 2026-09-20 — Agent OS V3 integrado e publicado
+- [CONFIRMADO-CODIGO] PR #15 foi integrado em `main`; merge commit `e95861c8c3355642d3e1b7946d40bc1fa6502c18`.
+- [CONFIRMADO-CI] Control Room #16 registra CI pós-merge run `35498636333` como PASS.
+- [CONFIRMADO-RUNTIME] Vercel production `dpl_HeEpSbasPKtHFAHewQRcWJozPMBv` está `READY`, branch `main`, mesmo SHA.
+- [CONFIRMADO-RUNTIME] smoke test `OPS-SMOKE-TRI-RUNTIME` validou GitHub → router → human gate Antigravity.
+- [DECISÃO] GitHub permanece o plano de controle durável dos três runtimes.
+
+## 2026-09-20 — Constituição Cognitiva V1 iniciada
+- [CONFIRMADO-CODIGO] issue #17 criada para `NEXT-COGNITIVE-CONSTITUTION-RCMO`.
+- [CONFIRMADO-CODIGO] branch `chatgpt/cognitive-constitution-v1` criada sobre `e95861c8c3355642d3e1b7946d40bc1fa6502c18`.
+- [CONFIRMADO-RUNTIME] baseline Supabase: 1 obra, 20 seções, 47 fragmentos, 47 vetores, 22 sínteses, 0 claims, 0 claim provenance, 0 características, 0 regras, 23 propostas e 1 memory event.
+- [CONFIRMADO-EXTERNO] R8 pesquisou Web Annotation, PROV-O, SKOS, Claimify, FActScore, RAGAS e literatura de abstention para fundamentar a especificação.
+- [CONFIRMADO-CODIGO] foram preparados Constituição Cognitiva V1, ADR-0004, plano Golden Dataset V4 e Task Packets TP-RCMO-01..10.
+- [DECISÃO-ARQUITETURAL-PROPOSTA] RCMO significa `Reflex Cognitive Method Object`: resultado analítico versionado de método explícito sobre evidência ancorada; não é memória autoral confirmada.
+- [PENDENTE] revisão independente R6 e CI da branch/PR.
+- [BLOQUEADO] sem migration live, `src/**`, reprocessamento, cron/replay ou promoção automática de autoria nesta missão.
