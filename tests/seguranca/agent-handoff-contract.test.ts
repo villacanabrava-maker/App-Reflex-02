@@ -43,6 +43,11 @@ describe("tri-runtime handoff contract", () => {
     expect(workflow).toContain("CLAUDE_ROUTINE_TOKEN");
     expect(workflow).toContain("OPENAI_API_KEY");
     expect(workflow).toContain("TWILIO_API_SECRET");
+    expect(workflow).toContain('permission-profile: ":read-only"');
+    expect(workflow).toContain("safety-strategy: drop-sudo");
+    expect(workflow).toContain("repos.createDispatchEvent");
+    expect(workflow).toContain('parsed?.handoff?.needed === true');
+    expect(workflow).toContain("hop < maxHops");
     expect(workflow).not.toMatch(/sk-ant-[A-Za-z0-9_-]{20,}/);
   });
 });
