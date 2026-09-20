@@ -1,0 +1,72 @@
+{
+  "mission_id": "TP-RCMO-01H-SCHEMA-HARDENING",
+  "task_id": "TP-RCMO-01H",
+  "parent_task_id": "TP-RCMO-01",
+  "created_at": "2026-09-20T06:55:47-03:00",
+  "objective": "Fechar os oito findings Codex remanescentes do PR #22 e reconciliar continuidade pós-merge, sem DDL ou mudança funcional.",
+  "baseline_sha": "e4d40766a9d386b6bdabc50d9c43ab45dfcae15f",
+  "target_branch": "chatgpt/rcmo-01h-schema-hardening",
+  "worktree": null,
+  "owner_role": "R2",
+  "dependencies": [
+    "PR #22 merged as 9845a1e0d6fb9ea783b0b60c2cfd6fc61d1213ea",
+    "Codex review on 398fbd1d7f68bbf6387a87584589a9ab14c0e656 left 8 unresolved design findings",
+    "R8 post-constitution research merged via PR #23"
+  ],
+  "in_scope": [
+    "decision-event subject/tenant/outcome binding",
+    "claim authorial transition enforcement contract",
+    "claim provenance via Annotation and Evidence Anchor",
+    "Method Definition EntityRef version requirement",
+    "UUID validation for UUID-backed EntityRefs",
+    "selector-specific offset units",
+    "Annotation semantic body constraints",
+    "Method Execution abstention reason",
+    "TP-RCMO-01 and CURRENT_STATE reconciliation"
+  ],
+  "out_of_scope": [
+    "migrations",
+    "DDL",
+    "src/**",
+    "replay or reprocessing",
+    "UI",
+    "cron",
+    "live Supabase mutation",
+    "manual production deploy"
+  ],
+  "allowed_tools": [
+    "GitHub read/write on mission branch",
+    "Supabase read-only",
+    "Vercel read-only",
+    "CI"
+  ],
+  "write_scope": [
+    "docs/agent-system/**",
+    "docs/ia/**"
+  ],
+  "risk_level": "HIGH",
+  "acceptance_criteria": [
+    "all eight Codex findings are closed by local schema constraints or explicit machine-readable cross-entity invariants",
+    "JSON Schema parses and all local refs resolve",
+    "TP-RCMO-01 is reconciled as DONE",
+    "no DDL, src/**, workflow or dependency changes",
+    "R6 independent review on exact final head",
+    "CI and preview green",
+    "human gate before merge"
+  ],
+  "required_evidence": [
+    "CONFIRMADO-CODIGO",
+    "CONFIRMADO-CI",
+    "CONFIRMADO-EXTERNO"
+  ],
+  "expected_artifacts": [
+    "docs/agent-system/schemas/cognitive-entity-model.schema.json",
+    "docs/ia/RCMO_CANONICAL_ENTITY_MODEL_V1.md",
+    "docs/agent-system/missions/TP-RCMO-01.json",
+    "docs/agent-system/missions/TP-RCMO-01H.json",
+    "docs/agent-system/CURRENT_STATE.md"
+  ],
+  "status": "IN_PROGRESS",
+  "blocked_by": [],
+  "next_handoff": "R6 independent design review on exact PR head"
+}
