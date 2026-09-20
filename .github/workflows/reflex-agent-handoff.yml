@@ -191,6 +191,31 @@ jobs:
           sandbox: read-only
           safety-strategy: drop-sudo
           output-file: codex-handoff-output.md
+          allow-bots: true
+          allow-bot-users: github-actions[bot]
+          output-schema: |
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["status", "summary", "evidence", "risks", "unresolved_items", "handoff"],
+              "properties": {
+                "status": {"enum": ["DONE", "REVIEW", "BLOCKED"]},
+                "summary": {"type": "string"},
+                "evidence": {"type": "array", "items": {"type": "string"}},
+                "risks": {"type": "array", "items": {"type": "string"}},
+                "unresolved_items": {"type": "array", "items": {"type": "string"}},
+                "handoff": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["needed", "target_runtime", "reason"],
+                  "properties": {
+                    "needed": {"type": "boolean"},
+                    "target_runtime": {"enum": ["none", "claude_cloud", "antigravity_local"]},
+                    "reason": {"type": "string"}
+                  }
+                }
+              }
+            }
           prompt: |
             You are the OpenAI Cloud runtime of the Reflex Agent Operating System V3.
             Read AGENTS.md and the canonical agent-system documents before acting.
@@ -205,7 +230,9 @@ jobs:
             Task context:
             ${{ needs.prepare.outputs.prompt }}
 
-            Return status, findings/plan, evidence, risks, unresolved items, and whether another runtime is materially necessary.
+            Return the required structured JSON only.
+            Set handoff.needed=true only when another runtime adds a materially necessary independent capability.
+            Do not hand off merely to continue a loop. If no further runtime is needed, target_runtime must be "none".
 
   publish_openai:
     needs: [prepare, openai]
@@ -238,20 +265,31 @@ jobs:
               body
             });
 
-            const next = "${{ needs.prepare.outputs.next_runtime }}";
             const hop = Number("${{ needs.prepare.outputs.hop }}");
             const maxHops = Number("${{ needs.prepare.outputs.max_hops }}");
-            if (next !== "none" && hop < maxHops) {
+            let parsed = null;
+            try {
+              parsed = JSON.parse(process.env.RESULT || "{}");
+            } catch (error) {
+              core.setFailed("OpenAI result did not satisfy the structured JSON contract.");
+              return;
+            }
+
+            const allowedNext = new Set(["claude_cloud", "antigravity_local"]);
+            const next = parsed?.handoff?.target_runtime || "none";
+            const needsHandoff = parsed?.handoff?.needed === true;
+
+            if (needsHandoff && allowedNext.has(next) && hop < maxHops) {
               const payload = {
                 mission_id: "${{ needs.prepare.outputs.mission_id }}",
                 target_runtime: next,
-                next_runtime: "${{ needs.prepare.outputs.target_runtime }}",
+                next_runtime: "openai_cloud",
                 issue_number: issue,
                 branch: "${{ needs.prepare.outputs.branch }}",
                 sha: "${{ needs.prepare.outputs.sha }}",
                 hop: hop + 1,
                 max_hops: maxHops,
-                prompt: "Leia toda a issue-âncora, especialmente o resultado OpenAI imediatamente anterior. Reconcilie-o contra a Constituição e execute somente a próxima etapa necessária do Task Packet."
+                prompt: "Leia toda a issue-âncora, especialmente o resultado OpenAI imediatamente anterior. Motivo do handoff: " + String(parsed.handoff.reason || "não informado") + ". Reconcilie contra a Constituição e execute somente a próxima etapa necessária do Task Packet."
               };
               await github.rest.repos.createDispatchEvent({
                 owner: context.repo.owner,
