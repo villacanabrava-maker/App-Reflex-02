@@ -25,7 +25,7 @@ Formato de comentário:
     [REFLEX-HANDOFF]
     {"mission_id":"COG-V1-001","target_runtime":"openai_cloud","next_runtime":"claude_cloud","issue_number":123,"branch":"chatgpt/cognitive-constitution-v1","sha":"...","hop":0,"max_hops":4,"prompt":"..."}
 
-Somente comentários de usuário confiável/colaborador ou bots oficiais admitidos podem ser roteados. Handoffs gerados dentro do próprio GitHub Actions usam repository_dispatch, porque eventos comuns criados por GITHUB_TOKEN não devem ser usados para encadeamento recursivo.
+Somente comentários de usuário confiável/colaborador ou bots oficiais admitidos podem ser roteados. O allowlist inclui `github-actions[bot]`, `chatgpt-codex-connector[bot]` e o bot oficial `claude[bot]`; nenhuma identidade genérica `*[bot]` é aceita. Handoffs gerados dentro do próprio GitHub Actions usam repository_dispatch, porque eventos comuns criados por GITHUB_TOKEN não devem ser usados para encadeamento recursivo.
 
 ## Estado finito
 

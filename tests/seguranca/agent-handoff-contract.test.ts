@@ -46,6 +46,7 @@ describe("tri-runtime handoff contract", () => {
     expect(workflow).toContain('permission-profile: ":read-only"');
     expect(workflow).toContain("safety-strategy: drop-sudo");
     expect(workflow).toContain("repos.createDispatchEvent");
+    expect(workflow).toContain('login === "claude[bot]"');
     expect(workflow).toContain('parsed?.handoff?.needed === true');
     expect(workflow).toContain("hop < maxHops");
     expect(workflow).toContain("Non-monotonic handoff");

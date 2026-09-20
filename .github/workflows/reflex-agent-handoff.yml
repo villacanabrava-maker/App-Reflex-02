@@ -103,7 +103,8 @@ jobs:
               const association = context.payload.comment?.author_association || "";
               const trustedBot =
                 login === "github-actions[bot]" ||
-                login === "chatgpt-codex-connector[bot]";
+                login === "chatgpt-codex-connector[bot]" ||
+                login === "claude[bot]";
               if (!trustedBot && !trusted.has(association)) {
                 core.setFailed("Untrusted author attempted a Reflex handoff.");
                 return;
