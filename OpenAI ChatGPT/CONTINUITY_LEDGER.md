@@ -122,3 +122,9 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [CONFIRMADO-CODIGO] legado V3.1 do Reflex documenta spans em UTF-16/JavaScript; os espaços de coordenadas não são tratados como equivalentes.
 - [CONFIRMADO-CODIGO] Constituição, pesquisa, Golden V4 e TP-RCMO-04 passaram a exigir `offset_unit`/normalização explícitos e testes de conversão com emoji/caracteres suplementares.
 - [PENDENTE] novo CI/preview e R6 final sobre o head que contém essa reconciliação.
+
+
+## 2026-09-20 — R8 corrige referência de abstention
+- [CONFIRMADO-EXTERNO] o paper “Do LLMs Know When to NOT Answer?” está em ACL Anthology `2025.coling-main.627`; a referência `.368` usada na primeira redação estava incorreta.
+- [CONFIRMADO-EXTERNO] o survey TACL `2025.tacl-1.26` reforça abstention como capacidade de confiabilidade com métodos, benchmarks e métricas próprios.
+- [CONFIRMADO-CODIGO] a pesquisa R8 foi corrigida antes do gate final; nenhuma decisão arquitetural depende da referência errada.
