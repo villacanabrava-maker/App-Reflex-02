@@ -117,3 +117,9 @@ Antes de qualquer implementação:
 - exigir gate humano para migration live, mutação estrutural de produção, deploy manual e merge/push direto em `main`.
 
 Sem missão ativa específica, migrations, replay/reprocessamento, cron Wave 6 e promoção automática de autoria permanecem bloqueados.
+
+## R8 pós-tarefa
+
+Task Packet proposto, não ativado: `R8-2026-09-20-POST-CONSTITUTION-RESEARCH.json`.
+
+Escopo de pesquisa: prevenção de snapshots stale, pinagem de Actions, binding criptográfico de handoffs e conformance de Evidence Anchors Unicode/UTF-16. Pesquisa não autoriza implementação automática.
