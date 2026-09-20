@@ -1,10 +1,10 @@
 # R9 Handoff — Reflex Agent Operating System V3
 
-**Mission:** `OPS-2026-09-19-AGENT-OS-V3`  
+**Mission:** `OPS-2026-09-19-AGENT-OS-V3` / `OPS-2026-09-20-TRI-RUNTIME-CLOUD`  
 **Baseline:** `0c7f14c41be816ca023d8347984665db60fbc265`  
-**Branch:** `chatgpt/reflex-agent-os-v3`  
-**PR:** #15 (draft)  
-**Estado:** `REVIEW` — não concluído para merge
+**Branch:** `chatgpt/reflex-agent-os-v3` (mesclada)  
+**PR:** #15 — **MERGED**, commit `e95861c8c3355642d3e1b7946d40bc1fa6502c18`  
+**Estado:** `DONE`
 
 ## Diagnóstico antes
 
@@ -16,43 +16,41 @@
 
 ## Estado depois
 
-- Constituição runtime-neutral criada em `docs/agent-system/`;
-- registry R1–R9 liga O1–O9 e A1–A9;
+- Constituição runtime-neutral em `docs/agent-system/`;
+- registry R1–R9 liga adapters OpenAI, Claude Cloud e Antigravity;
 - permissões e orquestração canônicas separadas dos detalhes de runtime;
 - Task Packet, Agent Output, Evidence e Mission possuem JSON Schemas;
-- Skills existentes foram agrupadas sem deleção prematura;
 - validators determinísticos foram integrados ao CI;
-- adapters OpenAI/Codex alinhados;
-- drift Vercel conhecido no adapter Antigravity corrigido em prose;
-- próxima missão RCMO existe apenas como Task Packet proposto.
+- PR #15 foi promovido com revisão independente, CI verde e gate humano;
+- a missão cognitiva subsequente também foi concluída via PR #18.
 
-## Evidência
+## Evidência de fechamento
 
 ### [CONFIRMADO-CODIGO]
-Branch isolada, sem alterações funcionais do produto ou migrations.
+PR #15 mesclada em `main` como `e95861c8c3355642d3e1b7946d40bc1fa6502c18`, sem alteração funcional de produto ou migration.
+
+### [CONFIRMADO-CI]
+Run pós-merge `35498636333`: PASS.
 
 ### [CONFIRMADO-RUNTIME]
-Supabase: `ACTIVE_HEALTHY`, 38 entradas no ledger.  
-Vercel: produção `READY`, branch `main`, SHA do baseline.
+Vercel produção pós-PR #15 ficou READY no mesmo SHA de `main`.
 
-### [CONFIRMADO-TESTE]
-Agent OS validators, typecheck, lint e testes foram executados em CI; o primeiro run detectou um teste legado e a causa foi corrigida sem restaurar a duplicação antiga.
+### [CONFIRMADO-EXTERNO]
+Claude Cloud, Codex GitHub Review e Antigravity convergiram sobre os gates de R6 descritos na evidência da missão.
 
-### [PENDENTE]
-- CI do HEAD final da branch após este handoff;
-- smoke tests no runtime Antigravity real;
-- auditoria R6/A7 em contexto independente;
-- decisão humana de merge.
+### [DECISÃO-HUMANA]
+Merge do PR #15 foi autorizado e realizado.
 
-## Divergências deliberadamente não “corrigidas”
+## Resíduos não bloqueantes
 
-- frontmatter nativo dos `.agents/agents/*.md` não foi migrado para uma sintaxe Antigravity 2.0 presumida sem smoke test real;
-- branch protection não foi ativada automaticamente;
-- PR #14 não foi incorporado;
-- cérebro/pipeline cognitivo não foi reformado.
+- pinagem por hash de commit completo das GitHub Actions;
+- vínculo criptográfico de sessão completo para handoffs cloud;
+- configuração opcional de Routines Claude / Codex Cloud programático.
 
-## Próxima missão
+Esses itens não reabrem a missão Agent OS V3; devem receber task packets próprios se priorizados.
 
-Após merge e auditoria independente: `NEXT-COGNITIVE-CONSTITUTION-RCMO`.
+## Missão subsequente
 
-Até lá, o estado correto é **REVIEW**, não DONE.
+`NEXT-COGNITIVE-CONSTITUTION-RCMO` foi concluída via PR #18 e issue #17.
+
+Os task packets de implementação RCMO existem, mas permanecem **não ativados automaticamente**.
