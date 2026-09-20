@@ -13,12 +13,12 @@
 - Constituição Cognitiva V1 / RCMO: **MERGED / PUBLISHED** via PR #18.
 - TP-RCMO-01 (Modelo Canônico de Entidades Cognitivas V1): **MERGED / PUBLISHED** via PR #22 (`9845a1e`).
 - R8 (Pesquisa pós-constituição): **MERGED / PUBLISHED** via PR #23 (`e4d4076`).
-- PR #24 (TP-RCMO-02): aberto para contrato canônico e testes; **SEM AUTORIZAÇÃO DE MIGRATION LIVE**.
-- Missão ativa e prioritária: **TP-RCMO-01H** (Endurecimento pós-revisão do contrato canônico unificando PR #27 e PR #26, cobrindo as 8 threads do Codex e x-cross-entity-enforcement transacional).
+- TP-RCMO-01H (Endurecimento pós-revisão): **MERGED / PUBLISHED** via PR #27 (`8c07116`).
+- Security Least Privilege (TRUNCATE & Claim RPCs): **MERGED / PUBLISHED** via PR #28 (`260df87`).
+- Unificação Next.js (next.config.ts): **MERGED / PUBLISHED** via PR #29 (`a039ce1`).
+- PR #24 (TP-RCMO-02): aberto e rebaseado sobre `main`; **SEM AUTORIZAÇÃO DE MIGRATION LIVE / ZERO DDL**.
 - Issue #17: **CLOSED / COMPLETED**.
-- PR #19: fechado como superseded após avanço de `main`; não integrar.
-- PR #14: draft, antiga Wave 6; não integrar automaticamente.
-- PR #8: documentação Claude antiga; revisar antes de integrar.
+- PRs encerrados como superseded/obsoletos: PR #26, PR #19, PR #14, PR #8.
 
 ## Vercel
 
@@ -36,8 +36,8 @@
 - Project ref: `xenapowdtfhdwcfthfrn`
 - Estado: `ACTIVE_HEALTHY`
 - PostgreSQL: 17
-- Ledger `public._migrations`: 38
-- Última entrada do ledger do app: `0038_production_readiness_hardening.sql`
+- Ledger `public._migrations` no live: 38 (39 no repositório: `0039_revoke_truncate_least_privilege.sql` aguardando gate humano para aplicação)
+- Última entrada aplicada no banco live: `0038_production_readiness_hardening.sql`
 - Histórico nativo Supabase e `public._migrations` são trilhas distintas e devem continuar sendo reconciliados separadamente.
 
 ### Snapshot cognitivo live
