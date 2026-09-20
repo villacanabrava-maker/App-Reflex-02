@@ -1,7 +1,8 @@
 # ADR-0004 — Constituição Cognitiva V1 e RCMO
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Data:** 2026-09-20  
+**Accepted via:** PR #18, R6 independente, CI/preview verdes e gate humano  
 **Missão:** NEXT-COGNITIVE-CONSTITUTION-RCMO
 
 ## Contexto
