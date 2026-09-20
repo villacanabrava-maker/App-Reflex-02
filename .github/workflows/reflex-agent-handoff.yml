@@ -163,8 +163,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write
-      pull-requests: write
+    outputs:
+      final_message: ${{ steps.codex.outputs.final-message }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -207,10 +207,18 @@ jobs:
 
             Return status, findings/plan, evidence, risks, unresolved items, and whether another runtime is materially necessary.
 
-      - name: Publish OpenAI result
+  publish_openai:
+    needs: [prepare, openai]
+    if: needs.prepare.outputs.active == 'true' && needs.prepare.outputs.target_runtime == 'openai_cloud' && needs.openai.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: Publish OpenAI result and dispatch next runtime
         uses: actions/github-script@v7
         env:
-          RESULT: ${{ steps.codex.outputs.final-message }}
+          RESULT: ${{ needs.openai.outputs.final_message }}
         with:
           script: |
             const issue = Number("${{ needs.prepare.outputs.issue_number }}");
@@ -230,30 +238,28 @@ jobs:
               body
             });
 
-      - name: Hand off after OpenAI
-        if: needs.prepare.outputs.next_runtime != 'none' && fromJSON(needs.prepare.outputs.hop) < fromJSON(needs.prepare.outputs.max_hops)
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const issue = Number("${{ needs.prepare.outputs.issue_number }}");
-            const nextHop = Number("${{ needs.prepare.outputs.hop }}") + 1;
-            const payload = {
-              mission_id: "${{ needs.prepare.outputs.mission_id }}",
-              target_runtime: "${{ needs.prepare.outputs.next_runtime }}",
-              next_runtime: "${{ needs.prepare.outputs.target_runtime }}",
-              issue_number: issue,
-              branch: "${{ needs.prepare.outputs.branch }}",
-              sha: "${{ needs.prepare.outputs.sha }}",
-              hop: nextHop,
-              max_hops: Number("${{ needs.prepare.outputs.max_hops }}"),
-              prompt: "Leia toda a issue-âncora, especialmente o resultado OpenAI imediatamente anterior. Reconcilie-o contra a Constituição e execute somente a próxima etapa necessária do Task Packet."
-            };
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue,
-              body: "[REFLEX-HANDOFF]\n" + JSON.stringify(payload)
-            });
+            const next = "${{ needs.prepare.outputs.next_runtime }}";
+            const hop = Number("${{ needs.prepare.outputs.hop }}");
+            const maxHops = Number("${{ needs.prepare.outputs.max_hops }}");
+            if (next !== "none" && hop < maxHops) {
+              const payload = {
+                mission_id: "${{ needs.prepare.outputs.mission_id }}",
+                target_runtime: next,
+                next_runtime: "${{ needs.prepare.outputs.target_runtime }}",
+                issue_number: issue,
+                branch: "${{ needs.prepare.outputs.branch }}",
+                sha: "${{ needs.prepare.outputs.sha }}",
+                hop: hop + 1,
+                max_hops: maxHops,
+                prompt: "Leia toda a issue-âncora, especialmente o resultado OpenAI imediatamente anterior. Reconcilie-o contra a Constituição e execute somente a próxima etapa necessária do Task Packet."
+              };
+              await github.rest.repos.createDispatchEvent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                event_type: "reflex_handoff",
+                client_payload: payload
+              });
+            }
 
   claude:
     needs: prepare
