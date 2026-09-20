@@ -1,16 +1,17 @@
 # Estado Operacional Verificado — OpenAI ChatGPT
 
-**Snapshot:** 2026-09-20  
+**Snapshot:** 2026-09-20 — pós-merge PR #18  
 **Regra:** este arquivo é um bootstrap, não uma autoridade permanente. Verifique live antes de decisões críticas.
 
 ## GitHub
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD live verificado: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+- HEAD live verificado: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
 - Agent OS V3: **MERGED / PUBLISHED** via PR #15.
-- CI pós-merge: **PASS** (run `35498636333`, registrado na Control Room #16).
-- Regra: obter novamente o HEAD live no início de cada nova sessão.
+- Constituição Cognitiva V1 / RCMO: **MERGED / PUBLISHED** via PR #18.
+- Issue #17: **CLOSED / COMPLETED**.
+- PR #19: fechado como superseded; não integrar.
 
 PRs ainda relevantes:
 - #14: draft Wave 6/MIS-0012; não integrar automaticamente.
@@ -21,9 +22,9 @@ PRs ainda relevantes:
 Produção está ativa e reconciliada com `main`.
 
 - Projeto: `app-reflex-02`
-- Deployment de produção: `dpl_HeEpSbasPKtHFAHewQRcWJozPMBv`
+- Deployment de produção: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`
 - Estado: `READY`
-- SHA: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+- SHA: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
 - Branch: `main`
 - URL canônica: `https://app-reflex-02.vercel.app`
 
@@ -72,37 +73,34 @@ Concluído:
 - Reflex Agent Operating System V3 integrado à `main`;
 - tri-runtime OpenAI / Claude Cloud / Antigravity sob R1–R9;
 - control plane GitHub com handoff finito e smoke test real;
+- Constituição Cognitiva V1 / RCMO integrada via PR #18;
+- Golden Dataset V4 normativamente aditivo ao V3;
+- lifecycle de RCMO separado de autoria confirmada;
 - produção Vercel no mesmo SHA da `main`.
 
 ## Missão OpenAI corrente
 
-`NEXT-COGNITIVE-CONSTITUTION-RCMO`
+Nenhuma missão de implementação cognitiva foi ativada automaticamente após o fechamento de `NEXT-COGNITIVE-CONSTITUTION-RCMO`.
 
-- Issue âncora: #17.
-- Branch: `chatgpt/cognitive-constitution-v1`.
-- Task Packet: `docs/agent-system/missions/NEXT-RCMO-TASK-PACKET.json`.
-- Status do Task Packet: `REVIEW`.
-- Próximo handoff: R6 independente.
+Missão concluída:
+- Issue #17: closed/completed.
+- PR #18: merged.
+- Task Packet `NEXT-RCMO-TASK-PACKET.json`: `DONE`.
 
-Artefatos preparados:
-- `docs/ia/PESQUISA_CONSTITUICAO_COGNITIVA_V1.md`;
-- `docs/ia/CONSTITUICAO_COGNITIVA_V1.md`;
-- `docs/adr/0004-constituicao-cognitiva-rcmo.md`;
-- `docs/ia/GOLDEN_DATASET_V4_PLAN.md`;
+Próximo conjunto disponível:
 - `docs/agent-system/missions/NEXT-RCMO-IMPLEMENTATION-TASK-PACKETS.md`.
 
-Definição proposta:
-**RCMO = Reflex Cognitive Method Object**, objeto cognitivo versionado produzido por um método explícito sobre evidências ancoradas. RCMO não é memória confirmada e não pode promover autoria sozinho.
+A ativação de qualquer TP-RCMO-01..10 exige task packet/missão específica, ownership claro e gates proporcionais ao risco.
 
-## Restrições da missão
+## Restrições vigentes
 
-- nenhuma migration live;
-- nenhum reprocessamento do corpus;
-- nenhuma alteração em `src/**`;
-- nenhum deploy manual;
-- nenhum cron/replay Wave 6;
-- nenhuma promoção automática de autoria.
+- migration live exige gate humano;
+- reprocessamento/replay do corpus não está autorizado automaticamente;
+- cron/replay Wave 6 não está reativado;
+- promoção de autoria exige decisão humana explícita e auditável;
+- merge/push direto em `main` exige gate humano;
+- V4 não substitui V3: ambos devem permanecer verdes enquanto não houver substituição formal aprovada.
 
 ## Drift documental ainda histórico
 
-Arquivos antigos podem conter referências ao App01/Rflex01, estado pré-deploy ou Agent OS ainda em implantação. Código + runtime live prevalecem.
+Arquivos antigos podem conter referências ao App01/Rflex01, estado pré-deploy ou fases pré-Constituição. Código + runtime live prevalecem.
