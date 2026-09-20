@@ -43,7 +43,7 @@ max_hops é no máximo 4. Isso impede Claude -> OpenAI -> Claude -> OpenAI indef
 
 Para revisão de PR, a preferência é Codex GitHub Review automático configurado na conta/repositório.
 
-Para handoff de missão, .github/workflows/reflex-agent-handoff.yml usa openai/codex-action@v1 em sandbox read-only nesta primeira versão. Não faz commit/push. O resultado volta para a issue-âncora. OPENAI_API_KEY entra somente no job read-only. Um job separado, sem a chave OpenAI, publica o resultado e usa repository_dispatch para o próximo hop.
+Para handoff de missão, .github/workflows/reflex-agent-handoff.yml usa openai/codex-action@v1 com permission-profile :read-only e safety-strategy drop-sudo nesta primeira versão. Não faz commit/push. O resultado volta para a issue-âncora. OPENAI_API_KEY entra somente no job read-only. Um job separado, sem a chave OpenAI, publica o resultado e usa repository_dispatch para o próximo hop.
 
 ## Claude Cloud
 
