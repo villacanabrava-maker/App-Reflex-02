@@ -121,7 +121,8 @@ Contrato mínimo:
 - evidências positivas;
 - contraevidências;
 - conteúdo estruturado;
-- epistemic status;
+- lifecycle/review status próprio do RCMO;
+- base epistêmica derivável de provenance e inputs, sem sobrescrever o estado dos claims de origem;
 - confidence quando tecnicamente justificável;
 - abstention status/reason;
 - provenance;
@@ -275,19 +276,42 @@ Resultado de análise de dimensão é RCMO/proposal até confirmação humana.
 
 ## 9. Estados e transições
 
-A taxonomia V3.1 existente continua referência para claims. RCMO precisa de ciclo equivalente, ao menos:
+### 9.1 Claims V3.1
+
+O enum efetivamente versionado em `0031_claims_ledger.sql` é a referência canônica para claims:
+
+```text
+observed
+quoted
+extracted
+consolidated
+confirmed_authorial
+inferred
+hypothesized
+proposed
+rejected
+superseded
+```
+
+Documentos históricos da V3.1 que usam rótulos conceituais como `RAW_EXTRACTED`, `PENDING_NLI`, `CANONICAL_FACT`, `HYPOTHESIS_ACTIVE` ou `REFUTED` não redefinem o enum físico. Qualquer mapping futuro deve ser explícito e versionado.
+
+### 9.2 RCMO
+
+RCMO deve ter um eixo de ciclo/revisão próprio, separado do estado epistêmico dos claims que o sustentam. O ciclo mínimo proposto é:
 
 ```text
 generated
   -> validated
   -> proposed
-  -> rejected
+  -> accepted | rejected
   -> superseded
 ```
 
-Quando aplicável, estados como `inferred`, `hypothesized` e `human_confirmed` devem permanecer semanticamente separados.
+`accepted` significa somente que um humano aceitou o artefato analítico como análise útil/válida no seu contexto. **Não significa `confirmed_authorial`, não converte o RCMO em memória e não autoriza linguagem de crença autoral.**
 
-**Proibido:** uma transição puramente automática de `generated/inferred` para estado que autorize linguagem de memória autoral.
+O RCMO preserva a base epistêmica por provenance e referências aos inputs; não deve copiar ou elevar silenciosamente o `epistemic_status` de claims. `confirmed_authorial` permanece reservado ao domínio de claim/projeção autoral governado pelas transições apropriadas.
+
+**Proibido:** qualquer transição automática ou revisão humana genérica de um RCMO que, por si só, autorize linguagem de memória autoral. A promoção de autoria continua exigindo `Proposal -> Human Decision -> Confirmed Authorial Projection`.
 
 ## 10. Allowed Use
 
@@ -334,11 +358,20 @@ Famílias mínimas do Golden Dataset V4:
 13. versionamento de método;
 14. supersession/replay;
 15. resistência a prompt injection em fonte;
-16. multi-tenant / provenance isolation.
+16. multi-tenant / provenance isolation;
+17. integridade de namespace epistêmico: RCMO aceito não pode ser interpretado como `confirmed_authorial`.
 
 Gates devem reportar métricas por família e exemplos de falha, não só média global.
 
 ## 13. Compatibilidade com V3.1
+
+### 13.1 Regra de precedência dos estados
+
+Para compatibilidade, **migration/código versionado prevalece sobre nomenclatura histórica de documentos**. O enum de `cerebro_autoral.estado_epistemologico` definido em `0031_claims_ledger.sql` é a base física atual; aliases conceituais de documentos anteriores são históricos até existir mapping formal.
+
+A Constituição V1 não renomeia esse enum e não autoriza migration para fazê-lo nesta missão.
+
+### 13.2 Superfícies preservadas
 
 Preservar:
 - `cerebro_autoral.claims`;
@@ -350,6 +383,8 @@ Preservar:
 - Auditor Cognitivo;
 - MILR/AMR;
 - decisão humana sobre aprendizado.
+
+### 13.3 Reclassificação conceitual
 
 Reclassificar conceitualmente:
 - `processamento.fragmentos` como projeção de processamento/retrieval, não âncora canônica suficiente;
