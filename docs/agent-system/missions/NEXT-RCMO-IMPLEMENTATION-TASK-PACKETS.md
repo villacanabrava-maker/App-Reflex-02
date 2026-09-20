@@ -87,7 +87,8 @@
 **Acceptance**
 - type/schema/method/execution/version;
 - evidence references;
-- epistemic status;
+- lifecycle/review status separado do estado epistêmico dos claims;
+- `confirmed_authorial` proibido como simples estado de revisão do RCMO;
 - abstention;
 - supersession;
 - output validado por schema;
@@ -153,7 +154,7 @@
 **Objetivo:** materializar `GOLDEN_DATASET_V4_PLAN.md` em fixtures e runner.
 
 **Acceptance**
-- F1–F16;
+- F1–F17;
 - MILR=0 gate;
 - AMR=0 gate;
 - tenant leakage=0;
