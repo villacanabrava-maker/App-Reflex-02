@@ -128,3 +128,15 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [CONFIRMADO-EXTERNO] o paper “Do LLMs Know When to NOT Answer?” está em ACL Anthology `2025.coling-main.627`; a referência `.368` usada na primeira redação estava incorreta.
 - [CONFIRMADO-EXTERNO] o survey TACL `2025.tacl-1.26` reforça abstention como capacidade de confiabilidade com métodos, benchmarks e métricas próprios.
 - [CONFIRMADO-CODIGO] a pesquisa R8 foi corrigida antes do gate final; nenhuma decisão arquitetural depende da referência errada.
+
+
+## 2026-09-20 — Constituição Cognitiva V1 integrada e missão encerrada
+- [CONFIRMADO-CODIGO] PR #18 foi promovido por squash para `main` como `2df5940d43a5672ae9028a6b3e408a055af5ee1a`.
+- [CONFIRMADO-CI] run `35499922714` no head final do PR passou validators, TypeScript, lint, testes e build.
+- [CONFIRMADO-EXTERNO] Codex R6 final completou sobre `cbdd8aae5b90b393d166cbe36600dfdd294b3a36` sem findings adicionais; quatro P1 anteriores foram corrigidos e resolvidos.
+- [DECISÃO-HUMANA] gate de merge da Constituição Cognitiva V1 foi aprovado explicitamente.
+- [CONFIRMADO-RUNTIME] Vercel produção `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ` ficou READY em `main@2df5940d...`.
+- [CONFIRMADO-CODIGO] issue #17 foi fechada como completed; `NEXT-RCMO-TASK-PACKET.json` deve permanecer `DONE`.
+- [CONFIRMADO-CODIGO] PR #19 foi fechado como superseded porque ficou não mergeável e seu snapshot de CURRENT_STATE regrediria o estado cognitivo pós-PR #18.
+- [BLOQUEADO] a conclusão da especificação não ativa automaticamente migrations, corpus replay/reprocessamento, cron Wave 6 ou promoção autoral.
+- [PENDENTE] implementação RCMO permanece apenas como conjunto de task packets disponíveis, sem missão ativada.
