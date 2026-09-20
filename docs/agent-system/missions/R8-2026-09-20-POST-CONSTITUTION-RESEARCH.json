@@ -1,0 +1,59 @@
+{
+  "mission_id": "R8-2026-09-20-POST-CONSTITUTION-RESEARCH",
+  "task_id": "TP-R8-POST-CONSTITUTION-01",
+  "parent_task_id": null,
+  "created_at": "2026-09-20T08:46:00-03:00",
+  "objective": "Pesquisar hardening de continuidade, supply-chain de automação, handoff cloud e conformance de Evidence Anchors após a integração da Constituição Cognitiva V1, sem iniciar implementação.",
+  "baseline_sha": "2df5940d43a5672ae9028a6b3e408a055af5ee1a",
+  "target_branch": "research/post-constitution-hardening",
+  "worktree": null,
+  "owner_role": "R8",
+  "dependencies": [
+    "PR #18 merged and production reconciled",
+    "issue #17 closed/completed",
+    "post-merge continuity drift identified and isolated"
+  ],
+  "in_scope": [
+    "mecanismos para detectar e evitar CURRENT_STATE/handoffs stale após merges concorrentes",
+    "pinagem de GitHub Actions por commit SHA e práticas atuais de supply-chain provenance",
+    "vínculo criptográfico/nonces para handoffs cloud sem ampliar privilégios",
+    "benchmarks e conformance tests para anchors Unicode code points, UTF-16 e normalização",
+    "recomendações para R1/R7/R9 sem implementação automática"
+  ],
+  "out_of_scope": [
+    "alterações em src/**",
+    "migrations",
+    "produção",
+    "secrets",
+    "reprocessamento do corpus",
+    "mudança de política autoral"
+  ],
+  "allowed_tools": [
+    "web research",
+    "GitHub read-only",
+    "read-only runtime inspection"
+  ],
+  "write_scope": [
+    "docs/ia/**",
+    "docs/agent-system/evidence/**",
+    "docs/agent-system/missions/**"
+  ],
+  "risk_level": "LOW",
+  "acceptance_criteria": [
+    "fontes primárias e atuais para cada recomendação",
+    "separação explícita entre findings e propostas",
+    "nenhuma proposta convertida automaticamente em código",
+    "handoff direcionado aos papéis responsáveis"
+  ],
+  "required_evidence": [
+    "CONFIRMADO-EXTERNO",
+    "CONFIRMADO-CODIGO"
+  ],
+  "expected_artifacts": [
+    "relatório R8 de hardening pós-Constituição",
+    "recomendações priorizadas para R1/R7/R9"
+  ],
+  "status": "PROPOSED",
+  "blocked_by": [],
+  "next_handoff": "R8 research when explicitly activated; proposals require separate implementation task packets"
+}
