@@ -68,7 +68,14 @@
             "proposal",
             "human_decision",
             "confirmed_authorial_projection",
-            "lineage_edge"
+            "lineage_edge",
+            "concept",
+            "memory_event",
+            "characteristic",
+            "rule",
+            "processing_document",
+            "retrieval_chunk",
+            "legacy_derived_artifact"
           ]
         },
         "id": {
@@ -893,7 +900,8 @@
         "content",
         "evidence_annotation_ids",
         "status",
-        "created_at"
+        "created_at",
+        "abstention_status"
       ],
       "properties": {
         "entity_type": {
@@ -993,8 +1001,97 @@
         "created_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "abstention_status": {
+          "enum": [
+            "not_abstained",
+            "abstained"
+          ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "accepted",
+                  "rejected"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "review_event_id"
+            ],
+            "properties": {
+              "review_event_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "superseded"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "supersedes_rcmo_id"
+            ],
+            "properties": {
+              "supersedes_rcmo_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "abstention_status": {
+                "const": "abstained"
+              }
+            },
+            "required": [
+              "abstention_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "abstention_reason"
+            ],
+            "properties": {
+              "abstention_reason": {
+                "enum": [
+                  "NO_EVIDENCE",
+                  "LOW_SUPPORT",
+                  "CONTRADICTORY_EVIDENCE",
+                  "AMBIGUOUS_SOURCE",
+                  "AMBIGUOUS_SCOPE",
+                  "AUTHORIAL_UNKNOWN",
+                  "METHOD_NOT_APPLICABLE",
+                  "OUT_OF_SCOPE",
+                  "VERSION_MISMATCH"
+                ]
+              }
+            }
+          }
+        }
+      ]
     },
     "proposal": {
       "type": "object",
@@ -1087,7 +1184,41 @@
             }
           ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision_status": {
+                "enum": [
+                  "accepted",
+                  "edited",
+                  "rejected"
+                ]
+              }
+            },
+            "required": [
+              "decision_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "decision_event_id",
+              "decided_at"
+            ],
+            "properties": {
+              "decision_event_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "decided_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      ]
     },
     "human_decision": {
       "type": "object",
@@ -1157,11 +1288,11 @@
         "projection_id",
         "tenant_id",
         "projection_type",
-        "source_proposal_id",
         "decision_event_id",
         "content_snapshot",
         "status",
-        "effective_at"
+        "effective_at",
+        "source_ref"
       ],
       "properties": {
         "entity_type": {
@@ -1183,10 +1314,6 @@
             "concept",
             "methodology"
           ]
-        },
-        "source_proposal_id": {
-          "type": "string",
-          "format": "uuid"
         },
         "decision_event_id": {
           "type": "string",
@@ -1226,6 +1353,23 @@
         "effective_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "source_ref": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/entity_ref"
+            },
+            {
+              "properties": {
+                "entity_type": {
+                  "enum": [
+                    "proposal",
+                    "claim"
+                  ]
+                }
+              }
+            }
+          ]
         }
       }
     },
