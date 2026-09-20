@@ -115,3 +115,10 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [CONFIRMADO-CODIGO] finding de waivers: MILR, AMR, tenant leakage, forbidden use, prompt injection e promoção epistêmica indevida são gates críticos não renunciáveis.
 - [CONFIRMADO-CODIGO] finding de autoria: C10 passou a exigir decisão humana explícita e auditável para toda promoção a memória autoral confirmada, sem exceção por domínio/método.
 - [PENDENTE] novo CI, preview e nova revisão R6 do head pós-correções.
+
+
+## 2026-09-20 — R8 valida semântica de offsets do Evidence Core
+- [CONFIRMADO-EXTERNO] W3C Web Annotation define TextQuoteSelector com exact/prefix/suffix e TextPositionSelector com posições contadas em Unicode code points.
+- [CONFIRMADO-CODIGO] legado V3.1 do Reflex documenta spans em UTF-16/JavaScript; os espaços de coordenadas não são tratados como equivalentes.
+- [CONFIRMADO-CODIGO] Constituição, pesquisa, Golden V4 e TP-RCMO-04 passaram a exigir `offset_unit`/normalização explícitos e testes de conversão com emoji/caracteres suplementares.
+- [PENDENTE] novo CI/preview e R6 final sobre o head que contém essa reconciliação.
