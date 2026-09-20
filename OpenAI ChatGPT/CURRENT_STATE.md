@@ -58,6 +58,14 @@ Project ref: `xenapowdtfhdwcfthfrn`
 
 O histórico retornado pelo Supabase MCP e o ledger interno `public._migrations` continuam usando representações distintas. Não executar `db push` cegamente.
 
+## Advisors Supabase live
+
+Verificados em 2026-09-20:
+- Security: 5 tabelas com RLS ativo sem policy direta; 2 RPCs `SECURITY DEFINER` executáveis por `authenticated`; leaked-password protection desabilitada; MFA com poucas opções.
+- Performance: 36 FKs sem covering index; 10 policies com `auth.*` reavaliado por linha; 46 índices sem uso observado; Auth DB connection strategy absoluta.
+
+Não corrigir esses advisors automaticamente; entender modelo de acesso e carga real antes de qualquer migration.
+
 ## Estado funcional recente
 
 Concluído:
