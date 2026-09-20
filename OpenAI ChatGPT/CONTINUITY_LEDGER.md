@@ -101,5 +101,8 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [CONFIRMADO-EXTERNO] R8 pesquisou Web Annotation, PROV-O, SKOS, Claimify, FActScore, RAGAS e literatura de abstention para fundamentar a especificação.
 - [CONFIRMADO-CODIGO] foram preparados Constituição Cognitiva V1, ADR-0004, plano Golden Dataset V4 e Task Packets TP-RCMO-01..10.
 - [DECISÃO-ARQUITETURAL-PROPOSTA] RCMO significa `Reflex Cognitive Method Object`: resultado analítico versionado de método explícito sobre evidência ancorada; não é memória autoral confirmada.
-- [PENDENTE] revisão independente R6 e CI da branch/PR.
+- [CONFIRMADO-CI] PR #18 no head `cbc5bad3e86b2006d9d1ca6f9c87f0f8a14a4ced`: run `35499414793` PASS em validators, TypeScript, lint, testes e build; preview Vercel READY.
+- [CONFIRMADO-CODIGO] reconciliação com `0031_claims_ledger.sql` detectou drift de nomenclatura em documentos V3.1 históricos; o enum físico versionado foi declarado canônico e o lifecycle de RCMO foi separado de `confirmed_authorial`.
+- [CONFIRMADO-RUNTIME] advisors Supabase: 5 RLS sem policy, 2 SECURITY DEFINER autenticadas, 36 FKs sem covering index, 10 auth-RLS initplan e 46 índices sem uso observado; sem correção automática nesta missão.
+- [PENDENTE] revisão independente R6 do novo head após hardening conceitual.
 - [BLOQUEADO] sem migration live, `src/**`, reprocessamento, cron/replay ou promoção automática de autoria nesta missão.
