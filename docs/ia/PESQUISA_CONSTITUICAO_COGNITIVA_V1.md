@@ -24,6 +24,8 @@ Fonte primária:
 
 **Implicação Reflex:** uma evidência não deve ser apenas `fragmento_id`. Deve registrar versão da fonte, hash do conteúdo e um selector composto capaz de verificar/reancorar o span.
 
+**Compatibilidade de offsets:** o W3C define seleção textual em termos de **Unicode code points**, enquanto a implementação V3.1 do Reflex documenta offsets UTF-16/JavaScript. Portanto, a Constituição não pode tratar os dois espaços de coordenadas como equivalentes. O Evidence Core deve persistir a unidade/normalização do offset (por exemplo, `offset_unit` e `normalization`) ou converter deterministicamente entre representações, com casos de teste contendo emoji/caracteres suplementares.
+
 ### W3C PROV-O
 
 PROV-O distingue **Entity**, **Activity** e **Agent**, com relações como `wasDerivedFrom`, `wasGeneratedBy` e `wasAssociatedWith`.
@@ -109,6 +111,7 @@ Nenhuma seta representa promoção automática de autoria.
 ## 5. Limitações
 
 - Padrões W3C descrevem modelos gerais; não determinam o schema físico do Reflex.
+- `TextPositionSelector` do W3C usa Unicode code points; o legado Reflex V3.1 usa offsets UTF-16. A adoção é semântica, não wire-compatible, até existir convenção/conversão explícita.
 - Claimify/FActScore/RAGAS avaliam problemas relacionados, mas não resolvem soberania autoral específica do produto.
 - O nome e semântica de RCMO são definidos pelo próprio Reflex; não são um padrão externo.
 - A pesquisa sustenta arquitetura; benchmark real no corpus Reflex ainda precisa ser executado depois da especificação.
