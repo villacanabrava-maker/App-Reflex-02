@@ -1,28 +1,30 @@
 # Current State — Reflex Agent OS V3
 
-**Snapshot verificado:** 2026-09-20  
+**Snapshot verificado:** 2026-09-20 — pós-merge da Constituição Cognitiva V1  
 **Natureza:** bootstrap operacional; verificar live antes de decisões críticas.
 
 ## GitHub
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD live verificado: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+- HEAD live verificado: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
 - Agent OS V3: **MERGED / PUBLISHED** via PR #15.
-- CI pós-merge: **PASS** conforme Control Room #16 (run `35498636333`).
-- PR #14: draft, antiga Wave 6, não integrar automaticamente.
-- PR #8: aberto, documentação Claude; revisar antes de integrar.
-- Issue #17: missão `NEXT-COGNITIVE-CONSTITUTION-RCMO`.
+- Constituição Cognitiva V1 / RCMO: **MERGED / PUBLISHED** via PR #18.
+- Issue #17: **CLOSED / COMPLETED**.
+- PR #19: fechado como superseded após avanço de `main`; não integrar.
+- PR #14: draft, antiga Wave 6; não integrar automaticamente.
+- PR #8: documentação Claude antiga; revisar antes de integrar.
 
 ## Vercel
 
 - Projeto: `app-reflex-02`
 - Produção: `READY`
-- Deployment: `dpl_HeEpSbasPKtHFAHewQRcWJozPMBv`
+- Deployment: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`
 - Target: production
 - Branch: `main`
-- SHA: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+- SHA: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
 - Alias canônico: `app-reflex-02.vercel.app`
+- [CONFIRMADO-RUNTIME] deployment reconciliado diretamente via Vercel e alinhado ao HEAD de `main`.
 
 ## Supabase
 
@@ -66,34 +68,52 @@ Performance:
 - 46 índices sem uso observado no corpus atual;
 - Auth DB connection strategy configurada por número absoluto.
 
-Esses achados são diagnóstico. Esta missão não autoriza migrations corretivas automáticas.
+Esses achados são diagnóstico. Não autorizam migrations corretivas automáticas.
 
 ## Estado do Agent OS V3
 
 - [CONFIRMADO-CODIGO] R1–R9 e adapters OpenAI/Claude/Antigravity estão integrados em `main`.
 - [CONFIRMADO-CI] PR #15 foi promovido após revisão independente e gates verdes.
-- [CONFIRMADO-RUNTIME] produção Vercel está no mesmo SHA de `main`.
-- [CONFIRMADO-RUNTIME] smoke test do control plane GitHub → router → human gate Antigravity passou na issue #16.
-- [BLOQUEADO] automação de escrita em produção permanece fora de escopo sem gate humano.
+- [CONFIRMADO-RUNTIME] control plane GitHub → router → human gate Antigravity foi smoke-testado na issue #16.
+- [CONFIRMADO-CODIGO] missões `OPS-2026-09-19-AGENT-OS-V3` e `OPS-2026-09-20-TRI-RUNTIME-CLOUD` estão encerradas como `DONE`.
+- [PENDENTE] pinagem de GitHub Actions por SHA completo e vínculo criptográfico de sessão de handoffs seguem como hardening residual; não bloqueiam o baseline atual.
+- [PENDENTE] Routines Claude / Codex Cloud programático permanecem ativações opcionais de conta, não bloqueios da arquitetura atual.
+- [BLOQUEADO] automação de escrita em produção permanece fora do padrão sem gate humano.
 
-## Missão corrente
+## Constituição Cognitiva V1 / RCMO
 
-`NEXT-COGNITIVE-CONSTITUTION-RCMO`
+Missão `NEXT-COGNITIVE-CONSTITUTION-RCMO`: **DONE**.
 
-- Issue âncora: #17.
-- Branch: `chatgpt/cognitive-constitution-v1`.
-- Objetivo: especificar Constituição Cognitiva V1 / RCMO antes de reconstruir pipeline documental ou Cérebro Autoral.
-- [CONFIRMADO-CODIGO] pesquisa R8, Constituição V1, ADR, Golden Dataset V4 e Task Packets pós-Constituição foram preparados na branch.
-- [CONFIRMADO-RUNTIME] baseline cognitivo live foi reconciliado antes da especificação.
-- [PENDENTE] revisão independente R6.
-- [BLOQUEADO] nenhuma migration live, reprocessamento do corpus, mudança em `src/**`, cron/replay ou promoção automática de autoria é autorizada nesta missão.
+- Issue âncora #17: closed/completed.
+- PR #18: merged em `main` como `2df5940d43a5672ae9028a6b3e408a055af5ee1a`.
+- [CONFIRMADO-CI] head final do PR: run `35499922714` PASS em validators, TypeScript, lint, testes e build.
+- [CONFIRMADO-EXTERNO] R6 final completou no head congelado `cbdd8aae5b90b393d166cbe36600dfdd294b3a36` sem findings adicionais; quatro P1 anteriores foram fechados.
+- [DECISÃO-HUMANA] gate de merge aprovado explicitamente.
+- [CONFIRMADO-RUNTIME] Vercel produção está READY no SHA do merge.
+- [CONFIRMADO-CODIGO] Golden Dataset V4 é aditivo ao V3; gates críticos de integridade não admitem waiver.
+- [CONFIRMADO-CODIGO] Evidence Core exige convenção explícita de offset/normalização para compatibilidade Unicode code points ↔ UTF-16.
+- [CONFIRMADO-CODIGO] lifecycle de RCMO é separado de `confirmed_authorial`; toda promoção autoral exige decisão humana explícita e auditável.
 
-## Definição corrente de RCMO
+## Definição canônica de RCMO
 
 **RCMO = Reflex Cognitive Method Object**: objeto cognitivo versionado, produzido por uma execução metodológica explícita sobre evidências ancoradas. RCMO é resultado analítico e não memória autoral confirmada.
 
-A cadeia normativa proposta é:
+Cadeia normativa:
 
 `Source Version → Document Structure → Evidence Anchor/Annotation → Claim → Method Execution → RCMO → Proposal → Human Decision → Confirmed Authorial Projection`
 
 Nenhuma etapa intermediária promove autoria automaticamente.
+
+## Próxima frente
+
+Os task packets em `docs/agent-system/missions/NEXT-RCMO-IMPLEMENTATION-TASK-PACKETS.md` estão disponíveis, mas **não foram ativados automaticamente**.
+
+Antes de qualquer implementação:
+- criar missão/task packet específico;
+- escolher o menor conjunto útil de papéis;
+- preservar expand-first;
+- manter Golden Dataset V3 + V4;
+- exigir R6 independente conforme risco;
+- exigir gate humano para migration live, mutação estrutural de produção, deploy manual e merge/push direto em `main`.
+
+Sem missão ativa específica, migrations, replay/reprocessamento, cron Wave 6 e promoção automática de autoria permanecem bloqueados.
