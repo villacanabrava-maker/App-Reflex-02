@@ -48,6 +48,12 @@ describe("tri-runtime handoff contract", () => {
     expect(workflow).toContain("repos.createDispatchEvent");
     expect(workflow).toContain('parsed?.handoff?.needed === true');
     expect(workflow).toContain("hop < maxHops");
+    expect(workflow).toContain("Non-monotonic handoff");
+    expect(workflow).toContain("process.env.MISSION_ID");
+    expect(workflow).toContain("minItems");
+    expect(workflow).toContain("responsible_role");
+    expect(workflow).toMatch(/\^\[0-9a-f\]\{7,40\}\$/i);
+    expect(workflow).not.toMatch(/script: \|[\s\S]*?\$\{\{ needs\.prepare\.outputs\./);
     expect(workflow).not.toMatch(/sk-ant-[A-Za-z0-9_-]{20,}/);
   });
 });

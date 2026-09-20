@@ -37,7 +37,7 @@ Somente comentários de usuário confiável/colaborador ou bots oficiais admitid
          -> NEEDS_ANTIGRAVITY -> HUMAN LOCAL GATE
          -> BLOCKED -> HUMAN
 
-max_hops é no máximo 4. Isso impede Claude -> OpenAI -> Claude -> OpenAI indefinidamente.
+max_hops é no máximo 4. Todo hop não-manual deve ser exatamente o maior hop durável anterior da mesma missão + 1. Isso impede repetição/decréscimo de hop e loops Claude -> OpenAI -> Claude -> OpenAI.
 
 ## OpenAI Cloud
 
@@ -149,4 +149,6 @@ A integração é operacional quando um smoke test prova:
 5. max_hops encerra a cadeia.
 6. Antigravity gera human gate local.
 7. WhatsApp, quando configurado, leva à issue correta.
-8. nenhum teste faz merge/deploy/migration automaticamente.
+8. inputs não confiáveis nunca são interpolados diretamente em código JavaScript do workflow.
+9. SHA de handoff é hexadecimal com 7–40 caracteres e Evidence é estruturada conforme o contrato canônico.
+10. nenhum teste faz merge/deploy/migration automaticamente.

@@ -77,6 +77,16 @@ jobs:
       - name: Parse and validate handoff
         id: parse
         uses: actions/github-script@v7
+        env:
+          INPUT_MISSION_ID: ${{ inputs.mission_id }}
+          INPUT_TARGET_RUNTIME: ${{ inputs.target_runtime }}
+          INPUT_NEXT_RUNTIME: ${{ inputs.next_runtime }}
+          INPUT_ISSUE_NUMBER: ${{ inputs.issue_number }}
+          INPUT_BRANCH: ${{ inputs.branch }}
+          INPUT_SHA: ${{ inputs.sha }}
+          INPUT_HOP: ${{ inputs.hop }}
+          INPUT_MAX_HOPS: ${{ inputs.max_hops }}
+          INPUT_PROMPT: ${{ inputs.prompt }}
         with:
           script: |
             const allowed = new Set(["openai_cloud", "claude_cloud", "antigravity_local"]);
@@ -109,15 +119,15 @@ jobs:
               payload = context.payload.client_payload || {};
             } else {
               payload = {
-                mission_id: "${{ inputs.mission_id }}",
-                target_runtime: "${{ inputs.target_runtime }}",
-                next_runtime: "${{ inputs.next_runtime }}",
-                issue_number: Number("${{ inputs.issue_number }}"),
-                branch: "${{ inputs.branch }}",
-                sha: "${{ inputs.sha }}",
-                hop: Number("${{ inputs.hop }}"),
-                max_hops: Number("${{ inputs.max_hops }}"),
-                prompt: ${{ toJSON(inputs.prompt) }}
+                mission_id: process.env.INPUT_MISSION_ID,
+                target_runtime: process.env.INPUT_TARGET_RUNTIME,
+                next_runtime: process.env.INPUT_NEXT_RUNTIME,
+                issue_number: Number(process.env.INPUT_ISSUE_NUMBER),
+                branch: process.env.INPUT_BRANCH,
+                sha: process.env.INPUT_SHA,
+                hop: Number(process.env.INPUT_HOP),
+                max_hops: Number(process.env.INPUT_MAX_HOPS),
+                prompt: process.env.INPUT_PROMPT
               };
             }
 
@@ -144,6 +154,63 @@ jobs:
             if (!payload.branch || !payload.sha || !payload.prompt) {
               core.setFailed("branch, sha and prompt are required.");
               return;
+            }
+            if (!/^[0-9a-f]{7,40}$/i.test(String(payload.sha))) {
+              core.setFailed("sha must be a hexadecimal Git SHA with 7-40 characters.");
+              return;
+            }
+
+            if (context.eventName === "workflow_dispatch") {
+              if (hop !== 0) {
+                core.setFailed("Manual workflow_dispatch must start at hop 0.");
+                return;
+              }
+            } else {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue,
+                per_page: 100,
+              });
+              let previousHop = -1;
+              const currentCommentId = context.payload.comment?.id;
+              for (const comment of comments) {
+                if (comment.id === currentCommentId) continue;
+                const association = comment.author_association || "";
+                const login = comment.user?.login || "";
+                const trustedComment =
+                  trusted.has(association) ||
+                  login === "github-actions[bot]" ||
+                  login === "chatgpt-codex-connector[bot]";
+                if (!trustedComment) continue;
+
+                const priorBody = comment.body || "";
+                let priorMission = null;
+                let priorHop = null;
+                if (priorBody.startsWith("[REFLEX-HANDOFF]\n")) {
+                  try {
+                    const parsedPrior = JSON.parse(priorBody.slice("[REFLEX-HANDOFF]\n".length).trim());
+                    priorMission = String(parsedPrior.mission_id || "");
+                    priorHop = Number(parsedPrior.hop);
+                  } catch {
+                    continue;
+                  }
+                } else {
+                  const missionMatch = priorBody.match(/^mission_id:\s*(.+)$/m);
+                  const hopMatch = priorBody.match(/^hop:\s*(\d+)(?:\/\d+)?$/m);
+                  if (missionMatch && hopMatch) {
+                    priorMission = missionMatch[1].trim();
+                    priorHop = Number(hopMatch[1]);
+                  }
+                }
+                if (priorMission === String(payload.mission_id) && Number.isInteger(priorHop)) {
+                  previousHop = Math.max(previousHop, priorHop);
+                }
+              }
+              if (hop !== previousHop + 1) {
+                core.setFailed(`Non-monotonic handoff: expected hop ${previousHop + 1}, received ${hop}.`);
+                return;
+              }
             }
 
             core.setOutput("active", "true");
@@ -201,7 +268,26 @@ jobs:
               "properties": {
                 "status": {"enum": ["DONE", "REVIEW", "BLOCKED"]},
                 "summary": {"type": "string"},
-                "evidence": {"type": "array", "items": {"type": "string"}},
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["classification", "source", "timestamp", "responsible_role"],
+                    "properties": {
+                      "classification": {"enum": ["CONFIRMADO-CODIGO", "CONFIRMADO-TESTE", "CONFIRMADO-CI", "CONFIRMADO-RUNTIME", "CONFIRMADO-EXTERNO", "RELATADO", "INFERIDO", "PENDENTE", "BLOQUEADO"]},
+                      "source": {"type": "string", "minLength": 1},
+                      "timestamp": {"type": "string", "minLength": 1},
+                      "sha": {"type": ["string", "null"]},
+                      "branch": {"type": ["string", "null"]},
+                      "environment": {"type": ["string", "null"]},
+                      "command_test": {"type": ["string", "null"]},
+                      "artifact": {"type": ["string", "null"]},
+                      "responsible_role": {"type": "string", "pattern": "^R[1-9]$"}
+                    }
+                  }
+                },
                 "risks": {"type": "array", "items": {"type": "string"}},
                 "unresolved_items": {"type": "array", "items": {"type": "string"}},
                 "handoff": {
@@ -246,15 +332,32 @@ jobs:
         uses: actions/github-script@v7
         env:
           RESULT: ${{ needs.openai.outputs.final_message }}
+          MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          EXPECTED_SHA: ${{ needs.prepare.outputs.sha }}
+          HOP: ${{ needs.prepare.outputs.hop }}
+          MAX_HOPS: ${{ needs.prepare.outputs.max_hops }}
         with:
           script: |
-            const issue = Number("${{ needs.prepare.outputs.issue_number }}");
+            const issue = Number(process.env.ISSUE_NUMBER);
+            const hop = Number(process.env.HOP);
+            const maxHops = Number(process.env.MAX_HOPS);
+            let parsed = null;
+            try {
+              parsed = JSON.parse(process.env.RESULT || "{}");
+            } catch {
+              core.setFailed("OpenAI result did not satisfy the structured JSON contract.");
+              return;
+            }
+
             const body = [
               "[REFLEX-OPENAI-RESULT]",
-              "mission_id: ${{ needs.prepare.outputs.mission_id }}",
-              "status: REVIEW",
-              "branch: ${{ needs.prepare.outputs.branch }}",
-              "sha: ${{ needs.prepare.outputs.sha }}",
+              "mission_id: " + process.env.MISSION_ID,
+              "status: " + String(parsed.status || "BLOCKED"),
+              "hop: " + hop + "/" + maxHops,
+              "branch: " + process.env.BRANCH,
+              "sha: " + process.env.EXPECTED_SHA,
               "",
               process.env.RESULT || "Codex returned no final message."
             ].join("\n");
@@ -265,28 +368,18 @@ jobs:
               body
             });
 
-            const hop = Number("${{ needs.prepare.outputs.hop }}");
-            const maxHops = Number("${{ needs.prepare.outputs.max_hops }}");
-            let parsed = null;
-            try {
-              parsed = JSON.parse(process.env.RESULT || "{}");
-            } catch (error) {
-              core.setFailed("OpenAI result did not satisfy the structured JSON contract.");
-              return;
-            }
-
             const allowedNext = new Set(["claude_cloud", "antigravity_local"]);
             const next = parsed?.handoff?.target_runtime || "none";
             const needsHandoff = parsed?.handoff?.needed === true;
 
             if (needsHandoff && allowedNext.has(next) && hop < maxHops) {
               const payload = {
-                mission_id: "${{ needs.prepare.outputs.mission_id }}",
+                mission_id: process.env.MISSION_ID,
                 target_runtime: next,
                 next_runtime: "openai_cloud",
                 issue_number: issue,
-                branch: "${{ needs.prepare.outputs.branch }}",
-                sha: "${{ needs.prepare.outputs.sha }}",
+                branch: process.env.BRANCH,
+                sha: process.env.EXPECTED_SHA,
                 hop: hop + 1,
                 max_hops: maxHops,
                 prompt: "Leia toda a issue-âncora, especialmente o resultado OpenAI imediatamente anterior. Motivo do handoff: " + String(parsed.handoff.reason || "não informado") + ". Reconcilie contra a Constituição e execute somente a próxima etapa necessária do Task Packet."
@@ -352,17 +445,23 @@ jobs:
 
       - name: Record Claude dispatch
         uses: actions/github-script@v7
+        env:
+          MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+          HOP: ${{ needs.prepare.outputs.hop }}
+          MAX_HOPS: ${{ needs.prepare.outputs.max_hops }}
+          SESSION_URL: ${{ steps.fire.outputs.session_url }}
         with:
           script: |
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: Number("${{ needs.prepare.outputs.issue_number }}"),
+              issue_number: Number(process.env.ISSUE_NUMBER),
               body: [
                 "[REFLEX-CLAUDE-DISPATCHED]",
-                "mission_id: ${{ needs.prepare.outputs.mission_id }}",
-                "hop: ${{ needs.prepare.outputs.hop }}/${{ needs.prepare.outputs.max_hops }}",
-                "session: ${{ steps.fire.outputs.session_url }}",
+                "mission_id: " + process.env.MISSION_ID,
+                "hop: " + process.env.HOP + "/" + process.env.MAX_HOPS,
+                "session: " + process.env.SESSION_URL,
                 "",
                 "Claude must publish its result and any next [REFLEX-HANDOFF] only after the session completes."
               ].join("\n")
@@ -377,21 +476,31 @@ jobs:
     steps:
       - name: Publish local wake prompt
         uses: actions/github-script@v7
+        env:
+          MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          EXPECTED_SHA: ${{ needs.prepare.outputs.sha }}
+          HOP: ${{ needs.prepare.outputs.hop }}
+          MAX_HOPS: ${{ needs.prepare.outputs.max_hops }}
+          TASK_PROMPT: ${{ needs.prepare.outputs.prompt }}
         with:
           script: |
-            const issue = Number("${{ needs.prepare.outputs.issue_number }}");
+            const issue = Number(process.env.ISSUE_NUMBER);
             const body = [
               "[REFLEX-ANTIGRAVITY-HUMAN-GATE]",
+              "mission_id: " + process.env.MISSION_ID,
+              "hop: " + process.env.HOP + "/" + process.env.MAX_HOPS,
               "",
               "O Antigravity 2.0 é local e precisa ser iniciado pelo usuário.",
               "",
               "Cole no Antigravity:",
               "    Este é o App Reflex 02. Leia AGENTS.md e GEMINI.md, execute o bootstrap canônico, faça git fetch --all --prune --tags e abra a issue #" + issue + ".",
-              "    Missão: ${{ needs.prepare.outputs.mission_id }}",
-              "    Branch/base: ${{ needs.prepare.outputs.branch }}",
-              "    SHA esperado: ${{ needs.prepare.outputs.sha }}",
+              "    Missão: " + process.env.MISSION_ID,
+              "    Branch/base: " + process.env.BRANCH,
+              "    SHA esperado: " + process.env.EXPECTED_SHA,
               "    Leia todo o histórico da issue e o Task Packet nela indicado. Não destrua mudanças locais. Escreva somente em antigravity/*, execute os testes e publique Evidence/PR de volta nesta issue.",
-              "    Contexto: ${{ needs.prepare.outputs.prompt }}"
+              "    Contexto: " + process.env.TASK_PROMPT
             ].join("\n");
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -449,11 +558,13 @@ jobs:
       - name: Record WhatsApp disabled state
         if: steps.whatsapp.outputs.enabled != 'true'
         uses: actions/github-script@v7
+        env:
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
         with:
           script: |
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: Number("${{ needs.prepare.outputs.issue_number }}"),
+              issue_number: Number(process.env.ISSUE_NUMBER),
               body: "[REFLEX-NOTIFICATION] WhatsApp ainda não está configurado. A issue GitHub continua sendo a notificação e fonte de verdade da missão."
             });
