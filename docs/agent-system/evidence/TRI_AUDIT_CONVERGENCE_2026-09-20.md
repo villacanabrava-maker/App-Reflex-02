@@ -1,0 +1,41 @@
+# Tri-Audit Convergence — 2026-09-20
+
+## Fontes independentes
+1. Claude Code Cloud — R6: PASS WITH CONDITIONS.
+2. OpenAI Codex GitHub Review — review do commit `ffca46f`.
+3. Google Antigravity 2.0 local — R6: PASS WITH CONDITIONS.
+
+## Convergência
+- C1/P1: secret scan não cobria todas as superfícies de adapters.
+- C2/P2: Skills Claude não estavam protegidas pelo validator canônico.
+- C3/P2: Agent Output aceitava evidence sem o contrato Evidence.
+- C4/P2: ownership de branches não estava imposto para todos os runtimes.
+- C5: Claude e Antigravity confirmaram paths Read-first ambíguos nos agentes Claude.
+- Antigravity forneceu guardrails úteis para TRUNCATE/DISABLE RLS.
+
+## Não promovido automaticamente
+- A contagem física do Antigravity não é invariante: houve orientação anterior de 6 agentes e o relatório mais recente smoke-testou 9 definições. Apenas cobertura R1-R9 é canônica.
+- A proposta de tornar R8 obrigatório ao fim de toda tarefa permanece HUMAN_DECISION. Até confirmação humana direta, R8 segue o princípio do menor conjunto útil e é acionado quando pesquisa externa/materialmente atual melhora a decisão.
+- Nenhuma limpeza de diretórios Antigravity é autorizada nesta missão.
+
+## Re-review Codex do hardening
+
+No commit `aede924`, o Codex confirmou o fechamento substancial dos quatro findings originais e encontrou três resíduos:
+- padrões de segredo ainda não cobriam Anthropic/Google/PEM;
+- `TRUNCATE` sem a palavra opcional `TABLE` escapava;
+- `responsible_role` no Evidence precisava de `type: string`.
+
+Esses três resíduos foram corrigidos no commit `80fa717a`.
+
+## Estado
+O PR #15 permanece REVIEW. Merge depende de CI verde do novo head e revisão independente final das correções.
+
+## Review final Codex do commit 43df55c
+
+O review final encontrou quatro resíduos:
+- secret scan ainda excluía arquivos sem extensão/PEM pela lista de sufixos;
+- Skill Antigravity de Vercel ainda declarava a integração adiada;
+- Agent Output aceitava `evidence: []`;
+- `agent_role` e `owner_role` não declaravam `type: string`.
+
+Todos foram corrigidos nesta rodada. O novo head exige novo CI e último review independente antes de encerrar a missão.

@@ -1,11 +1,11 @@
 ﻿---
-description: Regras invioláveis de segurança, proteção de credenciais e integridade de dados do Rflex01.
+description: Regras invioláveis de segurança, proteção de credenciais e integridade de dados do App Reflex 02.
 ---
 
 # Regras de Fronteira de Segurança (Security Boundaries)
 
 1. **Proteção de Segredos e Credenciais:**
-   - Jamais exiba ou persista em arquivos .env, chaves service_role, tokens da OpenAI/Vercel ou chaves privadas.
+   - Jamais exiba ou versione chaves service_role, tokens da OpenAI/Vercel, senhas, cookies ou chaves privadas.
    - Se um agente identificar vazamento potencial de credencial, a execução deve ser pausada imediatamente.
 
 2. **Isolamento de Ambiente e Banco de Dados:**

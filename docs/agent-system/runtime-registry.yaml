@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "system": "Reflex Agent Operating System V3",
+  "control_plane": "github",
+  "canonical_roles": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R9"
+  ],
+  "principles": [
+    "runtimes_are_peers_not_authorities",
+    "github_is_durable_coordination",
+    "least_privilege",
+    "independent_review_across_contexts_when_possible",
+    "human_gate_for_production_mutation"
+  ],
+  "runtimes": [
+    {
+      "id": "openai_cloud",
+      "provider": "OpenAI",
+      "surfaces": [
+        "ChatGPT",
+        "Codex Cloud",
+        "Codex GitHub review",
+        "Agents API"
+      ],
+      "strengths": [
+        "architecture",
+        "repository work",
+        "parallel cloud tasks",
+        "independent PR review",
+        "programmatic long-running agents"
+      ],
+      "event_sources": [
+        "GitHub PR review",
+        "GitHub Action",
+        "Agents API webhooks"
+      ],
+      "branch_policy": "agent-owned writes only to chatgpt/* branches; review may read any branch; no direct main without human gate",
+      "canonical_adapter": [
+        "AGENTS.md",
+        ".codex/",
+        "OpenAI ChatGPT/"
+      ]
+    },
+    {
+      "id": "claude_cloud",
+      "provider": "Anthropic",
+      "surfaces": [
+        "Claude Code on the web",
+        "Claude Code cloud sessions",
+        "Routines"
+      ],
+      "strengths": [
+        "event-driven supervision",
+        "cloud repository work",
+        "scheduled diagnostics",
+        "GitHub-triggered routines",
+        "subagents"
+      ],
+      "event_sources": [
+        "schedule",
+        "Routine API",
+        "GitHub pull_request",
+        "GitHub release"
+      ],
+      "branch_policy": "agent-owned unattended writes only to claude/* branches; review may read any branch; no direct main without human gate",
+      "recommended_unattended_connectors": [
+        "github",
+        "supabase_project_read_only"
+      ],
+      "prohibited_unattended_connectors": [
+        "supabase_write",
+        "vercel_write",
+        "production_secrets"
+      ],
+      "canonical_adapter": [
+        "CLAUDE.md",
+        ".claude/agents/",
+        ".claude/skills/"
+      ]
+    },
+    {
+      "id": "antigravity_local",
+      "provider": "Google",
+      "surfaces": [
+        "Antigravity 2.0",
+        "Antigravity CLI (agy)"
+      ],
+      "strengths": [
+        "local engineering",
+        "interactive implementation",
+        "MCP",
+        "skills",
+        "subagents",
+        "browser/local validation"
+      ],
+      "event_sources": [
+        "human dispatch",
+        "local CLI/SDK automation when explicitly configured"
+      ],
+      "physical_topology_note": "Physical agent count is runtime-local state, not a constitutional invariant. Only complete R1-R9 coverage is canonical.",
+      "branch_policy": "agent-owned writes only to antigravity/* branches; review may read any branch; no direct main and no concurrent cross-runtime writes without explicit handoff",
+      "canonical_adapter": [
+        "GEMINI.md",
+        ".agents/"
+      ]
+    }
+  ],
+  "optional_infrastructure": {
+    "supabase": {
+      "role": "product/data event bus and scheduler, not a fourth AI authority",
+      "building_blocks": [
+        "Cron",
+        "Database Webhooks",
+        "Queues",
+        "Edge Functions"
+      ],
+      "default_agent_access": "project-scoped read-only MCP for unattended diagnostics"
+    },
+    "vercel": {
+      "role": "application runtime and deployment evidence",
+      "default_agent_access": "read-only observation; unattended write connector disabled until narrower enforcement exists"
+    }
+  }
+}

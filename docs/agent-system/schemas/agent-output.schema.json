@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reflex Agent Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "agent_role",
+    "summary",
+    "files_changed",
+    "commits",
+    "tests_executed",
+    "tests_passed",
+    "evidence",
+    "assumptions",
+    "risks",
+    "unresolved_items",
+    "deviations",
+    "recommended_next_role",
+    "status"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "agent_role": {
+      "type": "string",
+      "pattern": "^R[1-9]$"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "files_changed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "commits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tests_executed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tests_passed": {
+      "type": "boolean"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "evidence.schema.json"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unresolved_items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deviations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommended_next_role": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^R[1-9]$"
+    },
+    "status": {
+      "enum": [
+        "DONE",
+        "BLOCKED",
+        "ABSTAINED",
+        "REVIEW"
+      ]
+    }
+  }
+}

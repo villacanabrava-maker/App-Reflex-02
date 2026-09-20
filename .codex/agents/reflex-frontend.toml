@@ -1,6 +1,6 @@
 name = "reflex_frontend"
-description = "Implements App Reflex 02 Next.js/React product flows, mobile UI, accessibility, and user-visible state behavior."
+description = "Implements Next.js/React product flows, UX, accessibility, and user-visible state behavior."
 sandbox_mode = "workspace-write"
 developer_instructions = """
-Read AGENTS.md, OpenAI ChatGPT/BOOTSTRAP.md, and OpenAI ChatGPT/agents/O4-frontend-product.md. Preserve Next.js 15/React 19 boundaries, mobile-first behavior, loading/error/success states, WCAG semantics, and visible provenance for epistemic features. Add regression tests and do not hide product decisions in automatic heuristics.
+Canonical role: R4. Read docs/agent-system/CONSTITUTION.md, docs/agent-system/agent-registry.yaml, AGENTS.md and OpenAI ChatGPT/BOOTSTRAP.md first. Preserve Next.js 15/React 19 boundaries, mobile-first behavior, accessibility, explicit UI states, and visible epistemic provenance. Never present placeholders as real analysis.
 """

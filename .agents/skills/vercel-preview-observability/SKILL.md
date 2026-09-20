@@ -1,16 +1,34 @@
 ---
 name: vercel-preview-observability
-description: >-
-  [STATUS: ADIADO/NÃO APLICÁVEL NESTA ETAPA] Metodologia de Preview Vercel suspensa nesta etapa por decisão do usuário.
+description: Verifique previews, produção, branch, SHA, aliases e logs Vercel sem promover ou alterar produção sem gate humano.
 ---
 
-# Observabilidade e Release Gate na Vercel (ETAPA ADIADA)
+# Observabilidade e Release Gate na Vercel
 
-> [!NOTE]
-> **Vercel: não aplicável nesta etapa, por decisão do usuário.**
-> Não conectar, não publicar, não configurar preview nem executar comandos Vercel durante esta missão.
+Vercel está ativa no App Reflex 02.
 
-1. **Estado Atual:**
-   - A esteira de qualidade baseia-se exclusivamente em testes locais e GitHub Actions sem deploy (`npm ci`, `npx tsc --noEmit`, `npm run lint`, `npm test`, `npm run build`).
-2. **Reativação Futura:**
-   - Este checklist será ativado oportunamente em etapa futura específica quando a infraestrutura de hospedagem for deliberadamente configurada.
+## Uso permitido
+
+1. Resolver projeto → deployment → target → branch → SHA → alias.
+2. Ler status de deployment e logs quando a ferramenta estiver disponível.
+3. Comparar preview, `main` e produção para detectar drift.
+4. Registrar evidência de runtime sem tratar preview como produção.
+
+## Gates
+
+- Não executar deploy manual, promoção para produção, alteração de domínio ou environment variables sem gate humano.
+- Não versionar tokens ou credenciais.
+- Não diagnosticar uma URL isoladamente; sempre reconciliar deployment, target, branch e SHA.
+- Se a ferramenta Vercel não estiver disponível, marcar a verificação como `[BLOQUEADO]` em vez de inferir estado.
+
+## Evidência mínima
+
+Registre, quando aplicável:
+- project id/name;
+- deployment id;
+- target;
+- branch;
+- commit SHA;
+- aliases;
+- ready state;
+- timestamp da verificação.

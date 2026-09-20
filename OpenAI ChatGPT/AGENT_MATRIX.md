@@ -1,18 +1,17 @@
-# Matriz de Roteamento O1–O9
+# Adapter OpenAI — O1–O9 → R1–R9
 
-| Tipo de tarefa | Owner | Consultar | Auditor |
-|---|---|---|---|
-| arquitetura / ADR | O2 | O1, O8 | O6 |
-| UI / UX / Next.js | O4 | O2 | O6 |
-| Supabase / RLS / migrations | O3 | O2 | O6 |
-| Cérebro / IA / claims / retrieval | O5 | O2, O3, O8 | O6 |
-| CI / Git / Vercel | O7 | O2 | O6 |
-| pesquisa externa | O8 | owner do domínio | O1 |
-| incidente runtime | O7 | O3/O4/O5 conforme causa | O6 |
-| continuidade / handoff | O9 | O1 | — |
+A definição canônica está em `docs/agent-system/agent-registry.yaml`.
 
-## Regra de escalonamento
-- O1 coordena quando mais de dois domínios são afetados.
-- O6 entra depois da implementação; não substitui owner.
-- O9 entra ao final para persistir contexto reutilizável.
-- O usuário é autoridade final quando houver escolha de produto ou autoria.
+| OpenAI | Papel canônico | Codex agent |
+|---|---|---|
+| O1 | R1 Orchestrator | `reflex_orchestrator` |
+| O2 | R2 Architecture | `reflex_architecture` |
+| O3 | R3 Data & Supabase | `reflex_supabase` |
+| O4 | R4 Product & Frontend | `reflex_frontend` |
+| O5 | R5 Cognitive & Knowledge | `reflex_cognitive` |
+| O6 | R6 QA, Security & Evals | `reflex_qa` |
+| O7 | R7 Platform & Runtime | `reflex_platform` |
+| O8 | R8 Research & Evolution | `reflex_research` |
+| O9 | R9 Continuity & Evidence | `reflex_continuity` |
+
+R1 escolhe o menor conjunto útil. R6 é independente conforme risco. R9 fecha a continuidade. O usuário é autoridade final de produto, autoria e gates críticos.

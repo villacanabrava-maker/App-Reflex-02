@@ -1,0 +1,601 @@
+name: Reflex Agent Handoff
+
+on:
+  workflow_dispatch:
+    inputs:
+      mission_id:
+        description: "Mission ID"
+        required: true
+        type: string
+      target_runtime:
+        description: "Runtime to execute next"
+        required: true
+        type: choice
+        options: [openai_cloud, claude_cloud, antigravity_local]
+      next_runtime:
+        description: "Runtime after this one, or none"
+        required: true
+        default: none
+        type: choice
+        options: [none, openai_cloud, claude_cloud, antigravity_local]
+      issue_number:
+        description: "Anchor issue number"
+        required: true
+        type: string
+      branch:
+        description: "Branch/ref to inspect"
+        required: true
+        default: main
+        type: string
+      sha:
+        description: "Expected SHA"
+        required: true
+        type: string
+      hop:
+        description: "Current hop (0-4)"
+        required: true
+        default: "0"
+        type: string
+      max_hops:
+        description: "Maximum hops (1-4)"
+        required: true
+        default: "4"
+        type: string
+      prompt:
+        description: "Task-specific context"
+        required: true
+        type: string
+
+  repository_dispatch:
+    types: [reflex_handoff]
+
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reflex-handoff-${{ github.event.issue.number || github.event.client_payload.issue_number || inputs.issue_number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      active: ${{ steps.parse.outputs.active }}
+      mission_id: ${{ steps.parse.outputs.mission_id }}
+      target_runtime: ${{ steps.parse.outputs.target_runtime }}
+      next_runtime: ${{ steps.parse.outputs.next_runtime }}
+      issue_number: ${{ steps.parse.outputs.issue_number }}
+      branch: ${{ steps.parse.outputs.branch }}
+      sha: ${{ steps.parse.outputs.sha }}
+      hop: ${{ steps.parse.outputs.hop }}
+      max_hops: ${{ steps.parse.outputs.max_hops }}
+      prompt: ${{ steps.parse.outputs.prompt }}
+    steps:
+      - name: Parse and validate handoff
+        id: parse
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          INPUT_MISSION_ID: ${{ inputs.mission_id }}
+          INPUT_TARGET_RUNTIME: ${{ inputs.target_runtime }}
+          INPUT_NEXT_RUNTIME: ${{ inputs.next_runtime }}
+          INPUT_ISSUE_NUMBER: ${{ inputs.issue_number }}
+          INPUT_BRANCH: ${{ inputs.branch }}
+          INPUT_SHA: ${{ inputs.sha }}
+          INPUT_HOP: ${{ inputs.hop }}
+          INPUT_MAX_HOPS: ${{ inputs.max_hops }}
+          INPUT_PROMPT: ${{ inputs.prompt }}
+        with:
+          script: |
+            const allowed = new Set(["openai_cloud", "claude_cloud", "antigravity_local"]);
+            const trusted = new Set(["OWNER", "MEMBER", "COLLABORATOR"]);
+            let payload = null;
+            let commentTrustedByHumanAssociation = false;
+
+            if (context.eventName === "issue_comment") {
+              const body = context.payload.comment?.body || "";
+              if (!body.startsWith("[REFLEX-HANDOFF]\n")) {
+                core.setOutput("active", "false");
+                return;
+              }
+              const login = context.payload.comment?.user?.login || "";
+              const association = context.payload.comment?.author_association || "";
+              const trustedBot =
+                login === "github-actions[bot]" ||
+                login === "chatgpt-codex-connector[bot]" ||
+                login === "claude[bot]";
+              commentTrustedByHumanAssociation = trusted.has(association);
+              if (!trustedBot && !commentTrustedByHumanAssociation) {
+                core.setFailed("Untrusted author attempted a Reflex handoff.");
+                return;
+              }
+              try {
+                payload = JSON.parse(body.slice("[REFLEX-HANDOFF]\n".length).trim());
+              } catch {
+                core.setFailed("Invalid JSON after [REFLEX-HANDOFF].");
+                return;
+              }
+              payload.issue_number = context.issue.number;
+            } else if (context.eventName === "repository_dispatch") {
+              payload = context.payload.client_payload || {};
+            } else {
+              payload = {
+                mission_id: process.env.INPUT_MISSION_ID,
+                target_runtime: process.env.INPUT_TARGET_RUNTIME,
+                next_runtime: process.env.INPUT_NEXT_RUNTIME,
+                issue_number: Number(process.env.INPUT_ISSUE_NUMBER),
+                branch: process.env.INPUT_BRANCH,
+                sha: process.env.INPUT_SHA,
+                hop: Number(process.env.INPUT_HOP),
+                max_hops: Number(process.env.INPUT_MAX_HOPS),
+                prompt: process.env.INPUT_PROMPT
+              };
+            }
+
+            const hop = Number(payload.hop);
+            const maxHops = Number(payload.max_hops);
+            const issue = Number(payload.issue_number);
+
+            if (!payload.mission_id || !allowed.has(payload.target_runtime)) {
+              core.setFailed("Invalid mission_id or target_runtime.");
+              return;
+            }
+            if (payload.next_runtime !== "none" && !allowed.has(payload.next_runtime)) {
+              core.setFailed("Invalid next_runtime.");
+              return;
+            }
+            if (!Number.isInteger(issue) || issue < 1) {
+              core.setFailed("issue_number must be a positive integer.");
+              return;
+            }
+            if (!Number.isInteger(hop) || !Number.isInteger(maxHops) || hop < 0 || maxHops < 1 || maxHops > 4 || hop > maxHops) {
+              core.setFailed("Invalid hop/max_hops.");
+              return;
+            }
+            if (!payload.branch || !payload.sha || !payload.prompt) {
+              core.setFailed("branch, sha and prompt are required.");
+              return;
+            }
+            if (!/^[0-9a-f]{7,40}$/i.test(String(payload.sha))) {
+              core.setFailed("sha must be a hexadecimal Git SHA with 7-40 characters.");
+              return;
+            }
+
+            if (context.eventName === "workflow_dispatch") {
+              if (hop !== 0) {
+                core.setFailed("Manual workflow_dispatch must start at hop 0.");
+                return;
+              }
+            } else {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue,
+                per_page: 100,
+              });
+              let previousHop = -1;
+              const currentCommentId = context.payload.comment?.id;
+              for (const comment of comments) {
+                if (comment.id === currentCommentId) continue;
+                const association = comment.author_association || "";
+                const login = comment.user?.login || "";
+                const trustedComment =
+                  trusted.has(association) ||
+                  login === "github-actions[bot]" ||
+                  login === "chatgpt-codex-connector[bot]" ||
+                  login === "claude[bot]";
+                if (!trustedComment) continue;
+
+                const priorBody = comment.body || "";
+                let priorMission = null;
+                let priorHop = null;
+                if (priorBody.startsWith("[REFLEX-HANDOFF]\n")) {
+                  try {
+                    const parsedPrior = JSON.parse(priorBody.slice("[REFLEX-HANDOFF]\n".length).trim());
+                    priorMission = String(parsedPrior.mission_id || "");
+                    priorHop = Number(parsedPrior.hop);
+                  } catch {
+                    continue;
+                  }
+                } else {
+                  const missionMatch = priorBody.match(/^mission_id:\s*(.+)$/m);
+                  const hopMatch = priorBody.match(/^hop:\s*(\d+)(?:\/\d+)?$/m);
+                  if (missionMatch && hopMatch) {
+                    priorMission = missionMatch[1].trim();
+                    priorHop = Number(hopMatch[1]);
+                  }
+                }
+                if (priorMission === String(payload.mission_id) && Number.isInteger(priorHop)) {
+                  previousHop = Math.max(previousHop, priorHop);
+                }
+              }
+              if (hop !== previousHop + 1) {
+                core.setFailed(`Non-monotonic handoff: expected hop ${previousHop + 1}, received ${hop}.`);
+                return;
+              }
+              if (context.eventName === "issue_comment" && !commentTrustedByHumanAssociation && previousHop === -1) {
+                core.setFailed("A bot-authored comment cannot originate a new handoff chain; the first hop must come from a trusted human association or workflow_dispatch.");
+                return;
+              }
+              if (context.eventName === "issue_comment" && context.payload.comment?.user?.login === "claude[bot]") {
+                let foundMatchingDispatch = false;
+                for (const comment of comments) {
+                  if (comment.id === currentCommentId) continue;
+                  const priorBody = comment.body || "";
+                  if (priorBody.startsWith("[REFLEX-CLAUDE-DISPATCHED]\n")) {
+                    const missionMatch = priorBody.match(/^mission_id:\s*(.+)$/m);
+                    const hopMatch = priorBody.match(/^hop:\s*(\d+)(?:\/\d+)?$/m);
+                    if (missionMatch && hopMatch) {
+                      const dispatchedMission = missionMatch[1].trim();
+                      const dispatchedHop = Number(hopMatch[1]);
+                      if (dispatchedMission === String(payload.mission_id) && dispatchedHop === (hop - 1)) {
+                        foundMatchingDispatch = true;
+                        break;
+                      }
+                    }
+                  }
+                }
+                if (!foundMatchingDispatch) {
+                  core.setFailed(`Claude bot handoff rejected: no verified [REFLEX-CLAUDE-DISPATCHED] found for mission ${payload.mission_id} and hop ${hop - 1}.`);
+                  return;
+                }
+              }
+            }
+
+            core.setOutput("active", "true");
+            core.setOutput("mission_id", String(payload.mission_id));
+            core.setOutput("target_runtime", String(payload.target_runtime));
+            core.setOutput("next_runtime", String(payload.next_runtime || "none"));
+            core.setOutput("issue_number", String(issue));
+            core.setOutput("branch", String(payload.branch));
+            core.setOutput("sha", String(payload.sha));
+            core.setOutput("hop", String(hop));
+            core.setOutput("max_hops", String(maxHops));
+            core.setOutput("prompt", String(payload.prompt));
+
+  openai:
+    needs: prepare
+    if: needs.prepare.outputs.active == 'true' && needs.prepare.outputs.target_runtime == 'openai_cloud'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      final_message: ${{ steps.codex.outputs.final-message }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ needs.prepare.outputs.branch }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify expected SHA
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ needs.prepare.outputs.sha }}
+        run: |
+          actual="$(git rev-parse HEAD)"
+          if [[ "$actual" != "$EXPECTED_SHA"* && "$EXPECTED_SHA" != "$actual" ]]; then
+            echo "Expected $EXPECTED_SHA but checked out $actual" >&2
+            exit 1
+          fi
+
+      - name: Run OpenAI Codex handoff
+        id: codex
+        uses: openai/codex-action@86365089eb2b84e0a8fb0717b304f8bdcb13b20e # v1.12
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          permission-profile: ":read-only"
+          safety-strategy: drop-sudo
+          output-file: codex-handoff-output.md
+          allow-bots: true
+          allow-bot-users: github-actions[bot]
+          output-schema: |
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["status", "summary", "evidence", "risks", "unresolved_items", "handoff"],
+              "properties": {
+                "status": {"enum": ["DONE", "REVIEW", "BLOCKED"]},
+                "summary": {"type": "string"},
+                "evidence": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["classification", "source", "timestamp", "responsible_role"],
+                    "properties": {
+                      "classification": {"enum": ["CONFIRMADO-CODIGO", "CONFIRMADO-TESTE", "CONFIRMADO-CI", "CONFIRMADO-RUNTIME", "CONFIRMADO-EXTERNO", "RELATADO", "INFERIDO", "PENDENTE", "BLOQUEADO"]},
+                      "source": {"type": "string", "minLength": 1},
+                      "timestamp": {"type": "string", "minLength": 1},
+                      "sha": {"type": ["string", "null"]},
+                      "branch": {"type": ["string", "null"]},
+                      "environment": {"type": ["string", "null"]},
+                      "command_test": {"type": ["string", "null"]},
+                      "artifact": {"type": ["string", "null"]},
+                      "responsible_role": {"type": "string", "pattern": "^R[1-9]$"}
+                    }
+                  }
+                },
+                "risks": {"type": "array", "items": {"type": "string"}},
+                "unresolved_items": {"type": "array", "items": {"type": "string"}},
+                "handoff": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["needed", "target_runtime", "reason"],
+                  "properties": {
+                    "needed": {"type": "boolean"},
+                    "target_runtime": {"enum": ["none", "claude_cloud", "antigravity_local"]},
+                    "reason": {"type": "string"}
+                  }
+                }
+              }
+            }
+          prompt: |
+            You are the OpenAI Cloud runtime of the Reflex Agent Operating System V3.
+            Read AGENTS.md and the canonical agent-system documents before acting.
+            This is a read-only handoff. Do not edit files, push, merge, deploy, mutate Supabase, or expose secrets.
+
+            Mission: ${{ needs.prepare.outputs.mission_id }}
+            Anchor issue: #${{ needs.prepare.outputs.issue_number }}
+            Branch: ${{ needs.prepare.outputs.branch }}
+            Expected SHA: ${{ needs.prepare.outputs.sha }}
+            Hop: ${{ needs.prepare.outputs.hop }}/${{ needs.prepare.outputs.max_hops }}
+
+            Task context:
+            ${{ needs.prepare.outputs.prompt }}
+
+            Return the required structured JSON only.
+            Set handoff.needed=true only when another runtime adds a materially necessary independent capability.
+            Do not hand off merely to continue a loop. If no further runtime is needed, target_runtime must be "none".
+
+  publish_openai:
+    needs: [prepare, openai]
+    if: needs.prepare.outputs.active == 'true' && needs.prepare.outputs.target_runtime == 'openai_cloud' && needs.openai.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: Publish OpenAI result and dispatch next runtime
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          RESULT: ${{ needs.openai.outputs.final_message }}
+          MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          EXPECTED_SHA: ${{ needs.prepare.outputs.sha }}
+          HOP: ${{ needs.prepare.outputs.hop }}
+          MAX_HOPS: ${{ needs.prepare.outputs.max_hops }}
+        with:
+          script: |
+            const issue = Number(process.env.ISSUE_NUMBER);
+            const hop = Number(process.env.HOP);
+            const maxHops = Number(process.env.MAX_HOPS);
+            let parsed = null;
+            try {
+              parsed = JSON.parse(process.env.RESULT || "{}");
+            } catch {
+              core.setFailed("OpenAI result did not satisfy the structured JSON contract.");
+              return;
+            }
+
+            const body = [
+              "[REFLEX-OPENAI-RESULT]",
+              "mission_id: " + process.env.MISSION_ID,
+              "status: " + String(parsed.status || "BLOCKED"),
+              "hop: " + hop + "/" + maxHops,
+              "branch: " + process.env.BRANCH,
+              "sha: " + process.env.EXPECTED_SHA,
+              "",
+              process.env.RESULT || "Codex returned no final message."
+            ].join("\n");
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue,
+              body
+            });
+
+            const allowedNext = new Set(["claude_cloud", "antigravity_local"]);
+            const next = parsed?.handoff?.target_runtime || "none";
+            const needsHandoff = parsed?.handoff?.needed === true;
+
+            if (needsHandoff && allowedNext.has(next) && hop < maxHops) {
+              const payload = {
+                mission_id: process.env.MISSION_ID,
+                target_runtime: next,
+                next_runtime: "openai_cloud",
+                issue_number: issue,
+                branch: process.env.BRANCH,
+                sha: process.env.EXPECTED_SHA,
+                hop: hop + 1,
+                max_hops: maxHops,
+                prompt: "Leia toda a issue-âncora, especialmente o resultado OpenAI imediatamente anterior. Motivo do handoff: " + String(parsed.handoff.reason || "não informado") + ". Reconcilie contra a Constituição e execute somente a próxima etapa necessária do Task Packet."
+              };
+              await github.rest.repos.createDispatchEvent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                event_type: "reflex_handoff",
+                client_payload: payload
+              });
+            }
+
+  claude:
+    needs: prepare
+    if: needs.prepare.outputs.active == 'true' && needs.prepare.outputs.target_runtime == 'claude_cloud'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Trigger Claude Routine
+        id: fire
+        shell: bash
+        env:
+          ROUTINE_URL: ${{ vars.CLAUDE_ROUTINE_URL }}
+          ROUTINE_TOKEN: ${{ secrets.CLAUDE_ROUTINE_TOKEN }}
+          MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          SHA: ${{ needs.prepare.outputs.sha }}
+          HOP: ${{ needs.prepare.outputs.hop }}
+          MAX_HOPS: ${{ needs.prepare.outputs.max_hops }}
+          NEXT_RUNTIME: ${{ needs.prepare.outputs.next_runtime }}
+          TASK_PROMPT: ${{ needs.prepare.outputs.prompt }}
+        run: |
+          if [[ -z "$ROUTINE_URL" || -z "$ROUTINE_TOKEN" ]]; then
+            echo "Claude Routine URL/token not configured." >&2
+            exit 1
+          fi
+          text="$(jq -n \
+            --arg mission_id "$MISSION_ID" \
+            --argjson issue_number "$ISSUE_NUMBER" \
+            --arg branch "$BRANCH" \
+            --arg sha "$SHA" \
+            --argjson hop "$HOP" \
+            --argjson max_hops "$MAX_HOPS" \
+            --arg next_runtime "$NEXT_RUNTIME" \
+            --arg prompt "$TASK_PROMPT" \
+            '{mission_id:$mission_id,issue_number:$issue_number,branch:$branch,sha:$sha,hop:$hop,max_hops:$max_hops,next_runtime:$next_runtime,prompt:$prompt}')"
+          response="$(curl --fail-with-body --silent --show-error \
+            -X POST "$ROUTINE_URL" \
+            -H "Authorization: Bearer $ROUTINE_TOKEN" \
+            -H "anthropic-beta: experimental-cc-routine-2026-04-01" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "Content-Type: application/json" \
+            --data "$(jq -n --arg text "$text" '{text:$text}')")"
+          echo "$response" > claude-fire-response.json
+          session_url="$(jq -r '.claude_code_session_url // empty' claude-fire-response.json)"
+          if [[ -z "$session_url" ]]; then
+            echo "Claude Routine did not return a session URL." >&2
+            exit 1
+          fi
+          echo "session_url=$session_url" >> "$GITHUB_OUTPUT"
+
+      - name: Record Claude dispatch
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+          HOP: ${{ needs.prepare.outputs.hop }}
+          MAX_HOPS: ${{ needs.prepare.outputs.max_hops }}
+          SESSION_URL: ${{ steps.fire.outputs.session_url }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number(process.env.ISSUE_NUMBER),
+              body: [
+                "[REFLEX-CLAUDE-DISPATCHED]",
+                "mission_id: " + process.env.MISSION_ID,
+                "hop: " + process.env.HOP + "/" + process.env.MAX_HOPS,
+                "session: " + process.env.SESSION_URL,
+                "",
+                "Claude must publish its result and any next [REFLEX-HANDOFF] only after the session completes."
+              ].join("\n")
+            });
+
+  antigravity:
+    needs: prepare
+    if: needs.prepare.outputs.active == 'true' && needs.prepare.outputs.target_runtime == 'antigravity_local'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Publish local wake prompt
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          EXPECTED_SHA: ${{ needs.prepare.outputs.sha }}
+          HOP: ${{ needs.prepare.outputs.hop }}
+          MAX_HOPS: ${{ needs.prepare.outputs.max_hops }}
+          TASK_PROMPT: ${{ needs.prepare.outputs.prompt }}
+        with:
+          script: |
+            const issue = Number(process.env.ISSUE_NUMBER);
+            const body = [
+              "[REFLEX-ANTIGRAVITY-HUMAN-GATE]",
+              "mission_id: " + process.env.MISSION_ID,
+              "hop: " + process.env.HOP + "/" + process.env.MAX_HOPS,
+              "",
+              "O Antigravity 2.0 é local e precisa ser iniciado pelo usuário.",
+              "",
+              "Cole no Antigravity:",
+              "    Este é o App Reflex 02. Leia AGENTS.md e GEMINI.md, execute o bootstrap canônico, faça git fetch --all --prune --tags e abra a issue #" + issue + ".",
+              "    Missão: " + process.env.MISSION_ID,
+              "    Branch/base: " + process.env.BRANCH,
+              "    SHA esperado: " + process.env.EXPECTED_SHA,
+              "    Leia todo o histórico da issue e o Task Packet nela indicado. Não destrua mudanças locais. Escreva somente em antigravity/*, execute os testes e publique Evidence/PR de volta nesta issue.",
+              "    Contexto: " + process.env.TASK_PROMPT
+            ].join("\n");
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue,
+              body
+            });
+
+      - name: Check WhatsApp configuration
+        id: whatsapp
+        shell: bash
+        env:
+          ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          API_KEY: ${{ secrets.TWILIO_API_KEY }}
+          API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
+          FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          TO: ${{ secrets.TWILIO_WHATSAPP_TO }}
+          CONTENT_SID: ${{ secrets.TWILIO_WHATSAPP_CONTENT_SID }}
+        run: |
+          if [[ -n "$ACCOUNT_SID" && -n "$API_KEY" && -n "$API_SECRET" && -n "$FROM" && -n "$TO" && -n "$CONTENT_SID" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send WhatsApp wake notification
+        if: steps.whatsapp.outputs.enabled == 'true'
+        shell: bash
+        env:
+          ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          API_KEY: ${{ secrets.TWILIO_API_KEY }}
+          API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
+          FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          TO: ${{ secrets.TWILIO_WHATSAPP_TO }}
+          CONTENT_SID: ${{ secrets.TWILIO_WHATSAPP_CONTENT_SID }}
+          MISSION: ${{ needs.prepare.outputs.mission_id }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+          SHA: ${{ needs.prepare.outputs.sha }}
+          ISSUE_URL: https://github.com/${{ github.repository }}/issues/${{ needs.prepare.outputs.issue_number }}
+        run: |
+          variables="$(jq -nc \
+            --arg one "$MISSION" \
+            --arg two "$BRANCH" \
+            --arg three "$SHA" \
+            --arg four "$ISSUE_URL" \
+            '{"1":$one,"2":$two,"3":$three,"4":$four}')"
+          curl --fail-with-body --silent --show-error \
+            -X POST "https://api.twilio.com/2010-04-01/Accounts/$ACCOUNT_SID/Messages.json" \
+            --data-urlencode "From=$FROM" \
+            --data-urlencode "To=$TO" \
+            --data-urlencode "ContentSid=$CONTENT_SID" \
+            --data-urlencode "ContentVariables=$variables" \
+            -u "$API_KEY:$API_SECRET" >/dev/null
+
+      - name: Record WhatsApp disabled state
+        if: steps.whatsapp.outputs.enabled != 'true'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number(process.env.ISSUE_NUMBER),
+              body: "[REFLEX-NOTIFICATION] WhatsApp ainda não está configurado. A issue GitHub continua sendo a notificação e fonte de verdade da missão."
+            });

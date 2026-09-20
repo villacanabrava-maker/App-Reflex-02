@@ -1,0 +1,224 @@
+{
+  "schema_version": "1.0",
+  "system": "Reflex Agent Operating System V3",
+  "roles": [
+    {
+      "id": "R1",
+      "name": "orchestrator",
+      "title": "Orchestrator",
+      "default_write_scope": "read-only",
+      "openai": {
+        "profile": "O1",
+        "doc": "OpenAI ChatGPT/agents/O1-orchestrator.md",
+        "codex_file": ".codex/agents/reflex-orchestrator.toml",
+        "codex_name": "reflex_orchestrator"
+      },
+      "antigravity": {
+        "agents": [
+          "A1:rflex-architect"
+        ],
+        "coverage": "coordination"
+      },
+      "claude": {
+        "name": "reflex-orchestrator",
+        "file": ".claude/agents/reflex-orchestrator.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R2",
+      "name": "architecture",
+      "title": "Architecture",
+      "default_write_scope": "read-only",
+      "openai": {
+        "profile": "O2",
+        "doc": "OpenAI ChatGPT/agents/O2-repository-architecture.md",
+        "codex_file": ".codex/agents/reflex-architecture.toml",
+        "codex_name": "reflex_architecture"
+      },
+      "antigravity": {
+        "agents": [
+          "A1:rflex-architect"
+        ],
+        "coverage": "architecture"
+      },
+      "claude": {
+        "name": "reflex-architecture",
+        "file": ".claude/agents/reflex-architecture.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R3",
+      "name": "data-supabase",
+      "title": "Data & Supabase",
+      "default_write_scope": "workspace",
+      "openai": {
+        "profile": "O3",
+        "doc": "OpenAI ChatGPT/agents/O3-supabase-data.md",
+        "codex_file": ".codex/agents/reflex-supabase.toml",
+        "codex_name": "reflex_supabase"
+      },
+      "antigravity": {
+        "agents": [
+          "A4:rflex-backend-supabase"
+        ],
+        "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-supabase",
+        "file": ".claude/agents/reflex-supabase.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R4",
+      "name": "product-frontend",
+      "title": "Product & Frontend",
+      "default_write_scope": "workspace",
+      "openai": {
+        "profile": "O4",
+        "doc": "OpenAI ChatGPT/agents/O4-frontend-product.md",
+        "codex_file": ".codex/agents/reflex-frontend.toml",
+        "codex_name": "reflex_frontend"
+      },
+      "antigravity": {
+        "agents": [
+          "A2:rflex-product-design",
+          "A3:rflex-frontend"
+        ],
+        "coverage": "split-design-implementation"
+      },
+      "claude": {
+        "name": "reflex-frontend",
+        "file": ".claude/agents/reflex-frontend.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R5",
+      "name": "cognitive-knowledge",
+      "title": "Cognitive & Knowledge",
+      "default_write_scope": "workspace",
+      "openai": {
+        "profile": "O5",
+        "doc": "OpenAI ChatGPT/agents/O5-cognitive-ai.md",
+        "codex_file": ".codex/agents/reflex-cognitive.toml",
+        "codex_name": "reflex_cognitive"
+      },
+      "antigravity": {
+        "agents": [
+          "A5:rflex-ai-knowledge"
+        ],
+        "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-cognitive",
+        "file": ".claude/agents/reflex-cognitive.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R6",
+      "name": "qa-security-evals",
+      "title": "QA, Security & Evals",
+      "default_write_scope": "read-only",
+      "independent_review": true,
+      "openai": {
+        "profile": "O6",
+        "doc": "OpenAI ChatGPT/agents/O6-qa-security-evals.md",
+        "codex_file": ".codex/agents/reflex-qa.toml",
+        "codex_name": "reflex_qa"
+      },
+      "antigravity": {
+        "agents": [
+          "A7:rflex-qa-security"
+        ],
+        "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-qa",
+        "file": ".claude/agents/reflex-qa.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R7",
+      "name": "platform-runtime",
+      "title": "Platform & Runtime",
+      "default_write_scope": "workspace",
+      "openai": {
+        "profile": "O7",
+        "doc": "OpenAI ChatGPT/agents/O7-platform-vercel.md",
+        "codex_file": ".codex/agents/reflex-platform.toml",
+        "codex_name": "reflex_platform"
+      },
+      "antigravity": {
+        "agents": [
+          "A6:rflex-platform"
+        ],
+        "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-platform",
+        "file": ".claude/agents/reflex-platform.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R8",
+      "name": "research-evolution",
+      "title": "Research & Evolution",
+      "default_write_scope": "read-only",
+      "openai": {
+        "profile": "O8",
+        "doc": "OpenAI ChatGPT/agents/O8-research-evolution.md",
+        "codex_file": ".codex/agents/reflex-research.toml",
+        "codex_name": "reflex_research"
+      },
+      "antigravity": {
+        "agents": [
+          "A8:rflex-research-evolution"
+        ],
+        "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-research",
+        "file": ".claude/agents/reflex-research.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    },
+    {
+      "id": "R9",
+      "name": "continuity-evidence",
+      "title": "Continuity & Evidence",
+      "default_write_scope": "governance-only",
+      "openai": {
+        "profile": "O9",
+        "doc": "OpenAI ChatGPT/agents/O9-continuity-evidence.md",
+        "codex_file": ".codex/agents/reflex-continuity.toml",
+        "codex_name": "reflex_continuity"
+      },
+      "antigravity": {
+        "agents": [
+          "A9:rflex-continuity-evidence"
+        ],
+        "coverage": "direct"
+      },
+      "claude": {
+        "name": "reflex-continuity",
+        "file": ".claude/agents/reflex-continuity.md",
+        "coverage": "direct",
+        "runtime": "claude_cloud"
+      }
+    }
+  ]
+}

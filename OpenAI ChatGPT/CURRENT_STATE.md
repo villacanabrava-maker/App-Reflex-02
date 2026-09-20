@@ -1,16 +1,15 @@
 # Estado Operacional Verificado — OpenAI ChatGPT
 
-**Snapshot:** 2026-09-19 13:18 BRT  
+**Snapshot:** 2026-09-19 19:22 BRT  
 **Regra:** este arquivo é um bootstrap, não uma autoridade permanente. Verifique live antes de decisões críticas.
 
 ## GitHub
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- Release OpenAI/Codex v2 reconciliado: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`
-- Commit: `feat: add Codex-native O1–O9 agents and expand OpenAI continuity layer`
-- CI da mudança: run `35454339376`, `success`
-- Regra: obter o HEAD live no início de cada nova sessão; commits de snapshot/documentação podem existir depois deste SHA.
+- HEAD live verificado: `0c7f14c41be816ca023d8347984665db60fbc265`
+- CI do HEAD: `success`
+- Regra: obter novamente o HEAD live no início de cada nova sessão.
 
 A `main` não possui branch protection ativa no momento do snapshot.
 
@@ -19,8 +18,8 @@ A `main` não possui branch protection ativa no momento do snapshot.
 Produção está **ativa**. Documentos antigos que ainda dizem “Vercel fora de escopo” estão desatualizados em relação ao runtime atual.
 
 - Projeto: `app-reflex-02`
-- Produção READY verificada para a release OpenAI/Codex v2: `dpl_FAGKTxzRLcwv5E62oLyWfCjniyVX`
-- SHA dessa produção: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`
+- Produção READY verificada: `dpl_BvVod4yTYvEpfxT6cGXdTzxoYvEa`
+- SHA dessa produção: `0c7f14c41be816ca023d8347984665db60fbc265`
 - Branch: `main`
 - URL canônica: `https://app-reflex-02.vercel.app`
 
@@ -45,7 +44,7 @@ Project ref: `xenapowdtfhdwcfthfrn`
 - memory events: 1
 - características confirmadas do Cérebro: 0
 - regras confirmadas: 0
-- propostas de atualização: 13
+- propostas de atualização: 23
 - reflexões: 0
 - dossiês V3.1: 0
 - auditorias V3.1: 0
@@ -113,3 +112,11 @@ Trate esses trechos como históricos até reconciliação formal. Código + runt
 - 8 Skills OpenAI registradas em `.agents/skills/openai-reflex-*`;
 - validação anti-segredos em `OpenAI ChatGPT/scripts/validate-context.mjs`;
 - continuidade registra fatos/decisões verificadas, não transcrições integrais nem raciocínio privado.
+
+
+## Reflex Agent OS V3 — branch em revisão
+
+- Branch: `chatgpt/reflex-agent-os-v3`.
+- R1–R9 definidos em `docs/agent-system/agent-registry.yaml`.
+- O1–O9 e A1–A9 tratados como adapters.
+- Nenhuma migration live, deploy manual ou alteração funcional do Cérebro faz parte desta missão.

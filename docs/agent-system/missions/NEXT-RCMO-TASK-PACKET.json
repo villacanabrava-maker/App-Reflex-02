@@ -1,0 +1,65 @@
+{
+  "mission_id": "NEXT-COGNITIVE-CONSTITUTION-RCMO",
+  "task_id": "TP-RCMO-00",
+  "parent_task_id": null,
+  "created_at": "2026-09-19T19:22:00-03:00",
+  "objective": "Pesquisar e especificar a Constituição Cognitiva V1 / RCMO antes de reconstruir o pipeline documental ou o Cérebro Autoral.",
+  "baseline_sha": "0c7f14c41be816ca023d8347984665db60fbc265",
+  "target_branch": "TBD-after-Agent-OS-V3",
+  "worktree": null,
+  "owner_role": "R2",
+  "dependencies": [
+    "Reflex Agent OS V3 reconciliado",
+    "pesquisa R8",
+    "baseline cognitivo live"
+  ],
+  "in_scope": [
+    "definir RCMO",
+    "árvore de processamento documental",
+    "interfaces entre estrutura, conhecimento, evidência, taxonomia e Cérebro",
+    "protocolos das 18 dimensões em nível de especificação",
+    "golden/eval plan"
+  ],
+  "out_of_scope": [
+    "migration live",
+    "reprocessamento do corpus",
+    "cron/replay Wave 6",
+    "promoção automática de autoria"
+  ],
+  "allowed_tools": [
+    "repository read",
+    "web research",
+    "read-only Supabase",
+    "read-only Vercel/GitHub"
+  ],
+  "write_scope": [
+    "docs/ia/**",
+    "docs/adr/**",
+    "docs/agent-system/missions/**"
+  ],
+  "risk_level": "HIGH",
+  "acceptance_criteria": [
+    "arquitetura fundamentada em evidência",
+    "separação obra/estrutura/unidades cognitivas",
+    "proveniência explícita",
+    "condições de abstinência",
+    "plano de evals",
+    "A7/O6 red-team independente"
+  ],
+  "required_evidence": [
+    "CONFIRMADO-CODIGO",
+    "CONFIRMADO-EXTERNO",
+    "CONFIRMADO-RUNTIME"
+  ],
+  "expected_artifacts": [
+    "Constituição Cognitiva V1",
+    "ADR",
+    "Task Packets de implementação",
+    "Golden Dataset plan"
+  ],
+  "status": "PROPOSED",
+  "blocked_by": [
+    "Agent OS V3 ainda em implantação"
+  ],
+  "next_handoff": "R8"
+}

@@ -1,21 +1,14 @@
 # O3 — Supabase & Data
 
+> **Papel canônico: R3.** Fonte normativa: `docs/agent-system/agent-registry.yaml`. Este arquivo é um adapter OpenAI e não redefine o papel canônico.
+
 ## Missão
-Operar PostgreSQL/Supabase com segurança, least privilege e evidência live.
+Operar PostgreSQL/Supabase com least privilege e evidência live.
 
-## Obrigatório
-- carregar a Skill oficial Supabase;
-- verificar schema live;
-- revisar RLS + grants + RPCs + ownership;
-- usar migrations versionadas;
-- executar advisors;
-- verificar pós-mudança.
+## Adapter OpenAI
+Verificar schema live, RLS, grants, RPCs, migrations e advisors; nunca aplicar db push cegamente nem expor service role.
 
-## Áreas
-Auth, Storage, RLS, SQL, indexes, pgvector, functions, triggers, migrations.
-
-## Não fazer
-- não expor service role;
-- não aplicar `db push` cegamente;
-- não “corrigir” lints sem entender o modelo de acesso;
-- não inferir schema pela documentação histórica.
+## Read-first
+- `../../docs/agent-system/CONSTITUTION.md`
+- `../../docs/agent-system/CURRENT_STATE.md`
+- `../BOOTSTRAP.md`

@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "policy": "Preserve existing Skills; group them under canonical capabilities before deleting or merging anything.",
+  "canonical_skills": [
+    {
+      "id": "reflex-bootstrap-reconcile",
+      "adapters": [
+        ".agents/skills/openai-reflex-bootstrap/SKILL.md",
+        ".agents/skills/project-state-reconciliation/SKILL.md",
+        ".claude/skills/reflex-bootstrap-reconcile/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-task-routing",
+      "adapters": [
+        ".agents/skills/rflex-handoff-contract/SKILL.md",
+        ".agents/skills/rflex-definition-of-done/SKILL.md",
+        ".claude/skills/reflex-task-routing/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-handoff",
+      "adapters": [
+        ".agents/skills/external-review-bridge/SKILL.md",
+        ".agents/skills/evidence-ledger/SKILL.md",
+        ".claude/skills/reflex-handoff/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-git-safe-worktree",
+      "adapters": [
+        ".agents/skills/rflex-git-workflow/SKILL.md",
+        ".claude/skills/reflex-git-safe-worktree/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-supabase-safe-change",
+      "adapters": [
+        ".agents/skills/openai-reflex-supabase-safe/SKILL.md",
+        ".agents/skills/supabase-safe-migrations/SKILL.md",
+        ".claude/skills/reflex-supabase-safe-change/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-cognitive-integrity",
+      "adapters": [
+        ".agents/skills/openai-reflex-cognitive-integrity/SKILL.md",
+        ".agents/skills/authorial-ai-retrieval/SKILL.md",
+        ".agents/skills/claim-provenance/SKILL.md",
+        ".claude/skills/reflex-cognitive-integrity/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-ui-runtime-verify",
+      "adapters": [
+        ".agents/skills/openai-reflex-runtime-debug/SKILL.md",
+        ".agents/skills/next15-react19-engineering/SKILL.md",
+        ".agents/skills/design-system-rflex/SKILL.md",
+        ".claude/skills/reflex-ui-runtime-verify/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-independent-qa",
+      "adapters": [
+        ".agents/skills/independent-qa-security/SKILL.md",
+        ".agents/skills/qa-tester/SKILL.md",
+        ".claude/skills/reflex-independent-qa/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-release-verify",
+      "adapters": [
+        ".agents/skills/openai-reflex-release-verify/SKILL.md",
+        ".agents/skills/vercel-preview-observability/SKILL.md",
+        ".claude/skills/reflex-release-verify/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-research",
+      "adapters": [
+        ".agents/skills/openai-reflex-research-evidence/SKILL.md",
+        ".agents/skills/evidence-based-research/SKILL.md",
+        ".agents/skills/project-state-research/SKILL.md",
+        ".claude/skills/reflex-research/SKILL.md"
+      ]
+    },
+    {
+      "id": "reflex-continuity-close",
+      "adapters": [
+        ".agents/skills/openai-reflex-continuity/SKILL.md",
+        ".agents/skills/project-state-reconciliation/SKILL.md",
+        ".agents/skills/evidence-ledger/SKILL.md",
+        ".claude/skills/reflex-continuity-close/SKILL.md"
+      ]
+    }
+  ],
+  "planned_not_implemented": [
+    "reflex-rcmo"
+  ]
+}

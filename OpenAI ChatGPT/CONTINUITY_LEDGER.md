@@ -57,3 +57,31 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - release commit: `6ad983c7d57d51c6bd34c66713fdd3c8bee03141`;
 - CI run `35454339376`: success;
 - Vercel production deployment `dpl_FAGKTxzRLcwv5E62oLyWfCjniyVX`: READY e associado ao mesmo SHA.
+
+## 2026-09-19 — Reflex Agent OS V3 iniciado
+- [CONFIRMADO-CODIGO] `main` reconciliada em `0c7f14c41be816ca023d8347984665db60fbc265`; CI verde.
+- [CONFIRMADO-RUNTIME] Supabase `ACTIVE_HEALTHY`, 38 entradas no ledger e 23 propostas no snapshot.
+- [CONFIRMADO-RUNTIME] Vercel produção `READY`, deployment `dpl_BvVod4yTYvEpfxT6cGXdTzxoYvEa`, mesmo SHA da `main`.
+- [CONFIRMADO-EXTERNO] documentação oficial atual do Codex confirma AGENTS.md hierárquico, config project-scoped, subagentes TOML, MCP e controles de sandbox/aprovação.
+- [CONFIRMADO-CODIGO] branch `chatgpt/reflex-agent-os-v3` criada para consolidar R1–R9 e validadores determinísticos.
+- [PENDENTE] auditoria R6, CI final e reconciliação R9.
+- [BLOQUEADO] nenhuma migration live, deploy manual ou reforma cognitiva está autorizada por esta missão.
+
+## 2026-09-20 — Consolidação tri-runtime cloud
+- [DECISÃO-HUMANA] operar Claude Code prioritariamente em cloud/web conectado ao GitHub.
+- [DECISÃO-HUMANA] manter Antigravity local com seis agentes físicos; R1–R9 continuam funções canônicas.
+- [CONFIRMADO-EXTERNO] Claude Code Routines suportam schedule, API e eventos GitHub e rodam em infraestrutura cloud; são research preview.
+- [CONFIRMADO-EXTERNO] Codex Cloud suporta trabalho cloud ligado ao GitHub e revisão automática/manual de PRs; Agents API suporta sessões assíncronas, MCP e webhooks.
+- [CONFIRMADO-EXTERNO] Supabase oferece MCP project-scoped/read-only, Cron, Database Webhooks, Queues e Edge Functions; foi classificado como infraestrutura/event bus, não quarto motor.
+- [CONFIRMADO-CODIGO] commit `e755b21075f913b8f37e25c20c81dc4b417adb17` adicionou Claude Cloud ao Agent OS V3 sem tocar em `src/**` ou `supabase/**`.
+- [CONFIRMADO-CI] run `35488842913` passou validators, TypeScript, lint, testes e build.
+- [PENDENTE] setup humano da conta Claude Code web/Routines e Codex Cloud.
+- [PENDENTE] smoke test local dos seis agentes Antigravity e auditoria R6 independente.
+
+## 2026-09-20 — Convergência Claude + Codex + Antigravity
+- [CONFIRMADO-EXTERNO] Codex review do commit `ffca46f` encontrou secret scan, Skills Claude, branch ownership e Evidence schema.
+- [RELATADO] Claude Cloud e Antigravity 2.0 emitiram `PASS WITH CONDITIONS` convergente nesses pontos.
+- [DECISÃO-ARQUITETURAL] somente cobertura R1-R9 é canônica; contagem física do Antigravity é estado do adapter/runtime.
+- [PENDENTE-HUMANO] proposta Antigravity de acionar R8 obrigatoriamente após toda tarefa não foi promovida sem confirmação humana explícita.
+- [CONFIRMADO-CODIGO] hardening incorpora findings convergentes e bloqueios Antigravity de TRUNCATE/DISABLE RLS.
+

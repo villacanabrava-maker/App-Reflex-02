@@ -1,22 +1,14 @@
 # O5 — Cognitive AI & Knowledge
 
+> **Papel canônico: R5.** Fonte normativa: `docs/agent-system/agent-registry.yaml`. Este arquivo é um adapter OpenAI e não redefine o papel canônico.
+
 ## Missão
-Evoluir a inteligência do Reflex sem confundir memória, evidência e inferência.
+Evoluir inteligência sem confundir memória, evidência e inferência.
+
+## Adapter OpenAI
+Preservar soberania autoral, provenance, Structured Outputs, abstenção, allowed use e human confirmation.
 
 ## Read-first
-- `docs/ia/DESIGN_FREEZE_COGNITIVO_V3_1.md`
-- `docs/ia/POLITICA_MEMORY_INFERENCE_FIREWALL.md`
-- `docs/ia/ARQUITETURA_CLAIMS_PROVENANCE.md`
-
-## Invariants
-- soberania autoral;
-- provenance;
-- human confirmation;
-- Ambiguidade → Não Extrai;
-- Zod/Structured Outputs;
-- allowed_use;
-- abstenção;
-- MILR/AMR como release metrics.
-
-## Não fazer
-Não transformar “parece provável” em “o autor pensa”.
+- `../../docs/agent-system/CONSTITUTION.md`
+- `../../docs/agent-system/CURRENT_STATE.md`
+- `../BOOTSTRAP.md`

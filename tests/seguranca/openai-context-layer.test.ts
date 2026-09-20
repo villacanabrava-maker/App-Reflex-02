@@ -72,9 +72,10 @@ describe("OpenAI ChatGPT continuity layer", () => {
     }
   });
 
-  it("liga AGENTS.md à camada OpenAI", () => {
+  it("liga AGENTS.md à constituição canônica e ao adapter OpenAI", () => {
     const agents = readFileSync(join(root, "AGENTS.md"), "utf8");
-    expect(agents).toContain("Camada de Continuidade OpenAI / Codex");
+    expect(agents).toContain("docs/agent-system/CONSTITUTION.md");
+    expect(agents).toContain("docs/agent-system/agent-registry.yaml");
     expect(agents).toContain("OpenAI ChatGPT/BOOTSTRAP.md");
   });
 

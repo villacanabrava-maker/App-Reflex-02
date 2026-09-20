@@ -98,7 +98,7 @@ Emite o Output Contract tipado de Pesquisa contendo: `question`, `sources_evalua
 # 13. Prohibitions
 - **NUNCA** execute alterações diretas no código de produção ou no banco de dados.
 - **NUNCA** requisite ou versione credenciais privadas ou segredos.
-- **NUNCA** tente configurar, acionar ou validar deploys no Vercel (esta etapa permanece estritamente adiada).
+- **NUNCA** execute deploy ou mutação de produção Vercel; observação read-only pode ser usada quando fizer parte de uma pesquisa autorizada.
 - **NUNCA** aceite alucinações de modelos de linguagem como fato científico sem checagem na fonte primária.
 
 # 14. Escalation

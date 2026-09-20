@@ -27,13 +27,30 @@ process.stdin.on('end', () => {
     if (name === 'run_command') {
       const cmd = (args.CommandLine || '').trim();
 
-      // Bloquear comandos Vercel nesta etapa
-      if (/\bvercel\b/i.test(cmd)) {
+      // Vercel: qualquer deploy/promote/rollback/--prod e permanentemente bloqueado.
+      if (/\bvercel\s+(deploy|promote|rollback)\b/i.test(cmd) || /\bvercel\b.*--prod\b/i.test(cmd)) {
         console.log(JSON.stringify({
           decision: 'deny',
-          reason: 'SEGURANCA: O Vercel esta expressamente desativado nesta etapa por decisao do usuario.'
+          reason: 'GATE DE PRODUCAO: Deploys, promotes e rollbacks Vercel via CLI exigem gate humano.'
         }));
         return;
+      }
+
+      // Vercel: qualquer outro subcomando que nao seja comprovadamente somente-leitura exige aprovacao.
+      const vercelMatch = cmd.match(/\bvercel\s+([a-z][a-z-]*)/i);
+      if (vercelMatch) {
+        const readOnlyVercelVerbs = new Set([
+          'ls', 'list', 'inspect', 'logs', 'whoami', 'help',
+          '--version', '-v', '--help'
+        ]);
+        const verb = vercelMatch[1].toLowerCase();
+        if (!readOnlyVercelVerbs.has(verb)) {
+          console.log(JSON.stringify({
+            decision: 'ask',
+            reason: 'GATE DE PRODUCAO: Comando Vercel fora da lista somente-leitura (ls/list/inspect/logs/whoami/help/--version) exige aprovacao explicita do usuario.'
+          }));
+          return;
+        }
       }
 
       // Proibir force push em qualquer branch
@@ -45,20 +62,17 @@ process.stdin.on('end', () => {
         return;
       }
 
-      // Push direto para main: permitir apenas se bootstrap inicial autorizado
-      if (/git\s+push.*origin\s+main/i.test(cmd)) {
-        const allowInitial = process.env.ALLOW_INITIAL_BOOTSTRAP_PUSH === 'true';
-        if (!allowInitial) {
-          console.log(JSON.stringify({
-            decision: 'deny',
-            reason: 'SEGURANCA: Push direto para a branch main e bloqueado por padrao. Para bootstrap inicial autorizado no repositorio novo vazio, defina ALLOW_INITIAL_BOOTSTRAP_PUSH=true.'
-          }));
-          return;
-        }
+      // Proibir push direto para main (qualquer refspec ou sintaxe)
+      if (/git\s+push.*(?:\bmain\b|refs\/heads\/main)/i.test(cmd)) {
+        console.log(JSON.stringify({
+          decision: 'deny',
+          reason: 'SEGURANCA: Push direto para a branch main e permanentemente bloqueado. Todas as alteracoes devem tramitar por branch isolada e PR com revisao independente de R6.'
+        }));
+        return;
       }
 
       // Proibir comandos destrutivos de sistema e banco
-      if (/rm\s+-rf\s+[/\\]|drop\s+database|drop\s+schema/i.test(cmd)) {
+      if (/rm\s+-rf\s+[/\\]|drop\s+database|drop\s+schema|\btruncate\b|disable\s+row\s+level\s+security/i.test(cmd)) {
         console.log(JSON.stringify({
           decision: 'deny',
           reason: 'SEGURANCA: Comandos destrutivos de sistema ou banco de dados sao permanentemente bloqueados.'

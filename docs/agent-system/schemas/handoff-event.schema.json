@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reflex Runtime Handoff Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mission_id",
+    "target_runtime",
+    "next_runtime",
+    "issue_number",
+    "branch",
+    "sha",
+    "hop",
+    "max_hops",
+    "prompt"
+  ],
+  "properties": {
+    "mission_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_runtime": {
+      "enum": [
+        "openai_cloud",
+        "claude_cloud",
+        "antigravity_local"
+      ]
+    },
+    "next_runtime": {
+      "enum": [
+        "openai_cloud",
+        "claude_cloud",
+        "antigravity_local",
+        "none"
+      ]
+    },
+    "issue_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha": {
+      "type": "string",
+      "minLength": 7
+    },
+    "hop": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "max_hops": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
