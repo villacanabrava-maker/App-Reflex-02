@@ -20,6 +20,7 @@ Adotar a Constituição Cognitiva V1 com quatro separações arquiteturais:
 2. **Evidence/Annotation Core** com âncoras verificáveis em Source Versions.
 3. **Analytical Method Registry** com métodos versionados e condições de abstention.
 4. **RCMO (Reflex Cognitive Method Object)** como resultado analítico versionado, sempre distinto de memória autoral confirmada.
+5. **Namespaces de estado separados:** o lifecycle/review de RCMO não reutiliza `confirmed_authorial`; aceitar um RCMO não o promove a memória. O enum físico de claims definido em `0031_claims_ledger.sql` permanece preservado.
 
 A cadeia normativa passa a ser:
 
@@ -50,7 +51,8 @@ Source Version -> Structure -> Evidence -> Claim -> Method Execution -> RCMO
 - necessidade futura de migration e backfill controlado;
 - versionamento de métodos/prompts/evaluators;
 - UI terá de expor status epistêmico com mais precisão;
-- replay de análises exigirá idempotência e lineage.
+- replay de análises exigirá idempotência e lineage;
+- o mapping entre rótulos conceituais históricos da V3.1 e enums físicos precisa ser explícito antes de qualquer migration.
 
 ## Alternativas rejeitadas
 
