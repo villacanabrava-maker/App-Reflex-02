@@ -61,11 +61,7 @@
     "runtime-registry.yaml",
     "cloud activation guide"
   ],
-  "status": "REVIEW",
-  "blocked_by": [
-    "human account setup for Claude Code web/Routines",
-    "human account setup for Codex Cloud review",
-    "independent R6 review"
-  ],
-  "next_handoff": "R6 independent review, then R9 reconciliation"
+  "status": "DONE",
+  "blocked_by": [],
+  "next_handoff": "NEXT-COGNITIVE-CONSTITUTION-RCMO completed via PR #18; implementation packets are not activated automatically"
 }
