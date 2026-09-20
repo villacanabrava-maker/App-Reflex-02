@@ -75,8 +75,9 @@ Fonte:
 
 Literatura recente sobre abstention em LLMs mostra que modelos frequentemente respondem quando deveriam recusar/abster-se, e que avaliação precisa conter casos não respondíveis e ambíguos, não apenas perguntas com resposta.
 
-Fonte representativa:
-- https://aclanthology.org/2025.coling-main.368/
+Fontes:
+- https://aclanthology.org/2025.coling-main.627/ — avaliação de abstention em perguntas respondíveis/não respondíveis.
+- https://aclanthology.org/2025.tacl-1.26/ — survey de métodos, benchmarks e métricas de abstention.
 
 **Implicação Reflex:** casos de insuficiência, conflito, ambiguidade, ausência de evidência e pedido fora do escopo devem ser famílias próprias do Golden Dataset.
 
