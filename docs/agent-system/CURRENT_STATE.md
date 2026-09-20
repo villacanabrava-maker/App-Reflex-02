@@ -7,7 +7,8 @@
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD live verificado: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
+- Baseline funcional verificado antes desta reconciliação: `2df5940d43a5672ae9028a6b3e408a055af5ee1a` (PR #18).
+- **HEAD live não é auto-referenciado neste arquivo**: deve ser consultado no GitHub no bootstrap, porque qualquer commit que atualize este snapshot cria um novo HEAD.
 - Agent OS V3: **MERGED / PUBLISHED** via PR #15.
 - Constituição Cognitiva V1 / RCMO: **MERGED / PUBLISHED** via PR #18.
 - Issue #17: **CLOSED / COMPLETED**.
@@ -18,13 +19,13 @@
 ## Vercel
 
 - Projeto: `app-reflex-02`
-- Produção: `READY`
-- Deployment: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`
+- Último baseline de produção verificado antes desta reconciliação: `READY`.
+- Deployment histórico reconciliado: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`.
 - Target: production
 - Branch: `main`
-- SHA: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
+- SHA do baseline: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
 - Alias canônico: `app-reflex-02.vercel.app`
-- [CONFIRMADO-RUNTIME] deployment reconciliado diretamente via Vercel e alinhado ao HEAD de `main`.
+- **Deployment/SHA live atuais devem ser consultados na Vercel no bootstrap**; um merge documental posterior pode gerar novo deployment sem alterar o baseline funcional.
 
 ## Supabase
 
