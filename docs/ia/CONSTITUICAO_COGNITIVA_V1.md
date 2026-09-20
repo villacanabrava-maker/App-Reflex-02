@@ -180,8 +180,8 @@ Métodos que sintetizam posição, característica, regra, dimensão ou tese dev
 ### C9 — Ambiguidade gera abstention
 Quando identidade da fonte, alcance do span, entailment, autoria, método ou contexto forem insuficientes, o sistema não deve preencher lacunas por plausibilidade.
 
-### C10 — Autoria requer gate humano
-Nenhuma entidade derivada recebe autoridade de memória autoral confirmada sem transição permitida e decisão humana quando o domínio exigir.
+### C10 — Toda promoção autoral requer gate humano
+Nenhuma entidade derivada recebe autoridade de memória autoral confirmada sem uma transição permitida **e uma decisão humana explícita e auditável**. Não existe domínio, método, modelo, nível de confiança ou consenso entre agentes que dispense esse gate.
 
 ### C11 — Externalidade permanece visível
 Conteúdo externo pode influenciar análise, mas sua origem deve permanecer explícita em retrieval, RCMO e geração.
