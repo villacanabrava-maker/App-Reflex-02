@@ -307,12 +307,16 @@ Campos mínimos:
 - `evidence_annotation_ids: uuid[]`
 - `confidence: object | null`
 - `status: generated | validated | proposed | accepted | rejected | superseded`
+- `abstention_status: not_abstained | abstained`
 - `abstention_reason: enum | null`
 - `review_event_id: uuid | null`
 - `supersedes_rcmo_id: uuid | null`
 - `created_at`
 
 Transições mínimas:
+- `accepted` ou `rejected` exige `review_event_id` humano no contrato;
+- `superseded` exige `supersedes_rcmo_id`;
+- `abstention_status=abstained` exige motivo canônico;
 - generated -> validated;
 - validated -> proposed;
 - proposed -> accepted **somente com Human Decision**;
@@ -340,7 +344,7 @@ Campos mínimos:
 - `created_at`
 - `decided_at: timestamp | null`
 
-**Importante:** `accepted` aqui significa decisão sobre a proposta. Só vira projeção autoral se a decisão humana autorizar uma materialização específica.
+**Importante:** `accepted`, `edited` ou `rejected` exige `decision_event_id` e `decided_at`. `accepted` aqui significa decisão sobre a proposta. Só vira projeção autoral se a decisão humana autorizar uma materialização específica.
 
 ### 3.11 Human Decision
 
@@ -367,7 +371,7 @@ Campos mínimos:
 - `projection_id: uuid`
 - `tenant_id: uuid`
 - `projection_type: characteristic | rule | claim | concept | methodology`
-- `source_proposal_id: uuid`
+- `source_ref: EntityRef` restrito a `proposal | claim`
 - `decision_event_id: uuid`
 - `content_ref: EntityRef | null`
 - `content_snapshot: object`
@@ -376,6 +380,7 @@ Campos mínimos:
 - `effective_at: timestamp`
 
 Invariantes:
+- `source_ref` deve apontar para Proposal ou Claim existente;
 - `decision_event_id` obrigatório e deve apontar para HUMAN;
 - não pode nascer de Method Execution/RCMO diretamente;
 - supersession/revogação de projeção já autoral também exige decisão humana quando altera o que o sistema atribui ao autor.
