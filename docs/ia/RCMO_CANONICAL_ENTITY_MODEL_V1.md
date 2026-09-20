@@ -407,11 +407,12 @@ Forma canônica para referências polimórficas:
 ```json
 {
   "entity_type": "claim",
-  "id": "00000000-0000-0000-0000-000000000000"
+  "id": "00000000-0000-0000-0000-000000000000",
+  "version": null
 }
 ```
 
-`entity_type` deve pertencer ao registry de entidades vigente.
+`entity_type` deve pertencer ao registry de entidades vigente. `id` é string canônica para suportar tanto UUIDs quanto IDs metodológicos estáveis; `version` é opcional e obrigatório semanticamente quando a referência aponta para uma entidade versionada cujo ID sozinho não identifica a revisão (por exemplo Method Definition).
 
 ## 5. Separação dos namespaces de estado
 
