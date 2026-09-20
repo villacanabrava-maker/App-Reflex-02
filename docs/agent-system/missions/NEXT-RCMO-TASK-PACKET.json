@@ -4,8 +4,8 @@
   "parent_task_id": null,
   "created_at": "2026-09-19T19:22:00-03:00",
   "objective": "Pesquisar e especificar a Constituição Cognitiva V1 / RCMO antes de reconstruir o pipeline documental ou o Cérebro Autoral.",
-  "baseline_sha": "0c7f14c41be816ca023d8347984665db60fbc265",
-  "target_branch": "TBD-after-Agent-OS-V3",
+  "baseline_sha": "e95861c8c3355642d3e1b7946d40bc1fa6502c18",
+  "target_branch": "feature/cognitive-constitution-rcmo",
   "worktree": null,
   "owner_role": "R2",
   "dependencies": [
@@ -57,9 +57,7 @@
     "Task Packets de implementação",
     "Golden Dataset plan"
   ],
-  "status": "PROPOSED",
-  "blocked_by": [
-    "Agent OS V3 ainda em implantação"
-  ],
+  "status": "IN_PROGRESS",
+  "blocked_by": [],
   "next_handoff": "R8"
 }

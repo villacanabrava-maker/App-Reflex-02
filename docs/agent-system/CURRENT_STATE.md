@@ -7,8 +7,10 @@
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD: `0c7f14c41be816ca023d8347984665db60fbc265`
-- CI do HEAD: verde.
+- HEAD: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+- CI do HEAD: verde (run 35498636333).
+- PR #15: MERGED (`infra: consolidate Reflex Agent Operating System V3`).
+- Branch ativa de trabalho: `feature/cognitive-constitution-rcmo`.
 - Branch protection: não ativa no snapshot.
 - PR #14: draft, antiga Wave 6, não integrar automaticamente.
 - PR #8: aberto, documentação Claude; revisar antes de integrar.
@@ -71,7 +73,8 @@ Esses achados são diagnóstico, não autorização de correção automática.
 
 ## Missão corrente
 
-`OPS-2026-09-19-AGENT-OS-V3`: consolidar a camada runtime-neutral e alinhar adapters sem reformar o Cérebro do produto.
+`NEXT-COGNITIVE-CONSTITUTION-RCMO` (`TP-RCMO-00`): Pesquisar e especificar a Constituição Cognitiva V1 / RCMO antes de reconstruir o pipeline documental ou o Cérebro Autoral.
+- Precedente concluído: `OPS-2026-09-19-AGENT-OS-V3` / PR #15 mesclado na `main`.
 
 
 ## Consolidação tri-runtime
