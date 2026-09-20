@@ -57,3 +57,13 @@ REVOKE EXECUTE ON FUNCTION cerebro_autoral.transicionar_estado_claim(
 REVOKE EXECUTE ON FUNCTION cerebro_autoral.transicionar_estado_claim_humano(
   UUID, cerebro_autoral.estado_epistemologico, TEXT, UUID, TEXT, JSONB
 ) FROM anon;
+
+-- 3. Registro no ledger de migrações da aplicação
+INSERT INTO public._migrations (nome, executado_em)
+SELECT '0039_revoke_truncate_least_privilege.sql', now()
+WHERE NOT EXISTS (
+  SELECT 1 FROM public._migrations WHERE nome = '0039_revoke_truncate_least_privilege.sql'
+);
+
+NOTIFY pgrst, 'reload schema';
+
