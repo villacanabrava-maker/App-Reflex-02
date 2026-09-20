@@ -7,7 +7,8 @@
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD live verificado: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
+- Baseline funcional verificado antes desta reconciliação: `2df5940d43a5672ae9028a6b3e408a055af5ee1a` (PR #18).
+- **HEAD live não é persistido como auto-referência**: consultar GitHub no início de cada sessão.
 - Agent OS V3: **MERGED / PUBLISHED** via PR #15.
 - Constituição Cognitiva V1 / RCMO: **MERGED / PUBLISHED** via PR #18.
 - Issue #17: **CLOSED / COMPLETED**.
@@ -19,16 +20,16 @@ PRs ainda relevantes:
 
 ## Vercel
 
-Produção está ativa e reconciliada com `main`.
+Último baseline funcional de produção verificado antes desta reconciliação:
 
 - Projeto: `app-reflex-02`
-- Deployment de produção: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`
-- Estado: `READY`
-- SHA: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
+- Deployment: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`
+- Estado observado: `READY`
+- SHA do baseline: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
 - Branch: `main`
 - URL canônica: `https://app-reflex-02.vercel.app`
 
-Nunca diagnosticar produção usando uma URL de preview sem reconciliar branch + SHA.
+**Deployment e SHA live atuais devem ser consultados na Vercel.** Nunca diagnosticar produção usando uma URL de preview ou um snapshot persistido sem reconciliar branch + SHA.
 
 ## Supabase live
 
@@ -76,7 +77,7 @@ Concluído:
 - Constituição Cognitiva V1 / RCMO integrada via PR #18;
 - Golden Dataset V4 normativamente aditivo ao V3;
 - lifecycle de RCMO separado de autoria confirmada;
-- produção Vercel no mesmo SHA da `main`.
+- baseline funcional PR #18 foi verificado em produção no mesmo SHA de `main`; estado live posterior deve ser consultado.
 
 ## Missão OpenAI corrente
 
