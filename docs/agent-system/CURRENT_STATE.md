@@ -14,7 +14,7 @@
 - TP-RCMO-01 (Modelo Canônico de Entidades Cognitivas V1): **MERGED / PUBLISHED** via PR #22 (`9845a1e`).
 - R8 (Pesquisa pós-constituição): **MERGED / PUBLISHED** via PR #23 (`e4d4076`).
 - PR #24 (TP-RCMO-02): aberto para contrato canônico e testes; **SEM AUTORIZAÇÃO DE MIGRATION LIVE**.
-- Missão ativa e prioritária: **TP-RCMO-01H** (Endurecimento pós-revisão do contrato canônico corrigindo 8 threads do Codex).
+- Missão ativa e prioritária: **TP-RCMO-01H** (Endurecimento pós-revisão do contrato canônico unificando PR #27 e PR #26, cobrindo as 8 threads do Codex e x-cross-entity-enforcement transacional).
 - Issue #17: **CLOSED / COMPLETED**.
 - PR #19: fechado como superseded após avanço de `main`; não integrar.
 - PR #14: draft, antiga Wave 6; não integrar automaticamente.

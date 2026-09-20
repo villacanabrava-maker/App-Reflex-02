@@ -493,3 +493,57 @@ TP-RCMO-02 ou posterior deve parar se descobrir que:
 - um campo legacy mistura estados de namespaces diferentes sem regra determinística de mapping.
 
 Esses casos exigem estratégia explícita de legado, não preenchimento plausível.
+
+## 8. Hardening pós-review — TP-RCMO-01H
+
+Esta seção consolida as 8 threads do review pós-merge do PR #22 (4 P1 + 4 P2). Ela é normativa para qualquer implementação posterior.
+
+### 8.1 EntityRef
+- Entidades UUID-backed no banco continuam exigindo UUID RFC 4122 válido.
+- `method_definition` é a referência canônica com ID textual estável.
+- Toda referência a `method_definition` exige `version` não-vazia obrigatória (`minLength: 1`); `method_id` sem versão não identifica uma revisão reproduzível.
+- Entidades adicionais de referência incluem `note` e `concept`.
+
+### 8.2 Evidence Anchor
+A combinação entre selector e unidade é restrita:
+
+| selector_type | offset_unit permitido |
+|---|---|
+| `text_quote` | `none` |
+| `text_position` | `unicode_code_point`, `utf16_code_unit`, `byte` |
+| `quote_and_position` | `unicode_code_point`, `utf16_code_unit`, `byte` |
+| `media_fragment` | `time_ms`, `byte` |
+
+Para seletores posicionais, `end > start` é invariante obrigatório. O perfil de normalização da Source Version é aplicado antes de interpretar coordenadas.
+
+### 8.3 Annotation
+Toda Annotation contém **exatamente um** corpo semântico:
+- `body_ref`, ou
+- `body_value`.
+
+Para `claim`, `concept`, `rcmo`, `proposal`, `body_ref.entity_type` deve corresponder exatamente ao `body_kind`. `label` usa corpo inline (`body_value`). `note` pode usar valor inline ou referência a entidade `note`.
+
+### 8.4 Claim Provenance
+Todo Claim declara `evidence_annotation_ids` (array de UUIDs):
+- Se `verifiability == "VERIFIABLE"`, exige ao menos uma Annotation (`minItems: 1`), `primary_source_version_id` não-nulo e vinculação resolvida até Source Version;
+- `UNVERIFIABLE` admite falta de âncoras documentais, mas fica terminantemente impedido de receber `epistemic_status == "confirmed_authorial"`;
+- `confirmed_authorial` exige `source_role == "HUMAN_CONFIRMED"`, `verifiability == "VERIFIABLE"` e evento de decisão humana registrado em `origin_event_id`.
+
+### 8.5 Decision Binding Cross-Entity (x-cross-entity-enforcement)
+O JSON Schema Draft-07/2020-12 inclui formalmente o bloco `x-cross-entity-enforcement` com as 7 regras relacionais transacionais (`XEI-TENANT-001` a `XEI-ANCHOR-001`):
+1. **XEI-TENANT-001:** Toda referência e evento preserva o mesmo tenant;
+2. **XEI-DECISION-001:** RCMO aceito/rejeitado referencia decisão `HUMAN` sobre aquele mesmo RCMO com resultado compatível;
+3. **XEI-DECISION-002:** Proposta aceita/editada/rejeitada referencia decisão `HUMAN` sobre aquela mesma proposta com resultado compatível;
+4. **XEI-PROJECTION-001:** Confirmed Authorial Projection referencia decisão `HUMAN` cujo `subject_ref` é exatamente seu `source_ref`;
+5. **XEI-CLAIM-STATE-001:** Projeção de claim exige que o claim esteja `confirmed_authorial` após transição formal por `HUMAN`;
+6. **XEI-CLAIM-PROVENANCE-001:** Todo claim verificável valida resolubilidade até Source Version;
+7. **XEI-ANCHOR-001:** Seletores posicionais exigem `end > start`.
+
+### 8.6 Abstenção e Sucesso de Method Execution
+- Se `status == "abstained"`, `abstention_reason` canônico e `finished_at` são obrigatórios;
+- Se `status == "succeeded"`, `output_refs` exige ao menos 1 item (`minItems: 1`), `abstention_reason` deve ser nulo e `finished_at` é obrigatório;
+- Se `status == "failed"`, `finished_at` é obrigatório.
+
+### 8.7 Gate para TP-RCMO-02+
+Nenhuma migration, backfill ou projeção autoral pode ser executada em produção enquanto os invariantes `XEI-*` não tiverem enforcement verificável no boundary correspondente. `DO-NOT-INFER` continua obrigatório para legado sem prova determinística.
+

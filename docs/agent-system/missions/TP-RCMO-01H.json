@@ -22,6 +22,7 @@
     "restringir offset_unit ao selector_type em evidence_anchor",
     "requerer body semântico válido em annotation e correspondência body_kind/body_ref",
     "exigir abstention_reason em method_execution com status abstained",
+    "incorporar x-cross-entity-enforcement e evidence_annotation_ids unificando com PR #26",
     "reconciliar status do TP-RCMO-01 e CURRENT_STATE"
   ],
   "out_of_scope": [
