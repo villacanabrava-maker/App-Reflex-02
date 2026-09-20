@@ -1,6 +1,6 @@
 # Current State — Reflex Agent OS V3
 
-**Snapshot verificado:** 2026-09-20 — pós-merge da Constituição Cognitiva V1  
+**Snapshot verificado:** 2026-09-20 — pós-merge de TP-RCMO-01 e pesquisa R8  
 **Natureza:** bootstrap operacional; verificar live antes de decisões críticas.
 
 ## GitHub
@@ -11,6 +11,10 @@
 - **HEAD live não é auto-referenciado neste arquivo**: deve ser consultado no GitHub no bootstrap, porque qualquer commit que atualize este snapshot cria um novo HEAD.
 - Agent OS V3: **MERGED / PUBLISHED** via PR #15.
 - Constituição Cognitiva V1 / RCMO: **MERGED / PUBLISHED** via PR #18.
+- TP-RCMO-01 — Modelo canônico de entidades: **MERGED / PUBLISHED** via PR #22 (`9845a1e0d6fb9ea783b0b60c2cfd6fc61d1213ea`).
+- Pesquisa R8 pós-Constituição: **MERGED / PUBLISHED** via PR #23 (`e4d40766a9d386b6bdabc50d9c43ab45dfcae15f`).
+- TP-RCMO-02: PR #24 ativo em branch concorrente `feature/rcmo-02-legacy-reconciliation`; trabalho documental apenas, não integrar automaticamente.
+- TP-RCMO-01H: issue #25 / branch `chatgpt/rcmo-01h-schema-hardening`, correção dos findings pós-review do PR #22.
 - Issue #17: **CLOSED / COMPLETED**.
 - PR #19: fechado como superseded após avanço de `main`; não integrar.
 - PR #14: draft, antiga Wave 6; não integrar automaticamente.
@@ -19,11 +23,11 @@
 ## Vercel
 
 - Projeto: `app-reflex-02`
-- Último baseline de produção verificado antes desta reconciliação: `READY`.
-- Deployment histórico reconciliado: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`.
+- Último deployment de produção verificado nesta reconciliação: `READY`.
+- Deployment verificado: `dpl_CNQDEQ7PX4MAkwpwbpXL3V8aCqcu`.
 - Target: production
 - Branch: `main`
-- SHA do baseline: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
+- SHA verificado do deployment: `e4d40766a9d386b6bdabc50d9c43ab45dfcae15f`
 - Alias canônico: `app-reflex-02.vercel.app`
 - **Deployment/SHA live atuais devem ser consultados na Vercel no bootstrap**; um merge documental posterior pode gerar novo deployment sem alterar o baseline funcional.
 
@@ -107,20 +111,28 @@ Nenhuma etapa intermediária promove autoria automaticamente.
 
 ## Próxima frente
 
-Os task packets em `docs/agent-system/missions/NEXT-RCMO-IMPLEMENTATION-TASK-PACKETS.md` estão disponíveis, mas **não foram ativados automaticamente**.
+Estado reconciliado dos packets pós-Constituição:
 
-Antes de qualquer implementação:
-- criar missão/task packet específico;
-- escolher o menor conjunto útil de papéis;
-- preservar expand-first;
-- manter Golden Dataset V3 + V4;
-- exigir R6 independente conforme risco;
-- exigir gate humano para migration live, mutação estrutural de produção, deploy manual e merge/push direto em `main`.
+- **TP-RCMO-01:** entregue via PR #22; o packet canônico deve permanecer `DONE`.
+- **TP-RCMO-01H:** correção pós-review ativa na issue #25. Fecha oito findings Codex deixados abertos no PR #22 antes de qualquer implementação física.
+- **TP-RCMO-02:** PR #24 ativo em runtime concorrente, com reconciliação de legado e plano expand-first apenas documental.
+- **TP-RCMO-03+** permanecem não ativados.
 
-Sem missão ativa específica, migrations, replay/reprocessamento, cron Wave 6 e promoção automática de autoria permanecem bloqueados.
+### Gate obrigatório antes de migration/backfill
+
+Mesmo que TP-RCMO-02 seja promovido documentalmente, nenhuma migration é autorizada até:
+1. TP-RCMO-01H estar canônico;
+2. invariantes `XEI-*` terem enforcement verificável no boundary futuro;
+3. mapping/backfill ser reavaliado contra o schema endurecido;
+4. R6 independente concluir no SHA final;
+5. existir gate humano específico para a migration live.
+
+Os findings pós-review que motivam TP-RCMO-01H cobrem: binding de decisões ao subject/tenant/outcome, promoção autoral de claims, provenance ancorada, versão de Method Definition, UUIDs de EntityRef, unidades de offset, corpo semântico de Annotation e abstention reason de Method Execution.
+
+Migrations, replay/reprocessamento, cron Wave 6 e promoção automática de autoria permanecem bloqueados.
 
 ## R8 pós-tarefa
 
-Task Packet proposto, não ativado: `R8-2026-09-20-POST-CONSTITUTION-RESEARCH.json`.
+Task Packet `R8-2026-09-20-POST-CONSTITUTION-RESEARCH.json`: **DONE**, promovido via PR #23.
 
-Escopo de pesquisa: prevenção de snapshots stale, pinagem de Actions, binding criptográfico de handoffs e conformance de Evidence Anchors Unicode/UTF-16. Pesquisa não autoriza implementação automática.
+Resultados principais: conformance de Evidence Anchors Unicode code points ↔ UTF-16, recomendação de normalização NFC antes de hash/ancoragem, prevenção de snapshots stale e supply-chain pinning. As recomendações subsidiam TP-RCMO-02/03/04, mas não autorizam implementação automática.
