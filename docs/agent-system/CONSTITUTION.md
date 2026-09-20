@@ -90,6 +90,13 @@ Modos canônicos:
 
 Detalhes em `orchestration-modes.yaml`.
 
+### Loop Obrigatório de Ativação de R8 (Mandato Humano de Pesquisa e Evolução)
+Por determinação soberana do usuário, o agente de pesquisa **`rflex-research-evolution` (R8)** é um componente de inteligência estratégica permanente:
+1. **Dever de Análise Pós-Tarefa:** Todo agente, ao concluir uma tarefa (ou ao se deparar com erros, dúvidas de compatibilidade, gargalos ou oportunidades de modernização), deve analisar o trabalho realizado e levantar questões, curiosidades, dúvidas técnicas ou pontos de melhoria.
+2. **Disparo do R8:** Essas questões devem gerar um Task Packet de Pesquisa acionando R8 (`rflex-research-evolution`).
+3. **Escopo do R8:** R8 pesquisa na web, no GitHub (bibliotecas e repositórios de ponta), standards W3C e papers científicos, sintetizando soluções comprovadas e rotulando claramente para qual papel se destinam as propostas.
+4. **Respeito e Adoção Tripartite:** Antigravity 2.0, Claude Code Cloud e OpenAI Codex devem suportar e incentivar esse ciclo reflexivo contínuo em suas esteiras operacionais.
+
 ## 7. Permissões
 
 Permissões conceituais ficam em `permissions.yaml`. O enforcement concreto pertence ao adapter/runtime.

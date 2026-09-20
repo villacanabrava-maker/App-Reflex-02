@@ -76,7 +76,7 @@ jobs:
     steps:
       - name: Parse and validate handoff
         id: parse
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
           INPUT_MISSION_ID: ${{ inputs.mission_id }}
           INPUT_TARGET_RUNTIME: ${{ inputs.target_runtime }}
@@ -184,7 +184,8 @@ jobs:
                 const trustedComment =
                   trusted.has(association) ||
                   login === "github-actions[bot]" ||
-                  login === "chatgpt-codex-connector[bot]";
+                  login === "chatgpt-codex-connector[bot]" ||
+                  login === "claude[bot]";
                 if (!trustedComment) continue;
 
                 const priorBody = comment.body || "";
@@ -218,6 +219,29 @@ jobs:
                 core.setFailed("A bot-authored comment cannot originate a new handoff chain; the first hop must come from a trusted human association or workflow_dispatch.");
                 return;
               }
+              if (context.eventName === "issue_comment" && context.payload.comment?.user?.login === "claude[bot]") {
+                let foundMatchingDispatch = false;
+                for (const comment of comments) {
+                  if (comment.id === currentCommentId) continue;
+                  const priorBody = comment.body || "";
+                  if (priorBody.startsWith("[REFLEX-CLAUDE-DISPATCHED]\n")) {
+                    const missionMatch = priorBody.match(/^mission_id:\s*(.+)$/m);
+                    const hopMatch = priorBody.match(/^hop:\s*(\d+)(?:\/\d+)?$/m);
+                    if (missionMatch && hopMatch) {
+                      const dispatchedMission = missionMatch[1].trim();
+                      const dispatchedHop = Number(hopMatch[1]);
+                      if (dispatchedMission === String(payload.mission_id) && dispatchedHop === (hop - 1)) {
+                        foundMatchingDispatch = true;
+                        break;
+                      }
+                    }
+                  }
+                }
+                if (!foundMatchingDispatch) {
+                  core.setFailed(`Claude bot handoff rejected: no verified [REFLEX-CLAUDE-DISPATCHED] found for mission ${payload.mission_id} and hop ${hop - 1}.`);
+                  return;
+                }
+              }
             }
 
             core.setOutput("active", "true");
@@ -240,7 +264,7 @@ jobs:
     outputs:
       final_message: ${{ steps.codex.outputs.final-message }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ needs.prepare.outputs.branch }}
           fetch-depth: 0
@@ -259,7 +283,7 @@ jobs:
 
       - name: Run OpenAI Codex handoff
         id: codex
-        uses: openai/codex-action@v1
+        uses: openai/codex-action@86365089eb2b84e0a8fb0717b304f8bdcb13b20e # v1.12
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           permission-profile: ":read-only"
@@ -336,7 +360,7 @@ jobs:
       issues: write
     steps:
       - name: Publish OpenAI result and dispatch next runtime
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
           RESULT: ${{ needs.openai.outputs.final_message }}
           MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
@@ -451,7 +475,7 @@ jobs:
           echo "session_url=$session_url" >> "$GITHUB_OUTPUT"
 
       - name: Record Claude dispatch
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
           MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
           ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
@@ -482,7 +506,7 @@ jobs:
       issues: write
     steps:
       - name: Publish local wake prompt
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
           MISSION_ID: ${{ needs.prepare.outputs.mission_id }}
           ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
@@ -564,7 +588,7 @@ jobs:
 
       - name: Record WhatsApp disabled state
         if: steps.whatsapp.outputs.enabled != 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         env:
           ISSUE_NUMBER: ${{ needs.prepare.outputs.issue_number }}
         with:

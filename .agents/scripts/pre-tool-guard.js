@@ -62,16 +62,13 @@ process.stdin.on('end', () => {
         return;
       }
 
-      // Push direto para main: permitir apenas se bootstrap inicial autorizado
-      if (/git\s+push.*origin\s+main/i.test(cmd)) {
-        const allowInitial = process.env.ALLOW_INITIAL_BOOTSTRAP_PUSH === 'true';
-        if (!allowInitial) {
-          console.log(JSON.stringify({
-            decision: 'deny',
-            reason: 'SEGURANCA: Push direto para a branch main e bloqueado por padrao. Para bootstrap inicial autorizado no repositorio novo vazio, defina ALLOW_INITIAL_BOOTSTRAP_PUSH=true.'
-          }));
-          return;
-        }
+      // Proibir push direto para main (qualquer refspec ou sintaxe)
+      if (/git\s+push.*(?:\bmain\b|refs\/heads\/main)/i.test(cmd)) {
+        console.log(JSON.stringify({
+          decision: 'deny',
+          reason: 'SEGURANCA: Push direto para a branch main e permanentemente bloqueado. Todas as alteracoes devem tramitar por branch isolada e PR com revisao independente de R6.'
+        }));
+        return;
       }
 
       // Proibir comandos destrutivos de sistema e banco

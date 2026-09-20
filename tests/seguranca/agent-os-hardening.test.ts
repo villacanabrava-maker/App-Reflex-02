@@ -48,4 +48,21 @@ describe("Agent OS V3 hardening", () => {
     expect(guard).toContain("\\btruncate\\b");
     expect(guard).toContain("disable\\s+row\\s+level\\s+security");
   });
+
+  it("elimina escape hatch de bootstrap e proíbe qualquer push para main", () => {
+    const guard = read(".agents/scripts/pre-tool-guard.js");
+    expect(guard).not.toContain("ALLOW_INITIAL_BOOTSTRAP_PUSH");
+    expect(guard).toContain("(?:\\bmain\\b|refs\\/heads\\/main)");
+  });
+
+  it("fixa todas as GitHub Actions por commit SHA completo de 40 caracteres", () => {
+    const ci = read(".github/workflows/ci.yml");
+    const handoff = read(".github/workflows/reflex-agent-handoff.yml");
+    expect(ci).toMatch(/uses:\s+actions\/checkout@[0-9a-f]{40}/);
+    expect(ci).toMatch(/uses:\s+actions\/setup-node@[0-9a-f]{40}/);
+    expect(handoff).toMatch(/uses:\s+actions\/checkout@[0-9a-f]{40}/);
+    expect(handoff).toMatch(/uses:\s+openai\/codex-action@[0-9a-f]{40}/);
+    expect(handoff).toMatch(/uses:\s+actions\/github-script@[0-9a-f]{40}/);
+    expect(handoff).not.toMatch(/uses:\s+actions\/github-script@v7\b/);
+  });
 });
