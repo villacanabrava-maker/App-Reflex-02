@@ -92,6 +92,7 @@ jobs:
             const allowed = new Set(["openai_cloud", "claude_cloud", "antigravity_local"]);
             const trusted = new Set(["OWNER", "MEMBER", "COLLABORATOR"]);
             let payload = null;
+            let commentTrustedByHumanAssociation = false;
 
             if (context.eventName === "issue_comment") {
               const body = context.payload.comment?.body || "";
@@ -105,7 +106,8 @@ jobs:
                 login === "github-actions[bot]" ||
                 login === "chatgpt-codex-connector[bot]" ||
                 login === "claude[bot]";
-              if (!trustedBot && !trusted.has(association)) {
+              commentTrustedByHumanAssociation = trusted.has(association);
+              if (!trustedBot && !commentTrustedByHumanAssociation) {
                 core.setFailed("Untrusted author attempted a Reflex handoff.");
                 return;
               }
@@ -210,6 +212,10 @@ jobs:
               }
               if (hop !== previousHop + 1) {
                 core.setFailed(`Non-monotonic handoff: expected hop ${previousHop + 1}, received ${hop}.`);
+                return;
+              }
+              if (context.eventName === "issue_comment" && !commentTrustedByHumanAssociation && previousHop === -1) {
+                core.setFailed("A bot-authored comment cannot originate a new handoff chain; the first hop must come from a trusted human association or workflow_dispatch.");
                 return;
               }
             }

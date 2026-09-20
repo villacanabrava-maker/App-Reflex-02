@@ -27,13 +27,30 @@ process.stdin.on('end', () => {
     if (name === 'run_command') {
       const cmd = (args.CommandLine || '').trim();
 
-      // Bloquear deploy Vercel; observação read-only permanece permitida.
-      if (/\bvercel\s+(deploy|--prod)\b/i.test(cmd)) {
+      // Vercel: qualquer deploy/promote/rollback/--prod e permanentemente bloqueado.
+      if (/\bvercel\s+(deploy|promote|rollback)\b/i.test(cmd) || /\bvercel\b.*--prod\b/i.test(cmd)) {
         console.log(JSON.stringify({
           decision: 'deny',
-          reason: 'GATE DE PRODUCAO: Deploys Vercel via CLI exigem gate humano.'
+          reason: 'GATE DE PRODUCAO: Deploys, promotes e rollbacks Vercel via CLI exigem gate humano.'
         }));
         return;
+      }
+
+      // Vercel: qualquer outro subcomando que nao seja comprovadamente somente-leitura exige aprovacao.
+      const vercelMatch = cmd.match(/\bvercel\s+([a-z][a-z-]*)/i);
+      if (vercelMatch) {
+        const readOnlyVercelVerbs = new Set([
+          'ls', 'list', 'inspect', 'logs', 'whoami', 'help',
+          '--version', '-v', '--help'
+        ]);
+        const verb = vercelMatch[1].toLowerCase();
+        if (!readOnlyVercelVerbs.has(verb)) {
+          console.log(JSON.stringify({
+            decision: 'ask',
+            reason: 'GATE DE PRODUCAO: Comando Vercel fora da lista somente-leitura (ls/list/inspect/logs/whoami/help/--version) exige aprovacao explicita do usuario.'
+          }));
+          return;
+        }
       }
 
       // Proibir force push em qualquer branch
