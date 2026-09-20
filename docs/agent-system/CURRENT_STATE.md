@@ -78,9 +78,9 @@ Esses achados são diagnóstico, não autorização de correção automática.
 ## Consolidação tri-runtime
 
 - [DECISÃO-HUMANA] Claude Code será operado prioritariamente na nuvem ligado ao GitHub.
-- [DECISÃO-HUMANA] Antigravity permanece local e pode operar seis agentes físicos; R1–R9 são funções, não contagem obrigatória de processos.
+- [DECISÃO] Antigravity permanece local; R1–R9 são funções canônicas e a contagem física de agentes é estado do adapter, não invariante constitucional.
 - [CONFIRMADO-CODIGO] branch `chatgpt/reflex-agent-os-v3` prepara um terceiro adapter Claude sem alterar `src/**` ou migrations.
 - [PENDENTE] conexão do GitHub à conta Claude Code web/Routines.
 - [PENDENTE] conexão/configuração do Codex Cloud/revisão automática, se habilitada pelo usuário.
-- [PENDENTE] smoke test dos seis agentes físicos do Antigravity contra o registry canônico.
+- [RELATADO] auditoria Antigravity de 20/09/2026 smoke-testou nove definições locais; isso não altera R1–R9 como funções canônicas.
 - [BLOQUEADO] automação de escrita em produção continua fora de escopo.
