@@ -11,6 +11,10 @@
 - **HEAD live não é auto-referenciado neste arquivo**: deve ser consultado no GitHub no bootstrap, porque qualquer commit que atualize este snapshot cria um novo HEAD.
 - Agent OS V3: **MERGED / PUBLISHED** via PR #15.
 - Constituição Cognitiva V1 / RCMO: **MERGED / PUBLISHED** via PR #18.
+- TP-RCMO-01 (Modelo Canônico de Entidades Cognitivas V1): **MERGED / PUBLISHED** via PR #22 (`9845a1e`).
+- R8 (Pesquisa pós-constituição): **MERGED / PUBLISHED** via PR #23 (`e4d4076`).
+- PR #24 (TP-RCMO-02): aberto para contrato canônico e testes; **SEM AUTORIZAÇÃO DE MIGRATION LIVE**.
+- Missão ativa e prioritária: **TP-RCMO-01H** (Endurecimento pós-revisão do contrato canônico corrigindo 8 threads do Codex).
 - Issue #17: **CLOSED / COMPLETED**.
 - PR #19: fechado como superseded após avanço de `main`; não integrar.
 - PR #14: draft, antiga Wave 6; não integrar automaticamente.
@@ -23,7 +27,7 @@
 - Deployment histórico reconciliado: `dpl_6t5hWLVZ67QTeBCxrcgY1R2THXTZ`.
 - Target: production
 - Branch: `main`
-- SHA do baseline: `2df5940d43a5672ae9028a6b3e408a055af5ee1a`
+- SHA do baseline: `e4d40766a9d386b6bdabc50d9c43ab45dfcae15f`
 - Alias canônico: `app-reflex-02.vercel.app`
 - **Deployment/SHA live atuais devem ser consultados na Vercel no bootstrap**; um merge documental posterior pode gerar novo deployment sem alterar o baseline funcional.
 
@@ -105,22 +109,13 @@ Cadeia normativa:
 
 Nenhuma etapa intermediária promove autoria automaticamente.
 
-## Próxima frente
+## Estado das Missões RCMO
 
-Os task packets em `docs/agent-system/missions/NEXT-RCMO-IMPLEMENTATION-TASK-PACKETS.md` estão disponíveis, mas **não foram ativados automaticamente**.
-
-Antes de qualquer implementação:
-- criar missão/task packet específico;
-- escolher o menor conjunto útil de papéis;
-- preservar expand-first;
-- manter Golden Dataset V3 + V4;
-- exigir R6 independente conforme risco;
-- exigir gate humano para migration live, mutação estrutural de produção, deploy manual e merge/push direto em `main`.
-
-Sem missão ativa específica, migrations, replay/reprocessamento, cron Wave 6 e promoção automática de autoria permanecem bloqueados.
+1. **TP-RCMO-01** (Modelo Canônico de Entidades Cognitivas V1): **DONE** (PR #22, commit `9845a1e`).
+2. **TP-RCMO-01H** (Endurecimento pós-revisão do contrato canônico): **IN_PROGRESS** na branch `feature/rcmo-01h-contract-hardening`, corrigindo as 8 threads técnicas apontadas pelo Codex.
+3. **TP-RCMO-02** (Contrato Canônico e Validação Determinística): **EM ESPERA / SEM AUTORIZAÇÃO DE MIGRATION LIVE**. Nenhuma migration SQL live ou alteração física em banco de dados autorizada.
 
 ## R8 pós-tarefa
 
-Task Packet proposto, não ativado: `R8-2026-09-20-POST-CONSTITUTION-RESEARCH.json`.
+Missão de pesquisa R8 concluída e integrada em `main` via PR #23 (`docs/ia/PESQUISA_POS_CONSTITUICAO_R8.md`). As recomendações de desambiguação de offsets W3C e segurança contra drift de dependências foram incorporadas ao endurecimento canônico.
 
-Escopo de pesquisa: prevenção de snapshots stale, pinagem de Actions, binding criptográfico de handoffs e conformance de Evidence Anchors Unicode/UTF-16. Pesquisa não autoriza implementação automática.

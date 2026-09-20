@@ -89,7 +89,60 @@
           ],
           "minLength": 1
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "entity_type": {
+                "const": "method_definition"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "version"
+            ],
+            "properties": {
+              "version": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "entity_type": {
+                "enum": [
+                  "source",
+                  "source_version",
+                  "structural_node",
+                  "evidence_anchor",
+                  "annotation",
+                  "claim",
+                  "method_execution",
+                  "rcmo",
+                  "proposal",
+                  "human_decision",
+                  "confirmed_authorial_projection",
+                  "lineage_edge",
+                  "memory_event"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      ]
     },
     "source": {
       "type": "object",
@@ -456,6 +509,48 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "selector_type": {
+                "enum": [
+                  "text_position",
+                  "quote_and_position"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "offset_unit": {
+                "enum": [
+                  "unicode_code_point",
+                  "utf16_code_unit",
+                  "byte"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "selector_type": {
+                "const": "media_fragment"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "offset_unit": {
+                "enum": [
+                  "time_ms",
+                  "byte"
+                ]
+              }
+            }
+          }
         }
       ]
     },
@@ -527,7 +622,141 @@
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "allOf": [
+        {
+          "anyOf": [
+            {
+              "properties": {
+                "body_ref": {
+                  "$ref": "#/$defs/entity_ref"
+                }
+              },
+              "required": [
+                "body_ref"
+              ]
+            },
+            {
+              "properties": {
+                "body_value": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "body_value"
+              ]
+            }
+          ]
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "claim"
+              },
+              "body_ref": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "body_kind",
+              "body_ref"
+            ]
+          },
+          "then": {
+            "properties": {
+              "body_ref": {
+                "properties": {
+                  "entity_type": {
+                    "const": "claim"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "rcmo"
+              },
+              "body_ref": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "body_kind",
+              "body_ref"
+            ]
+          },
+          "then": {
+            "properties": {
+              "body_ref": {
+                "properties": {
+                  "entity_type": {
+                    "const": "rcmo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "proposal"
+              },
+              "body_ref": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "body_kind",
+              "body_ref"
+            ]
+          },
+          "then": {
+            "properties": {
+              "body_ref": {
+                "properties": {
+                  "entity_type": {
+                    "const": "proposal"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "body_kind": {
+                "const": "concept"
+              },
+              "body_ref": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "body_kind",
+              "body_ref"
+            ]
+          },
+          "then": {
+            "properties": {
+              "body_ref": {
+                "properties": {
+                  "entity_type": {
+                    "const": "concept"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "claim": {
       "type": "object",
@@ -661,7 +890,93 @@
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "verifiability": {
+                "const": "VERIFIABLE"
+              }
+            },
+            "required": [
+              "verifiability"
+            ]
+          },
+          "then": {
+            "required": [
+              "primary_source_version_id"
+            ],
+            "properties": {
+              "primary_source_version_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "epistemic_status": {
+                "const": "confirmed_authorial"
+              }
+            },
+            "required": [
+              "epistemic_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "origin_event_id",
+              "primary_source_version_id"
+            ],
+            "properties": {
+              "source_role": {
+                "const": "HUMAN_CONFIRMED"
+              },
+              "origin_event_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "verifiability": {
+                "const": "VERIFIABLE"
+              },
+              "primary_source_version_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "verifiability": {
+                "enum": [
+                  "UNVERIFIABLE",
+                  "AMBIGUOUS"
+                ]
+              }
+            },
+            "required": [
+              "verifiability"
+            ]
+          },
+          "then": {
+            "not": {
+              "properties": {
+                "epistemic_status": {
+                  "const": "confirmed_authorial"
+                }
+              },
+              "required": [
+                "epistemic_status"
+              ]
+            }
+          }
+        }
+      ]
     },
     "method_definition": {
       "type": "object",
@@ -891,7 +1206,98 @@
             }
           ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "abstained"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "abstention_reason",
+              "finished_at"
+            ],
+            "properties": {
+              "abstention_reason": {
+                "enum": [
+                  "NO_EVIDENCE",
+                  "LOW_SUPPORT",
+                  "CONTRADICTORY_EVIDENCE",
+                  "AMBIGUOUS_SOURCE",
+                  "AMBIGUOUS_SCOPE",
+                  "AUTHORIAL_UNKNOWN",
+                  "METHOD_NOT_APPLICABLE",
+                  "OUT_OF_SCOPE",
+                  "VERSION_MISMATCH"
+                ]
+              },
+              "finished_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "succeeded"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "finished_at"
+            ],
+            "properties": {
+              "abstention_reason": {
+                "type": "null"
+              },
+              "output_refs": {
+                "minItems": 1
+              },
+              "finished_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "failed"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "finished_at"
+            ],
+            "properties": {
+              "finished_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      ]
     },
     "rcmo": {
       "type": "object",
@@ -1285,7 +1691,48 @@
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "allOf": [
+        {
+          "properties": {
+            "subject_ref": {
+              "properties": {
+                "entity_type": {
+                  "enum": [
+                    "proposal",
+                    "claim",
+                    "rcmo",
+                    "confirmed_authorial_projection"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "edit_accept"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          },
+          "then": {
+            "required": [
+              "justification"
+            ],
+            "properties": {
+              "justification": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
     },
     "confirmed_authorial_projection": {
       "type": "object",
@@ -1378,7 +1825,32 @@
             }
           ]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "superseded"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "supersedes_projection_id"
+            ],
+            "properties": {
+              "supersedes_projection_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      ]
     },
     "lineage_edge": {
       "type": "object",

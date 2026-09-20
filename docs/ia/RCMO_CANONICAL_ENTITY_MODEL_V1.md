@@ -1,9 +1,9 @@
 # Modelo Canônico de Entidades Cognitivas V1
 
-**Missão:** TP-RCMO-01  
-**Issue:** #21  
-**Baseline:** `b14d1e7f24f20bb90168312fbfc7abf401750847`  
-**Status:** proposta de contrato lógico para revisão R6  
+**Missão:** TP-RCMO-01 / TP-RCMO-01H  
+**Issue:** #21 / PR #22  
+**Baseline:** `e4d40766a9d386b6bdabc50d9c43ab45dfcae15f`  
+**Status:** contrato canônico endurecido pós-revisão PR #22 (8 threads técnicas resolvidas)  
 **Regra:** este documento não cria tabelas e não autoriza migration.
 
 ## 1. Objetivo
@@ -147,6 +147,9 @@ Invariantes:
 - `start/end` só têm significado junto com `offset_unit`;
 - para texto posicional: `start >= 0` e `end > start`;
 - `exact_quote` é obrigatório para `text_quote` e `quote_and_position`;
+- `offset_unit` é estritamente restrito pelo `selector_type`:
+  - `text_position` e `quote_and_position`: restritos a `unicode_code_point`, `utf16_code_unit`, `byte` (padrão canônico W3C: `unicode_code_point`);
+  - `media_fragment`: restrito a `time_ms`, `byte`;
 - reprocessar chunks não pode invalidar automaticamente a âncora;
 - resolver uma âncora em conteúdo materialmente diferente requer nova Source Version ou status não resolvido.
 
@@ -164,7 +167,9 @@ Campos mínimos:
 - `relation: support | counterevidence | context | example | definition | mentions`
 - `created_at: timestamp`
 
-Regras:
+Regras e invariantes:
+- **Corpo semântico obrigatório:** `body_ref` e `body_value` não podem ser ambos nulos simultaneamente; toda anotação deve possuir ao menos uma referência ou valor estruturado;
+- **Correspondência canônica de tipo:** quando `body_ref` for não-nulo, `body_ref.entity_type` deve obrigatoriamente coincidir com `body_kind` (`claim` -> `claim`, `rcmo` -> `rcmo`, `proposal` -> `proposal`, `concept` -> `concept`);
 - um Claim/RCMO pode ter múltiplos supports e counterevidences;
 - ranking/retrieval não muda `relation`;
 - Annotation não confirma verdade nem autoria.
@@ -241,6 +246,16 @@ Além de transição idempotente, o runtime atual permite:
 
 A implementação futura não pode alargar essas transições silenciosamente.
 
+Invariantes canônicos de Claim:
+- **Proveniência documental:** Quando `verifiability == VERIFIABLE`, `primary_source_version_id` é OBRIGATÓRIO (UUID não nulo);
+- **Exceção para UNVERIFIABLE:** Claims axiomáticos, conceituais ou declarativos sem suporte documental direto podem ter `primary_source_version_id` nulo, mas ficam terminantemente impedidos de receber `epistemic_status == confirmed_authorial`;
+- **Monopólio Autoral Humano e Verificabilidade:** A promoção para `epistemic_status == confirmed_authorial` exige ESTRITAMENTE:
+  1. `source_role == HUMAN_CONFIRMED`;
+  2. `origin_event_id` preenchido com UUID válido correspondente ao evento de decisão humana (`decision_event_id`);
+  3. `verifiability == VERIFIABLE`;
+  4. `primary_source_version_id` preenchido com UUID válido da Source Version de suporte;
+  5. Claims com `verifiability` em `UNVERIFIABLE` ou `AMBIGUOUS` jamais podem ser `confirmed_authorial`.
+
 ### 3.7 Method Definition
 
 Definição versionada e auditável de método analítico.
@@ -280,6 +295,12 @@ Campos mínimos:
 - `correlation_id: uuid`
 - `causation_event_id: uuid | null`
 - `started_at / finished_at`
+
+Invariantes operacionais:
+- **Abstenção justificada:** Se `status == abstained`, `abstention_reason` canônico é OBRIGATÓRIO (não nulo) e `finished_at` deve ser preenchido;
+- **Sucesso produtivo:** Se `status == succeeded`, `output_refs` deve possuir ao menos 1 item (`minItems: 1`), `abstention_reason` deve ser estritamente nulo e `finished_at` deve ser preenchido;
+- **Falha conclusiva:** Se `status == failed`, `finished_at` deve ser preenchido;
+- **Execuções em andamento:** Se `status == running`, `finished_at` permanece nulo até a conclusão.
 
 Abstention reasons canônicos:
 - NO_EVIDENCE
@@ -361,7 +382,10 @@ Campos mínimos:
 - `payload_hash: string`
 - `recorded_at: timestamp`
 
-Não deve ser fabricado por backend como se fosse usuário.
+Invariantes de governança:
+- **Restrição do sujeito:** `subject_ref.entity_type` é restrito estritamente a entidades passíveis de julgamento autoral (`proposal`, `claim`, `rcmo`, `confirmed_authorial_projection`);
+- **Justificativa obrigatória em edições:** Toda decisão com `decision == edit_accept` exige `justification` não-nula e não-vazia (`minLength: 1`) documentando a intervenção humana;
+- **Monopólio do ator:** `actor_type` deve ser estritamente `HUMAN`. Não deve ser fabricado por backend ou agentes sintéticos como se fosse usuário.
 
 ### 3.12 Confirmed Authorial Projection
 
@@ -381,9 +405,11 @@ Campos mínimos:
 
 Invariantes:
 - `source_ref` deve apontar para Proposal ou Claim existente;
-- `decision_event_id` obrigatório e deve apontar para HUMAN;
-- não pode nascer de Method Execution/RCMO diretamente;
-- supersession/revogação de projeção já autoral também exige decisão humana quando altera o que o sistema atribui ao autor.
+- Se `source_ref.entity_type == claim`, a projeção autoral só pode ser gerada se o Claim estiver chancelado por HUMAN (`epistemic_status == confirmed_authorial`) e vinculado ao `decision_event_id`;
+- `decision_event_id` obrigatório e deve apontar para decisão de ator `HUMAN`;
+- `status == superseded` exige `supersedes_projection_id` não-nulo (formato UUID);
+- Não pode nascer de Method Execution/RCMO diretamente sem passar pela chancela humana;
+- Supersession/revogação de projeção já autoral também exige decisão humana quando altera o que o sistema atribui ao autor.
 
 ### 3.13 Lineage Edge
 
@@ -412,7 +438,10 @@ Forma canônica para referências polimórficas:
 }
 ```
 
-`entity_type` deve pertencer ao registry de entidades vigente. `id` é string canônica para suportar tanto UUIDs quanto IDs metodológicos estáveis; `version` é opcional e obrigatório semanticamente quando a referência aponta para uma entidade versionada cujo ID sozinho não identifica a revisão (por exemplo Method Definition).
+Invariantes de tipagem e formato:
+- `entity_type` deve pertencer ao registry de entidades vigente;
+- **Preservação de UUID:** Para todas as 13 entidades canônicas gerenciadas no banco (`source`, `source_version`, `structural_node`, `evidence_anchor`, `annotation`, `claim`, `method_execution`, `rcmo`, `proposal`, `human_decision`, `confirmed_authorial_projection`, `lineage_edge`, `memory_event`), o campo `id` DEVE validar no formato padrão UUID RFC 4122 (`format: "uuid"`);
+- **Versão obrigatória de método:** Quando `entity_type == method_definition`, o campo `version` é ESTRITAMENTE OBRIGATÓRIO (string com `minLength: 1`), garantindo que referências a métodos nunca sejam ambíguas quanto à sua revisão analítica.
 
 ## 5. Separação dos namespaces de estado
 

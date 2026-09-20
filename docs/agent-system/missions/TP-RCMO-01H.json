@@ -1,0 +1,71 @@
+{
+  "mission_id": "TP-RCMO-01H-CONTRACT-HARDENING",
+  "task_id": "TP-RCMO-01H",
+  "parent_task_id": "TP-RCMO-01",
+  "created_at": "2026-09-20T10:20:00-03:00",
+  "objective": "Endurecer o contrato lógico canônico de entidades RCMO V1 corrigindo as 8 threads técnicas de segurança e integridade (4 P1 + 4 P2) identificadas pelo Codex pós-PR #22.",
+  "baseline_sha": "e4d40766a9d386b6bdabc50d9c43ab45dfcae15f",
+  "target_branch": "feature/rcmo-01h-contract-hardening",
+  "worktree": null,
+  "owner_role": "R2",
+  "dependencies": [
+    "PR #22 merged em main",
+    "PR #23 merged em main",
+    "Revisão Codex 398fbd1 analisada"
+  ],
+  "in_scope": [
+    "vincular Human Decision ao tenant, sujeito e resultado corretos",
+    "impedir projeção autoral de claim não chancelado por HUMAN",
+    "tornar proveniência de Claim explícita e definir exceção UNVERIFIABLE",
+    "exigir version em EntityRef de method_definition",
+    "preservar validação de UUID para entidades baseadas em UUID em EntityRef",
+    "restringir offset_unit ao selector_type em evidence_anchor",
+    "requerer body semântico válido em annotation e correspondência body_kind/body_ref",
+    "exigir abstention_reason em method_execution com status abstained",
+    "reconciliar status do TP-RCMO-01 e CURRENT_STATE"
+  ],
+  "out_of_scope": [
+    "migrations / DDL",
+    "src/**",
+    "reprocessamento ou replay",
+    "UI",
+    "cron",
+    "deploy manual",
+    "alteração de dados ao vivo"
+  ],
+  "allowed_tools": [
+    "GitHub read/write na branch da missão",
+    "Supabase read-only",
+    "Vercel read-only",
+    "CI"
+  ],
+  "write_scope": [
+    "docs/ia/**",
+    "docs/agent-system/schemas/**",
+    "docs/agent-system/missions/**",
+    "docs/agent-system/CURRENT_STATE.md"
+  ],
+  "risk_level": "HIGH",
+  "acceptance_criteria": [
+    "todas as 8 descobertas corrigidas no JSON Schema e na especificação",
+    "schema continua 100% válido e todos os $ref resolvem",
+    "TP-RCMO-01 marcado como DONE",
+    "TP-RCMO-02 permanece sem autorização de migration",
+    "R6 independente no SHA final",
+    "CI verde"
+  ],
+  "required_evidence": [
+    "CONFIRMADO-CODIGO",
+    "CONFIRMADO-CI",
+    "CONFIRMADO-RUNTIME"
+  ],
+  "expected_artifacts": [
+    "docs/agent-system/schemas/cognitive-entity-model.schema.json",
+    "docs/ia/RCMO_CANONICAL_ENTITY_MODEL_V1.md",
+    "docs/agent-system/missions/TP-RCMO-01H.json",
+    "docs/agent-system/CURRENT_STATE.md"
+  ],
+  "status": "IN_PROGRESS",
+  "blocked_by": [],
+  "next_handoff": "R6 independent design review on exact PR head"
+}
