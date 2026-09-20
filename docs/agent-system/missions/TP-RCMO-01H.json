@@ -66,7 +66,7 @@
     "docs/agent-system/missions/TP-RCMO-01H.json",
     "docs/agent-system/CURRENT_STATE.md"
   ],
-  "status": "IN_PROGRESS",
+  "status": "REVIEW",
   "blocked_by": [],
-  "next_handoff": "R6 independent design review on exact PR head"
+  "next_handoff": "R6 independent design review on exact PR head; then R9 reconciliation and human merge gate"
 }
