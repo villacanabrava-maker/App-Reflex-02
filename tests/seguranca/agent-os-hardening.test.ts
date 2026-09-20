@@ -19,11 +19,20 @@ describe("Agent OS V3 hardening", () => {
   it("exige Evidence formal dentro de Agent Output", () => {
     const schema = json("docs/agent-system/schemas/agent-output.schema.json");
     expect(schema.properties.evidence.items.$ref).toBe("evidence.schema.json");
+    const evidence = json("docs/agent-system/schemas/evidence.schema.json");
+    expect(evidence.properties.responsible_role.type).toBe("string");
+  });
+
+  it("amplia secret scan para credenciais nativas dos três runtimes", () => {
+    const scan = read("scripts/agents/verify-secrets.mjs");
+    expect(scan).toContain("sk-ant-");
+    expect(scan).toContain("AIza");
+    expect(scan).toContain("PRIVATE KEY");
   });
 
   it("bloqueia comandos SQL destrutivos no guardrail Antigravity", () => {
     const guard = read(".agents/scripts/pre-tool-guard.js").toLowerCase();
-    expect(guard).toContain("truncate\\s+table");
+    expect(guard).toContain("\\btruncate\\b");
     expect(guard).toContain("disable\\s+row\\s+level\\s+security");
   });
 });

@@ -18,5 +18,14 @@
 - A proposta de tornar R8 obrigatório ao fim de toda tarefa permanece HUMAN_DECISION. Até confirmação humana direta, R8 segue o princípio do menor conjunto útil e é acionado quando pesquisa externa/materialmente atual melhora a decisão.
 - Nenhuma limpeza de diretórios Antigravity é autorizada nesta missão.
 
+## Re-review Codex do hardening
+
+No commit `aede924`, o Codex confirmou o fechamento substancial dos quatro findings originais e encontrou três resíduos:
+- padrões de segredo ainda não cobriam Anthropic/Google/PEM;
+- `TRUNCATE` sem a palavra opcional `TABLE` escapava;
+- `responsible_role` no Evidence precisava de `type: string`.
+
+Esses três resíduos foram corrigidos no commit `80fa717a`.
+
 ## Estado
-O PR #15 permanece REVIEW. Merge depende de CI verde do novo head e revisão independente das correções.
+O PR #15 permanece REVIEW. Merge depende de CI verde do novo head e revisão independente final das correções.
