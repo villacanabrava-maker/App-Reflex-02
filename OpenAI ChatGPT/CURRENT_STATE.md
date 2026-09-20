@@ -1,37 +1,44 @@
 # Estado Operacional Verificado — OpenAI ChatGPT
 
-**Snapshot:** 2026-09-19 19:22 BRT  
+**Snapshot:** 2026-09-20  
 **Regra:** este arquivo é um bootstrap, não uma autoridade permanente. Verifique live antes de decisões críticas.
 
 ## GitHub
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD live verificado: `0c7f14c41be816ca023d8347984665db60fbc265`
-- CI do HEAD: `success`
+- HEAD live verificado: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+- Agent OS V3: **MERGED / PUBLISHED** via PR #15.
+- CI pós-merge: **PASS** (run `35498636333`, registrado na Control Room #16).
 - Regra: obter novamente o HEAD live no início de cada nova sessão.
 
-A `main` não possui branch protection ativa no momento do snapshot.
+PRs ainda relevantes:
+- #14: draft Wave 6/MIS-0012; não integrar automaticamente.
+- #8: documentação Claude antiga; revisar antes de integrar.
 
 ## Vercel
 
-Produção está **ativa**. Documentos antigos que ainda dizem “Vercel fora de escopo” estão desatualizados em relação ao runtime atual.
+Produção está ativa e reconciliada com `main`.
 
 - Projeto: `app-reflex-02`
-- Produção READY verificada: `dpl_BvVod4yTYvEpfxT6cGXdTzxoYvEa`
-- SHA dessa produção: `0c7f14c41be816ca023d8347984665db60fbc265`
+- Deployment de produção: `dpl_HeEpSbasPKtHFAHewQRcWJozPMBv`
+- Estado: `READY`
+- SHA: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
 - Branch: `main`
 - URL canônica: `https://app-reflex-02.vercel.app`
 
-Há previews imutáveis antigos. Nunca diagnosticar produção usando uma URL de preview sem reconciliar branch + SHA.
+Nunca diagnosticar produção usando uma URL de preview sem reconciliar branch + SHA.
 
 ## Supabase live
 
 Project ref: `xenapowdtfhdwcfthfrn`
 
+- Estado: `ACTIVE_HEALTHY`
+- PostgreSQL 17
+- `public._migrations`: 38 entradas
+
 ### Dados atuais
 
-- usuários Auth: 1
 - obras: 1
 - versões de obra: 1
 - documentos processados: 1
@@ -39,84 +46,63 @@ Project ref: `xenapowdtfhdwcfthfrn`
 - fragmentos: 47
 - vetores: 47
 - sínteses: 22
-- evidências de dimensão confirmadas: 0
 - claims V3.1: 0
+- claim provenance: 0
 - memory events: 1
-- características confirmadas do Cérebro: 0
+- características confirmadas: 0
 - regras confirmadas: 0
 - propostas de atualização: 23
-- reflexões: 0
 - dossiês V3.1: 0
-- auditorias V3.1: 0
 - conceitos SKOS V3.1: 0
+- relações SKOS V3.1: 0
 
-### Obra de teste atual
+O histórico retornado pelo Supabase MCP e o ledger interno `public._migrations` continuam usando representações distintas. Não executar `db push` cegamente.
 
-Existe uma obra autoral processada derivada do teste “Pequeno Grande Príncipe…”, com 20 seções e 47 fragmentos. O fluxo do Cérebro permite:
-- ativar/desativar a obra no corpus autoral;
-- selecionar explicitamente livro inteiro, capítulos/seções ou fragmentos;
-- gerar características candidatas;
-- revisar evidências antes da confirmação.
+## Advisors Supabase live
 
-### Storage
+Verificados em 2026-09-20:
+- Security: 5 tabelas com RLS ativo sem policy direta; 2 RPCs `SECURITY DEFINER` executáveis por `authenticated`; leaked-password protection desabilitada; MFA com poucas opções.
+- Performance: 36 FKs sem covering index; 10 policies com `auth.*` reavaliado por linha; 46 índices sem uso observado; Auth DB connection strategy absoluta.
 
-Buckets privados:
-- `originais-biblioteca` — 50 MB
-- `fontes-reflexoes` — 50 MB
-
-## Migrations
-
-O repositório contém **38 arquivos SQL versionados**, `0001`–`0038`.
-
-O histórico retornado pelo Supabase MCP e o ledger interno `public._migrations` não usam exatamente a mesma numeração/representação histórica. Não executar `db push` cegamente. Reconciliar antes de qualquer migration.
-
-## Segurança / advisors atuais
-
-Supabase Database Linter reporta:
-- tabelas internas com RLS ativo e sem policies diretas;
-- duas RPCs de curadoria humana `SECURITY DEFINER` executáveis por `authenticated`;
-- leaked-password protection desabilitado;
-- MFA com poucas opções;
-- FKs sem índices e índices ainda não usados.
-
-Não “corrigir” advisors automaticamente. Primeiro entender modelo de acesso e queries reais.
+Não corrigir esses advisors automaticamente; entender modelo de acesso e carga real antes de qualquer migration.
 
 ## Estado funcional recente
 
-Concluído recentemente:
-- correção de extração PDF na Vercel usando `pdf-parse@1.1.1` sem worker;
-- integração de obra autoral processada ao ledger episódico do Cérebro;
-- seletor de corpus autoral ativo;
-- análise segura por propostas, sem promoção automática de inferência;
-- seleção explícita do escopo da análise por livro/capítulo/fragmento;
-- exibição de proveniência/evidências no fluxo de Aprendizados;
-- sincronização de branch de preview antiga com a `main`.
+Concluído:
+- Reflex Agent Operating System V3 integrado à `main`;
+- tri-runtime OpenAI / Claude Cloud / Antigravity sob R1–R9;
+- control plane GitHub com handoff finito e smoke test real;
+- produção Vercel no mesmo SHA da `main`.
 
-## Drift documental conhecido
+## Missão OpenAI corrente
 
-Alguns arquivos históricos ainda declaram:
-- Vercel “fora de escopo”;
-- contagens antigas do banco;
-- missão MIS-0012 ainda planejada;
-- estado pré-deploy.
+`NEXT-COGNITIVE-CONSTITUTION-RCMO`
 
-Trate esses trechos como históricos até reconciliação formal. Código + runtime live prevalecem.
+- Issue âncora: #17.
+- Branch: `chatgpt/cognitive-constitution-v1`.
+- Task Packet: `docs/agent-system/missions/NEXT-RCMO-TASK-PACKET.json`.
+- Status do Task Packet: `REVIEW`.
+- Próximo handoff: R6 independente.
 
+Artefatos preparados:
+- `docs/ia/PESQUISA_CONSTITUICAO_COGNITIVA_V1.md`;
+- `docs/ia/CONSTITUICAO_COGNITIVA_V1.md`;
+- `docs/adr/0004-constituicao-cognitiva-rcmo.md`;
+- `docs/ia/GOLDEN_DATASET_V4_PLAN.md`;
+- `docs/agent-system/missions/NEXT-RCMO-IMPLEMENTATION-TASK-PACKETS.md`.
 
-## Camada OpenAI / Codex v2
+Definição proposta:
+**RCMO = Reflex Cognitive Method Object**, objeto cognitivo versionado produzido por um método explícito sobre evidências ancoradas. RCMO não é memória confirmada e não pode promover autoria sozinho.
 
-- pasta `OpenAI ChatGPT/` ativa como bootstrap e continuidade;
-- 9 perfis O1–O9 documentais;
-- 9 subagentes nativos de projeto em `.codex/agents/`;
-- `.codex/config.toml` com defaults conservadores;
-- 8 Skills OpenAI registradas em `.agents/skills/openai-reflex-*`;
-- validação anti-segredos em `OpenAI ChatGPT/scripts/validate-context.mjs`;
-- continuidade registra fatos/decisões verificadas, não transcrições integrais nem raciocínio privado.
+## Restrições da missão
 
+- nenhuma migration live;
+- nenhum reprocessamento do corpus;
+- nenhuma alteração em `src/**`;
+- nenhum deploy manual;
+- nenhum cron/replay Wave 6;
+- nenhuma promoção automática de autoria.
 
-## Reflex Agent OS V3 — branch em revisão
+## Drift documental ainda histórico
 
-- Branch: `chatgpt/reflex-agent-os-v3`.
-- R1–R9 definidos em `docs/agent-system/agent-registry.yaml`.
-- O1–O9 e A1–A9 tratados como adapters.
-- Nenhuma migration live, deploy manual ou alteração funcional do Cérebro faz parte desta missão.
+Arquivos antigos podem conter referências ao App01/Rflex01, estado pré-deploy ou Agent OS ainda em implantação. Código + runtime live prevalecem.

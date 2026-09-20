@@ -1,26 +1,27 @@
 # Current State — Reflex Agent OS V3
 
-**Snapshot verificado:** 2026-09-20 02:46 BRT  
+**Snapshot verificado:** 2026-09-20  
 **Natureza:** bootstrap operacional; verificar live antes de decisões críticas.
 
 ## GitHub
 
 - Repositório: `villacanabrava-maker/App-Reflex-02`
 - Branch canônica: `main`
-- HEAD: `0c7f14c41be816ca023d8347984665db60fbc265`
-- CI do HEAD: verde.
-- Branch protection: não ativa no snapshot.
+- HEAD live verificado: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
+- Agent OS V3: **MERGED / PUBLISHED** via PR #15.
+- CI pós-merge: **PASS** conforme Control Room #16 (run `35498636333`).
 - PR #14: draft, antiga Wave 6, não integrar automaticamente.
 - PR #8: aberto, documentação Claude; revisar antes de integrar.
+- Issue #17: missão `NEXT-COGNITIVE-CONSTITUTION-RCMO`.
 
 ## Vercel
 
 - Projeto: `app-reflex-02`
 - Produção: `READY`
-- Deployment: `dpl_BvVod4yTYvEpfxT6cGXdTzxoYvEa`
+- Deployment: `dpl_HeEpSbasPKtHFAHewQRcWJozPMBv`
 - Target: production
 - Branch: `main`
-- SHA: `0c7f14c41be816ca023d8347984665db60fbc265`
+- SHA: `e95861c8c3355642d3e1b7946d40bc1fa6502c18`
 - Alias canônico: `app-reflex-02.vercel.app`
 
 ## Supabase
@@ -29,9 +30,10 @@
 - Estado: `ACTIVE_HEALTHY`
 - PostgreSQL: 17
 - Ledger `public._migrations`: 38
-- Última entrada: `0038_production_readiness_hardening.sql`
+- Última entrada do ledger do app: `0038_production_readiness_hardening.sql`
+- Histórico nativo Supabase e `public._migrations` são trilhas distintas e devem continuar sendo reconciliados separadamente.
 
-### Snapshot de dados
+### Snapshot cognitivo live
 
 - obras: 1
 - versões: 1
@@ -40,47 +42,58 @@
 - fragmentos: 47
 - vetores: 47
 - sínteses: 22
-- evidências: 0
 - características confirmadas: 0
 - regras confirmadas: 0
 - propostas de atualização: 23
 - claims: 0
 - claim provenance: 0
 - memory events: 1
+- dossiês V3.1: 0
+- conceitos SKOS: 0
+- relações SKOS: 0
 
-## Advisors observados
+## Advisors live observados em 2026-09-20
 
-Security Advisor:
+Security:
 - 5 tabelas com RLS ativo e sem policy direta;
 - 2 RPCs `SECURITY DEFINER` executáveis por `authenticated`;
 - leaked-password protection desabilitada;
-- poucas opções MFA.
+- opções MFA insuficientes.
 
-Performance Advisor:
-- foreign keys sem covering index;
-- policies com chamadas de `auth.*` reavaliadas por linha;
-- índices ainda não utilizados no corpus pequeno atual.
+Performance:
+- 36 foreign keys sem covering index;
+- 10 policies com `auth.*` reavaliado por linha;
+- 46 índices sem uso observado no corpus atual;
+- Auth DB connection strategy configurada por número absoluto.
 
-Esses achados são diagnóstico, não autorização de correção automática.
+Esses achados são diagnóstico. Esta missão não autoriza migrations corretivas automáticas.
 
-## Drift documental confirmado
+## Estado do Agent OS V3
 
-- `docs/STATUS_PROJETO.md` ainda declarava 37 migrations e Vercel adiada.
-- Drift histórico de Vercel em `GEMINI.md` e `.agents/README.md` foi corrigido na branch Agent OS V3.
-- `OpenAI ChatGPT/CURRENT_STATE.md` registrava 13 propostas; live possui 23.
+- [CONFIRMADO-CODIGO] R1–R9 e adapters OpenAI/Claude/Antigravity estão integrados em `main`.
+- [CONFIRMADO-CI] PR #15 foi promovido após revisão independente e gates verdes.
+- [CONFIRMADO-RUNTIME] produção Vercel está no mesmo SHA de `main`.
+- [CONFIRMADO-RUNTIME] smoke test do control plane GitHub → router → human gate Antigravity passou na issue #16.
+- [BLOQUEADO] automação de escrita em produção permanece fora de escopo sem gate humano.
 
 ## Missão corrente
 
-`OPS-2026-09-19-AGENT-OS-V3`: consolidar a camada runtime-neutral e alinhar adapters sem reformar o Cérebro do produto.
+`NEXT-COGNITIVE-CONSTITUTION-RCMO`
 
+- Issue âncora: #17.
+- Branch: `chatgpt/cognitive-constitution-v1`.
+- Objetivo: especificar Constituição Cognitiva V1 / RCMO antes de reconstruir pipeline documental ou Cérebro Autoral.
+- [CONFIRMADO-CODIGO] pesquisa R8, Constituição V1, ADR, Golden Dataset V4 e Task Packets pós-Constituição foram preparados na branch.
+- [CONFIRMADO-RUNTIME] baseline cognitivo live foi reconciliado antes da especificação.
+- [PENDENTE] revisão independente R6.
+- [BLOQUEADO] nenhuma migration live, reprocessamento do corpus, mudança em `src/**`, cron/replay ou promoção automática de autoria é autorizada nesta missão.
 
-## Consolidação tri-runtime
+## Definição corrente de RCMO
 
-- [DECISÃO-HUMANA] Claude Code será operado prioritariamente na nuvem ligado ao GitHub.
-- [DECISÃO] Antigravity permanece local; R1–R9 são funções canônicas e a contagem física de agentes é estado do adapter, não invariante constitucional.
-- [CONFIRMADO-CODIGO] branch `chatgpt/reflex-agent-os-v3` prepara um terceiro adapter Claude sem alterar `src/**` ou migrations.
-- [RELATADO] Claude Code Web está conectado e ativo no repositório; Routines/API ainda dependem de configuração de conta e least privilege.
-- [CONFIRMADO-RUNTIME] Codex GitHub Review está habilitado no repositório e revisou o PR #15 em múltiplos heads.
-- [RELATADO] auditoria Antigravity de 20/09/2026 smoke-testou nove definições locais; isso não altera R1–R9 como funções canônicas.
-- [CONFIRMADO-CI] run `35491921248` passou validators, TypeScript, lint, testes e build no head `43df55c` antes do último hardening residual.
-- [BLOQUEADO] automação de escrita em produção continua fora de escopo.
+**RCMO = Reflex Cognitive Method Object**: objeto cognitivo versionado, produzido por uma execução metodológica explícita sobre evidências ancoradas. RCMO é resultado analítico e não memória autoral confirmada.
+
+A cadeia normativa proposta é:
+
+`Source Version → Document Structure → Evidence Anchor/Annotation → Claim → Method Execution → RCMO → Proposal → Human Decision → Confirmed Authorial Projection`
+
+Nenhuma etapa intermediária promove autoria automaticamente.

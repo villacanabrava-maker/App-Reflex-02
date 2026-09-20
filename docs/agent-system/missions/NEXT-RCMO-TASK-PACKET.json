@@ -4,30 +4,33 @@
   "parent_task_id": null,
   "created_at": "2026-09-19T19:22:00-03:00",
   "objective": "Pesquisar e especificar a Constituição Cognitiva V1 / RCMO antes de reconstruir o pipeline documental ou o Cérebro Autoral.",
-  "baseline_sha": "0c7f14c41be816ca023d8347984665db60fbc265",
-  "target_branch": "TBD-after-Agent-OS-V3",
+  "baseline_sha": "e95861c8c3355642d3e1b7946d40bc1fa6502c18",
+  "target_branch": "chatgpt/cognitive-constitution-v1",
   "worktree": null,
   "owner_role": "R2",
   "dependencies": [
-    "Reflex Agent OS V3 reconciliado",
-    "pesquisa R8",
-    "baseline cognitivo live"
+    "Reflex Agent OS V3 reconciliado e publicado",
+    "pesquisa R8 registrada em docs/ia/PESQUISA_CONSTITUICAO_COGNITIVA_V1.md",
+    "baseline cognitivo live reconciliado em 2026-09-20"
   ],
   "in_scope": [
     "definir RCMO",
     "árvore de processamento documental",
     "interfaces entre estrutura, conhecimento, evidência, taxonomia e Cérebro",
     "protocolos das 18 dimensões em nível de especificação",
-    "golden/eval plan"
+    "golden/eval plan",
+    "task packets de implementação"
   ],
   "out_of_scope": [
     "migration live",
     "reprocessamento do corpus",
     "cron/replay Wave 6",
-    "promoção automática de autoria"
+    "promoção automática de autoria",
+    "alterações em src/**",
+    "deploy manual"
   ],
   "allowed_tools": [
-    "repository read",
+    "repository read/write apenas na branch da missão",
     "web research",
     "read-only Supabase",
     "read-only Vercel/GitHub"
@@ -35,7 +38,8 @@
   "write_scope": [
     "docs/ia/**",
     "docs/adr/**",
-    "docs/agent-system/missions/**"
+    "docs/agent-system/missions/**",
+    "OpenAI ChatGPT/**"
   ],
   "risk_level": "HIGH",
   "acceptance_criteria": [
@@ -52,14 +56,13 @@
     "CONFIRMADO-RUNTIME"
   ],
   "expected_artifacts": [
-    "Constituição Cognitiva V1",
-    "ADR",
-    "Task Packets de implementação",
-    "Golden Dataset plan"
+    "docs/ia/CONSTITUICAO_COGNITIVA_V1.md",
+    "docs/ia/PESQUISA_CONSTITUICAO_COGNITIVA_V1.md",
+    "docs/adr/0004-constituicao-cognitiva-rcmo.md",
+    "docs/ia/GOLDEN_DATASET_V4_PLAN.md",
+    "docs/agent-system/missions/NEXT-RCMO-IMPLEMENTATION-TASK-PACKETS.md"
   ],
-  "status": "PROPOSED",
-  "blocked_by": [
-    "Agent OS V3 ainda em implantação"
-  ],
-  "next_handoff": "R8"
+  "status": "REVIEW",
+  "blocked_by": [],
+  "next_handoff": "R6"
 }

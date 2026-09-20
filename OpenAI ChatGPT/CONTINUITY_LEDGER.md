@@ -85,3 +85,46 @@ Regra permanente: sempre reconciliar URL/branch/SHA antes de diagnosticar Vercel
 - [PENDENTE-HUMANO] proposta Antigravity de acionar R8 obrigatoriamente após toda tarefa não foi promovida sem confirmação humana explícita.
 - [CONFIRMADO-CODIGO] hardening incorpora findings convergentes e bloqueios Antigravity de TRUNCATE/DISABLE RLS.
 
+
+
+## 2026-09-20 — Agent OS V3 integrado e publicado
+- [CONFIRMADO-CODIGO] PR #15 foi integrado em `main`; merge commit `e95861c8c3355642d3e1b7946d40bc1fa6502c18`.
+- [CONFIRMADO-CI] Control Room #16 registra CI pós-merge run `35498636333` como PASS.
+- [CONFIRMADO-RUNTIME] Vercel production `dpl_HeEpSbasPKtHFAHewQRcWJozPMBv` está `READY`, branch `main`, mesmo SHA.
+- [CONFIRMADO-RUNTIME] smoke test `OPS-SMOKE-TRI-RUNTIME` validou GitHub → router → human gate Antigravity.
+- [DECISÃO] GitHub permanece o plano de controle durável dos três runtimes.
+
+## 2026-09-20 — Constituição Cognitiva V1 iniciada
+- [CONFIRMADO-CODIGO] issue #17 criada para `NEXT-COGNITIVE-CONSTITUTION-RCMO`.
+- [CONFIRMADO-CODIGO] branch `chatgpt/cognitive-constitution-v1` criada sobre `e95861c8c3355642d3e1b7946d40bc1fa6502c18`.
+- [CONFIRMADO-RUNTIME] baseline Supabase: 1 obra, 20 seções, 47 fragmentos, 47 vetores, 22 sínteses, 0 claims, 0 claim provenance, 0 características, 0 regras, 23 propostas e 1 memory event.
+- [CONFIRMADO-EXTERNO] R8 pesquisou Web Annotation, PROV-O, SKOS, Claimify, FActScore, RAGAS e literatura de abstention para fundamentar a especificação.
+- [CONFIRMADO-CODIGO] foram preparados Constituição Cognitiva V1, ADR-0004, plano Golden Dataset V4 e Task Packets TP-RCMO-01..10.
+- [DECISÃO-ARQUITETURAL-PROPOSTA] RCMO significa `Reflex Cognitive Method Object`: resultado analítico versionado de método explícito sobre evidência ancorada; não é memória autoral confirmada.
+- [CONFIRMADO-CI] PR #18 no head `cbc5bad3e86b2006d9d1ca6f9c87f0f8a14a4ced`: run `35499414793` PASS em validators, TypeScript, lint, testes e build; preview Vercel READY.
+- [CONFIRMADO-CODIGO] reconciliação com `0031_claims_ledger.sql` detectou drift de nomenclatura em documentos V3.1 históricos; o enum físico versionado foi declarado canônico e o lifecycle de RCMO foi separado de `confirmed_authorial`.
+- [CONFIRMADO-RUNTIME] advisors Supabase: 5 RLS sem policy, 2 SECURITY DEFINER autenticadas, 36 FKs sem covering index, 10 auth-RLS initplan e 46 índices sem uso observado; sem correção automática nesta missão.
+- [PENDENTE] revisão independente R6 do novo head após hardening conceitual.
+- [BLOQUEADO] sem migration live, `src/**`, reprocessamento, cron/replay ou promoção automática de autoria nesta missão.
+
+
+## 2026-09-20 — Primeiro R6 do PR #18 e fechamento de findings
+- [CONFIRMADO-EXTERNO] Codex R6 revisou o head `cbc5bad3e86b2006d9d1ca6f9c87f0f8a14a4ced` e abriu 4 findings P1.
+- [CONFIRMADO-CODIGO] finding de independência: TP-RCMO-09 passou a ter R5+R7 como implementadores e R6 somente como reviewer independente.
+- [CONFIRMADO-CODIGO] finding de compatibilidade: Golden Dataset V4 foi declarado estritamente aditivo; V3 + V4 permanecem obrigatórios até substituição formal aprovada.
+- [CONFIRMADO-CODIGO] finding de waivers: MILR, AMR, tenant leakage, forbidden use, prompt injection e promoção epistêmica indevida são gates críticos não renunciáveis.
+- [CONFIRMADO-CODIGO] finding de autoria: C10 passou a exigir decisão humana explícita e auditável para toda promoção a memória autoral confirmada, sem exceção por domínio/método.
+- [PENDENTE] novo CI, preview e nova revisão R6 do head pós-correções.
+
+
+## 2026-09-20 — R8 valida semântica de offsets do Evidence Core
+- [CONFIRMADO-EXTERNO] W3C Web Annotation define TextQuoteSelector com exact/prefix/suffix e TextPositionSelector com posições contadas em Unicode code points.
+- [CONFIRMADO-CODIGO] legado V3.1 do Reflex documenta spans em UTF-16/JavaScript; os espaços de coordenadas não são tratados como equivalentes.
+- [CONFIRMADO-CODIGO] Constituição, pesquisa, Golden V4 e TP-RCMO-04 passaram a exigir `offset_unit`/normalização explícitos e testes de conversão com emoji/caracteres suplementares.
+- [PENDENTE] novo CI/preview e R6 final sobre o head que contém essa reconciliação.
+
+
+## 2026-09-20 — R8 corrige referência de abstention
+- [CONFIRMADO-EXTERNO] o paper “Do LLMs Know When to NOT Answer?” está em ACL Anthology `2025.coling-main.627`; a referência `.368` usada na primeira redação estava incorreta.
+- [CONFIRMADO-EXTERNO] o survey TACL `2025.tacl-1.26` reforça abstention como capacidade de confiabilidade com métodos, benchmarks e métricas próprios.
+- [CONFIRMADO-CODIGO] a pesquisa R8 foi corrigida antes do gate final; nenhuma decisão arquitetural depende da referência errada.
