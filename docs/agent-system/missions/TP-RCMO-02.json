@@ -1,0 +1,66 @@
+{
+  "mission_id": "TP-RCMO-02-LEGACY-RECONCILIATION",
+  "task_id": "TP-RCMO-02",
+  "parent_task_id": "TP-RCMO-00",
+  "created_at": "2026-09-20T09:48:00-03:00",
+  "objective": "Mapear exaustivamente as tabelas e migrations V3.1 para o modelo canônico de entidades RCMO V1, estabelecendo o plano expand-first e de rollback sem qualquer migration live.",
+  "baseline_sha": "e4d40766a9d386b6bdabc50d9c43ab45dfcae15f",
+  "target_branch": "feature/rcmo-02-legacy-reconciliation",
+  "worktree": null,
+  "owner_role": "R2",
+  "dependencies": [
+    "TP-RCMO-01 merged em main",
+    "TP-R8-POST-CONSTITUTION-01 merged em main",
+    "Constituição Cognitiva V1 normativa",
+    "schema live do Supabase (ledger de 38 migrations) reconciliado"
+  ],
+  "in_scope": [
+    "mapeamento coluna por coluna e chave por chave das 15 superfícies do Supabase live",
+    "classificação estrita de superfícies em PRESERVE, ADAPT, RECLASSIFY, BACKFILL-LATER e DO-NOT-INFER",
+    "especificação da transição de Evidence Anchor com offset_unit (unicode_code_point) e normalização (NFC)",
+    "plano de compatibilidade expand-first",
+    "plano de rollback formal para futuras migrations",
+    "reconciliação do ledger public._migrations (38 migrations) com histórico nativo"
+  ],
+  "out_of_scope": [
+    "execução de DDL live no Supabase",
+    "alterações em código de produto src/**",
+    "drop de tabelas ou colunas existentes",
+    "reprocessamento ou replay do corpus",
+    "cron Wave 6",
+    "promoção automática de autoria"
+  ],
+  "allowed_tools": [
+    "GitHub read/write na branch da missão",
+    "Supabase read-only",
+    "Vercel read-only",
+    "CI"
+  ],
+  "write_scope": [
+    "docs/ia/**",
+    "docs/agent-system/missions/**",
+    "docs/agent-system/CURRENT_STATE.md"
+  ],
+  "risk_level": "HIGH",
+  "acceptance_criteria": [
+    "tabela de compatibilidade coluna a coluna completa para todas as 15 tabelas",
+    "estratégia expand-first explicitada com zero DROP automático",
+    "plano de rollback detalhado e testável",
+    "ledger public._migrations e histórico nativo formalmente desacoplados e reconciliados",
+    "nenhuma migration executada em banco live",
+    "R6 design review independente antes de merge"
+  ],
+  "required_evidence": [
+    "CONFIRMADO-CODIGO",
+    "CONFIRMADO-RUNTIME",
+    "CONFIRMADO-CI"
+  ],
+  "expected_artifacts": [
+    "docs/ia/RCMO_RECONCILIACAO_DETALHADA_LEGADO_V3_1.md",
+    "docs/ia/PLANO_EXPAND_FIRST_E_ROLLBACK.md",
+    "docs/agent-system/missions/TP-RCMO-02.json"
+  ],
+  "status": "DONE",
+  "blocked_by": [],
+  "next_handoff": "TP-RCMO-03 (Document Structure V2)"
+}
