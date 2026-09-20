@@ -69,6 +69,7 @@
             "human_decision",
             "confirmed_authorial_projection",
             "lineage_edge",
+            "note",
             "concept",
             "memory_event",
             "characteristic",
