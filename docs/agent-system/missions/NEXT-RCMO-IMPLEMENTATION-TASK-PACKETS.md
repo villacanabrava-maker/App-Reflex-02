@@ -149,17 +149,25 @@
 
 ## TP-RCMO-09 — Golden Dataset V4 / Evals
 
-**Owner:** R6 + R5  
+**Owner de implementação:** R5 + R7  
 **Risco:** HIGH  
-**Objetivo:** materializar `GOLDEN_DATASET_V4_PLAN.md` em fixtures e runner.
+**Objetivo:** materializar `GOLDEN_DATASET_V4_PLAN.md` em fixtures e runner sem comprometer a independência de QA.
+
+**Independência:** R6 não implementa fixtures, runner ou thresholds desta tarefa. R6 entra somente depois da implementação, em contexto separado, para red-team e gate independente.
 
 **Acceptance**
-- F1–F17;
+- Golden Dataset V3 preservado e verde;
+- F1–F17 do V4 verdes;
 - MILR=0 gate;
 - AMR=0 gate;
 - tenant leakage=0;
 - forbidden use=0 em famílias críticas;
+- prompt-injection execution=0;
+- epistemic state promotion violation=0;
+- gates críticos sem waiver;
 - artefato de CI por versão metodológica.
+
+**Handoff:** R6 independente obrigatório após implementação.
 
 ---
 
