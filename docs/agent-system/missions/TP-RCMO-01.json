@@ -68,7 +68,7 @@
     "docs/ia/RCMO_LEGACY_MAPPING_V3_1.md",
     "docs/agent-system/schemas/cognitive-entity-model.schema.json"
   ],
-  "status": "REVIEW",
+  "status": "DONE",
   "blocked_by": [],
-  "next_handoff": "R6 independent design review on exact PR head"
+  "next_handoff": "TP-RCMO-01H"
 }
