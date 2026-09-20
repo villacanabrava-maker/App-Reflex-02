@@ -5,6 +5,24 @@
 
 ## 1. Princípio
 
+**V4 é estritamente aditivo ao Golden Dataset V3.** Enquanto não existir uma substituição formal aprovada por ADR, R6 independente e gate humano, qualquer release cognitivo deve manter **V3 + V4 verdes**. Nenhuma família, threshold ou métrica congelada da V3.1 é revogada por este documento.
+
+As 12 famílias V3 permanecem obrigatórias:
+- INGEST;
+- CLAIM;
+- MEMORY;
+- TEMPORAL;
+- TAXONOMY;
+- RETRIEVAL;
+- CONTRADICTION;
+- AUTHOR;
+- ABSTENTION;
+- GENERATION;
+- LEARNING;
+- PROVENANCE.
+
+Os casos V4 ampliam cobertura para estrutura documental, anchoring, RCMO, versionamento metodológico e novos vetores adversariais. Mapeamentos entre V3 e V4 são auxiliares de cobertura e **não equivalem a depreciação** de casos legados.
+
 O dataset deve testar **erros que o sistema precisa evitar**, não apenas casos felizes. Cada família inclui positivos, negativos, ambíguos e adversariais quando aplicável.
 
 Nenhuma migration/reprocessamento da nova arquitetura deve ser considerada pronta para produção sem um runner reprodutível e fixtures versionadas.
@@ -78,6 +96,25 @@ Nenhuma evidência/claim/RCMO de outro usuário pode aparecer em retrieval, line
 ### F17 — Epistemic namespace integrity
 Aceitar/revisar um RCMO não pode convertê-lo em `confirmed_authorial`, nem autorizar linguagem de memória sem uma Proposal e uma Human Decision separadas.
 
+## 3.1. Relação de cobertura V3 → V4
+
+| Família V3 | Cobertura V4 relacionada | Regra de compatibilidade |
+|---|---|---|
+| INGEST | F1–F3 | V3 continua obrigatório |
+| CLAIM | F4–F5 | V3 continua obrigatório |
+| MEMORY | F8, F17 | V3 continua obrigatório |
+| TEMPORAL | F13–F14 | V3 continua obrigatório |
+| TAXONOMY | sem substituição direta | executar V3 integralmente |
+| RETRIEVAL | F10 + Retrieval Evidence Recall | preservar também budget/contratos V3 |
+| CONTRADICTION | F5–F6 | V3 continua obrigatório |
+| AUTHOR | F7–F9 | V3 continua obrigatório |
+| ABSTENTION | F11–F12 | V3 continua obrigatório |
+| GENERATION | F9–F10 | preservar Allowed Use e fidelity V3 |
+| LEARNING | sem substituição direta | executar V3 integralmente |
+| PROVENANCE | F1–F3 | V3 continua obrigatório |
+
+Métricas históricas/legadas como fidelidade de geração, precisão temporal, pattern separation e demais gates V3.1 permanecem exigíveis onde já fazem parte da suíte ou do contrato de release. A V4 não pode silenciá-las.
+
 ## 4. Métricas
 
 Obrigatórias:
@@ -140,7 +177,18 @@ Amostragem live é complementar e nunca substitui o release gate.
 ## 8. Aprovação
 
 Antes de promover um novo método/prompt/modelo:
-- suite V4 verde;
-- R6 revisa famílias críticas;
+- **suite V3 verde e suite V4 verde**;
+- R6, em contexto independente de quem implementou o runner/fixtures, revisa famílias críticas;
 - diferenças contra versão anterior são registradas;
-- regressões aceitas exigem decisão humana explícita documentada.
+- regressões em métricas **não críticas** podem ser consideradas somente com justificativa técnica, evidência e decisão humana explícita documentada;
+- regressões em gates críticos são **não renunciáveis** e bloqueiam promoção.
+
+Gates críticos não renunciáveis:
+- MILR = 0;
+- AMR = 0;
+- Tenant Leakage Rate = 0;
+- Forbidden Use Rate = 0 nas famílias críticas;
+- prompt-injection execution = 0;
+- Epistemic State Promotion Violation Rate = 0.
+
+Nenhuma decisão humana pode ser usada como waiver para violar isolamento, soberania autoral ou Memory-Inference Firewall.
