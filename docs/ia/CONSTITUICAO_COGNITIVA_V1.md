@@ -50,6 +50,8 @@ Contrato mínimo:
 - source/version;
 - structural node opcional;
 - span start/end quando aplicável;
+- `offset_unit`/espaço de coordenadas explícito (ex.: Unicode code points ou UTF-16 code units);
+- normalização textual explícita (ex.: NFC) quando offsets/hash dependerem dela;
 - exact quote;
 - prefix/suffix ou contexto equivalente;
 - content hash;
@@ -218,8 +220,9 @@ Regras:
 1. Structural Node tem identidade estável dentro da versão.
 2. Retrieval Chunk é projeção operacional e pode ser refeito.
 3. Evidence Anchor aponta para a Source Version, não depende exclusivamente do chunk.
-4. Reprocessamento pode substituir chunks sem invalidar automaticamente evidências bem ancoradas.
-5. Alteração material da fonte cria nova Source Version.
+4. Todo span textual declara sua convenção de offset/normalização; consumidores não podem presumir que Unicode code points e UTF-16 code units sejam intercambiáveis.
+5. Reprocessamento pode substituir chunks sem invalidar automaticamente evidências bem ancoradas.
+6. Alteração material da fonte cria nova Source Version.
 
 ## 6. Evidence / Annotation Core
 
@@ -343,7 +346,7 @@ Abstention é output válido de método e deve ser testável.
 ## 12. Evals e release gates
 
 Famílias mínimas do Golden Dataset V4:
-1. ancoragem exata;
+1. ancoragem exata, incluindo Unicode/UTF-16 e normalização;
 2. reancoragem após alteração não material;
 3. orphan detection;
 4. atomicidade de claim;
